@@ -1,9 +1,12 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const cookie = req.cookies.get("crm_auth")?.value;
+  const parola = process.env.CRM_PAROLA;
   return NextResponse.json({
-    parola_setata: !!process.env.CRM_PAROLA,
-    parola_length: process.env.CRM_PAROLA?.length ?? 0,
-    parola_preview: process.env.CRM_PAROLA?.slice(0, 3) ?? "undefined",
+    parola_length: parola?.length ?? 0,
+    parola_value: parola,
+    cookie_value: cookie,
+    match: cookie === parola,
   });
 }
