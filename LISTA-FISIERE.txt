@@ -1,0 +1,11 @@
+Acest pachet contine fisierele de cod ale CRM-ului.
+Le copiezi in proiectul Next.js creat cu create-next-app, pastrand aceleasi cai:
+
+GHID-IMPLEMENTARE.md          <- citeste asta primul, pas cu pas
+sql/schema.sql                <- ruleaza in Supabase
+lib/supabase.ts
+lib/scoring.ts
+app/api/cauta/route.ts
+app/api/analiza/route.ts
+app/page.tsx                  <- inlocuieste pagina default
+app/leads/page.tsx

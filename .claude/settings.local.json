@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Rename-Item \"C:\\\\Users\\\\hilas\\\\Desktop\\\\crm-prospect\\\\.env,local\" \".env.local\")"
+    ]
+  }
+}
