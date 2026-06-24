@@ -2,17 +2,33 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Search, LayoutDashboard, Users, LogOut, Flame } from "lucide-react";
+import { Search, LayoutDashboard, Users, LogOut, Flame, CalendarClock } from "lucide-react";
+import { useEffect, useState } from "react";
 
 const nav = [
   { href: "/", label: "Cautare", icon: Search },
-  { href: "/recomandate", label: "Recomandate", icon: Flame, accent: true },
+  { href: "/recomandate", label: "Recomandate", icon: Flame, accent: "red" },
   { href: "/leads", label: "Leaduri", icon: Users },
+  { href: "/azi", label: "Urmariri", icon: CalendarClock, accent: "amber" },
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
 ];
 
 export default function Shell({ children }: { children: React.ReactNode }) {
   const path = usePathname();
+  const [urgente, setUrgente] = useState(0);
+
+  useEffect(() => {
+    fetch("/api/followups")
+      .then((r) => r.json())
+      .then((data: Array<{ urmator_followup: string }>) => {
+        if (!Array.isArray(data)) return;
+        const now = new Date();
+        const endOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+        const count = data.filter((f) => new Date(f.urmator_followup) < endOfToday).length;
+        setUrgente(count);
+      })
+      .catch(() => {});
+  }, [path]);
 
   if (path === "/login") return <>{children}</>;
 
@@ -27,6 +43,7 @@ export default function Shell({ children }: { children: React.ReactNode }) {
         <nav className="flex-1 px-3 py-4 space-y-0.5">
           {nav.map(({ href, label, icon: Icon, accent }) => {
             const active = href === "/" ? path === "/" : path.startsWith(href);
+            const isAzi = href === "/azi";
             return (
               <Link
                 key={href}
@@ -34,13 +51,20 @@ export default function Shell({ children }: { children: React.ReactNode }) {
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                   active
                     ? "bg-blue-600 text-white"
-                    : accent
+                    : accent === "red"
                     ? "text-red-400 hover:text-white hover:bg-slate-800"
+                    : accent === "amber"
+                    ? "text-amber-400 hover:text-white hover:bg-slate-800"
                     : "text-slate-400 hover:text-white hover:bg-slate-800"
                 }`}
               >
                 <Icon className="w-4 h-4 shrink-0" />
-                {label}
+                <span className="flex-1">{label}</span>
+                {isAzi && urgente > 0 && (
+                  <span className="text-xs bg-red-500 text-white font-bold px-1.5 py-0.5 rounded-full min-w-[20px] text-center">
+                    {urgente}
+                  </span>
+                )}
               </Link>
             );
           })}

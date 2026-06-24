@@ -10,6 +10,8 @@ import {
 } from "lucide-react";
 import { etichetaScor, genereazaBrief } from "@/lib/scoring";
 import ServiciiBreakdown from "@/components/ServiciiBreakdown";
+import ObiectiiPanel from "@/components/ObiectiiPanel";
+import GeneratorOferta from "@/components/GeneratorOferta";
 
 const STATUSURI = ["Nou", "Contactat", "Interesat", "Oferta", "Client", "Pierdut"];
 const TIPURI = ["apel", "email", "intalnire", "nota"];
@@ -52,6 +54,8 @@ export default function FisaLead() {
   const [followup, setFollowup] = useState("");
   const [salvand, setSalvand] = useState(false);
   const [copiat, setCopiat] = useState(false);
+  const [valoare, setValoare] = useState<string>("");
+  const [salvandValoare, setSalvandValoare] = useState(false);
 
   async function incarca() {
     const [resLead, resAct] = await Promise.all([
@@ -62,6 +66,7 @@ export default function FisaLead() {
     const actData = await resAct.json();
     if (leadData.error) { setEroare(leadData.error); setLoading(false); return; }
     setLead(leadData);
+    setValoare(leadData.valoare_estimata ? String(leadData.valoare_estimata) : "");
     setActivitati(Array.isArray(actData) ? actData : []);
     setLoading(false);
   }
@@ -93,6 +98,18 @@ export default function FisaLead() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ status }),
     });
+    incarca();
+  }
+
+  async function salveazaValoare() {
+    if (!valoare) return;
+    setSalvandValoare(true);
+    await fetch(`/api/leads/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ valoare_estimata: Number(valoare) }),
+    });
+    setSalvandValoare(false);
     incarca();
   }
 
@@ -199,6 +216,27 @@ export default function FisaLead() {
               </span>
             </div>
           )}
+          <div className="flex items-center gap-2 col-span-2 pt-1 border-t border-slate-100 mt-1">
+            <span className="text-slate-400 text-sm shrink-0">Valoare estimata deal:</span>
+            <div className="flex items-center gap-2">
+              <input
+                type="number"
+                value={valoare}
+                onChange={(e) => setValoare(e.target.value)}
+                onBlur={salveazaValoare}
+                onKeyDown={(e) => e.key === "Enter" && salveazaValoare()}
+                placeholder="ex. 1500"
+                className="border border-slate-200 rounded-lg px-3 py-1.5 text-sm w-32 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <span className="text-slate-500 text-sm font-medium">€</span>
+              {salvandValoare && <Loader2 className="w-3.5 h-3.5 animate-spin text-slate-400" />}
+              {lead.valoare_estimata && !salvandValoare && (
+                <span className="text-xs text-emerald-600 font-semibold">
+                  {Number(lead.valoare_estimata).toLocaleString("ro-RO")} € salvat
+                </span>
+              )}
+            </div>
+          </div>
         </div>
       </div>
 
@@ -211,6 +249,17 @@ export default function FisaLead() {
           semnale={{ areWebsite: lead.are_website, rating: lead.rating, reviews: lead.nr_reviews, scorViteza: lead.scor_viteza, nisa: lead.nisa }}
         />
       </div>
+
+      {/* Scripturi obiectii */}
+      <ObiectiiPanel
+        semnale={{ areWebsite: lead.are_website, rating: lead.rating, reviews: lead.nr_reviews, scorViteza: lead.scor_viteza, nisa: lead.nisa }}
+      />
+
+      {/* Generator oferta */}
+      <GeneratorOferta
+        semnale={{ areWebsite: lead.are_website, rating: lead.rating, reviews: lead.nr_reviews, scorViteza: lead.scor_viteza, nisa: lead.nisa }}
+        numeLead={lead.nume}
+      />
 
       {/* Brief cold calling */}
       <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm mb-4">
