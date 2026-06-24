@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   Loader2, Phone, Globe2, Star, MessageSquare,
-  Flame, CheckCircle2, Filter,
+  Flame, CheckCircle2,
 } from "lucide-react";
-import { etichetaScor, genereazaBrief, scorOpportunitate } from "@/lib/scoring";
+import { genereazaBrief } from "@/lib/scoring";
 import ServiciiBreakdown from "@/components/ServiciiBreakdown";
 
 const TABS = [
@@ -177,7 +177,6 @@ export default function RecomandatePage() {
                       <Globe2 className="w-3.5 h-3.5 shrink-0" /> fara website
                     </span>
                   )}
-                  <MarketingBadges semnale={semnale} />
                 </div>
 
                 {/* Analiza + Brief */}

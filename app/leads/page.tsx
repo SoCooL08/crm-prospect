@@ -194,12 +194,11 @@ export default function LeadsPage() {
                     </select>
                   </div>
                 </div>
+                <ServiciiBreakdown
+                  semnale={{ areWebsite: l.are_website, rating: l.rating, reviews: l.nr_reviews, scorViteza: l.scor_viteza }}
+                  compact
+                />
               </div>
-              <ServiciiBreakdown
-                semnale={{ areWebsite: l.are_website, rating: l.rating, reviews: l.nr_reviews, scorViteza: l.scor_viteza }}
-                compact
-              />
-            </div>
           );
           })}
           {afisate.length === 0 && (
