@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Search, LayoutDashboard, Users, LogOut, Flame, CalendarClock } from "lucide-react";
+import { Search, LayoutDashboard, Users, LogOut, Flame, CalendarClock, Target } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const nav = [
@@ -11,6 +11,7 @@ const nav = [
   { href: "/leads", label: "Leaduri", icon: Users },
   { href: "/azi", label: "Urmariri", icon: CalendarClock, accent: "amber" },
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/sostac", label: "SOSTAC + Ads", icon: Target, accent: "violet" },
 ];
 
 export default function Shell({ children }: { children: React.ReactNode }) {
@@ -55,6 +56,8 @@ export default function Shell({ children }: { children: React.ReactNode }) {
                     ? "text-red-400 hover:text-white hover:bg-slate-800"
                     : accent === "amber"
                     ? "text-amber-400 hover:text-white hover:bg-slate-800"
+                    : accent === "violet"
+                    ? "text-violet-400 hover:text-white hover:bg-slate-800"
                     : "text-slate-400 hover:text-white hover:bg-slate-800"
                 }`}
               >
