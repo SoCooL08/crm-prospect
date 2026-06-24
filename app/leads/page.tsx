@@ -2,9 +2,15 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Phone, Globe2, Gauge, Loader2, Search } from "lucide-react";
+import { Phone, Globe2, Gauge, Loader2, Search, Star, MessageSquare } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { etichetaScor } from "@/lib/scoring";
+
+const reviewsColor = (nr: number) => {
+  if (nr > 200) return "text-emerald-600 font-semibold";
+  if (nr > 50) return "text-blue-600 font-semibold";
+  return "text-slate-400";
+};
 
 const STATUSURI = ["Nou", "Contactat", "Interesat", "Oferta", "Client", "Pierdut"];
 
@@ -138,6 +144,14 @@ export default function LeadsPage() {
                           <Phone className="w-3.5 h-3.5 shrink-0" /> {l.telefon}
                         </a>
                       )}
+                      <span className="flex items-center gap-1 text-xs text-slate-500">
+                        <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400 shrink-0" />
+                        <span className="font-medium text-slate-700">{l.rating}</span>
+                      </span>
+                      <span className={`flex items-center gap-1 text-xs ${reviewsColor(l.nr_reviews)}`}>
+                        <MessageSquare className="w-3.5 h-3.5 shrink-0" />
+                        {l.nr_reviews} recenzii
+                      </span>
                       {!l.are_website && (
                         <span className="text-red-600 flex items-center gap-1 text-xs font-medium">
                           <Globe2 className="w-3.5 h-3.5 shrink-0" /> fara website

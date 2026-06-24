@@ -5,10 +5,10 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import {
   Phone, Globe, Globe2, Star, MapPin, Gauge,
-  Loader2, Plus, ArrowLeft, ExternalLink,
+  Loader2, Plus, ArrowLeft, ExternalLink, MessageSquare,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
-import { etichetaScor } from "@/lib/scoring";
+import { etichetaScor, genereazaBrief } from "@/lib/scoring";
 
 const STATUSURI = ["Nou", "Contactat", "Interesat", "Oferta", "Client", "Pierdut"];
 const TIPURI = ["apel", "email", "intalnire", "nota"];
@@ -102,6 +102,13 @@ export default function FisaLead() {
     );
 
   const et = etichetaScor(lead.scor);
+  const brief = genereazaBrief({
+    areWebsite: lead.are_website,
+    rating: lead.rating,
+    reviews: lead.nr_reviews,
+    scorViteza: lead.scor_viteza,
+    nisa: lead.nisa,
+  });
 
   return (
     <div className="p-8 max-w-3xl">
@@ -187,6 +194,30 @@ export default function FisaLead() {
               </span>
             </div>
           )}
+        </div>
+      </div>
+
+      {/* Brief apel */}
+      <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm mb-4">
+        <h2 className="font-semibold text-slate-900 mb-4 flex items-center gap-2">
+          <MessageSquare className="w-4 h-4 text-blue-500" /> Brief cold calling
+        </h2>
+        <div className="flex flex-wrap gap-1.5 mb-4">
+          {brief.cuvinte_cheie.map((k) => (
+            <span key={k} className="bg-blue-50 text-blue-700 text-xs px-2.5 py-1 rounded-md font-medium">
+              {k}
+            </span>
+          ))}
+        </div>
+        <div className="space-y-3">
+          <div className="bg-slate-50 rounded-xl p-4 border border-slate-100">
+            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-1.5">Deschidere</p>
+            <p className="text-sm text-slate-700 italic">{brief.deschidere}</p>
+          </div>
+          <div className="bg-blue-50 rounded-xl p-4 border border-blue-100">
+            <p className="text-xs font-semibold text-blue-400 uppercase tracking-wide mb-1.5">Pitch</p>
+            <p className="text-sm text-blue-900">{brief.pitch}</p>
+          </div>
         </div>
       </div>
 

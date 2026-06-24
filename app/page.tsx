@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Search, MapPin, Star, Phone, Globe, Globe2, Loader2 } from "lucide-react";
-import { etichetaScor, oferta } from "@/lib/scoring";
+import { Search, MapPin, Star, Phone, Globe, Globe2, Loader2, MessageSquare, ChevronDown, ChevronUp } from "lucide-react";
+import { etichetaScor, oferta, genereazaBrief } from "@/lib/scoring";
 import HartaLeads from "@/components/HartaLeads";
 
 const JUDETE = [
@@ -34,6 +34,56 @@ const scorBadge = (et: string) =>
     Cald: "bg-amber-50 text-amber-700 border border-amber-200",
     Rece: "bg-slate-50 text-slate-600 border border-slate-200",
   }[et] ?? "bg-slate-50 text-slate-600 border border-slate-200");
+
+const reviewsColor = (nr: number) => {
+  if (nr > 200) return "text-emerald-600 font-semibold";
+  if (nr > 50) return "text-blue-600 font-semibold";
+  return "text-slate-500";
+};
+
+function BriefCard({ lead }: { lead: any }) {
+  const [deschis, setDeschis] = useState(false);
+  const brief = genereazaBrief({
+    areWebsite: lead.are_website,
+    rating: lead.rating,
+    reviews: lead.nr_reviews,
+    scorViteza: lead.scor_viteza,
+    nisa: lead.nisa,
+  });
+
+  return (
+    <div className="mt-3 border-t border-slate-100 pt-3">
+      <button
+        onClick={() => setDeschis((d) => !d)}
+        className="flex items-center gap-1.5 text-xs font-medium text-blue-600 hover:text-blue-700 transition-colors"
+      >
+        <MessageSquare className="w-3.5 h-3.5" />
+        Brief apel
+        {deschis ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+      </button>
+
+      {deschis && (
+        <div className="mt-2 space-y-2">
+          <div className="flex flex-wrap gap-1.5">
+            {brief.cuvinte_cheie.map((k) => (
+              <span key={k} className="bg-blue-50 text-blue-700 text-xs px-2 py-0.5 rounded-md font-medium">
+                {k}
+              </span>
+            ))}
+          </div>
+          <div className="bg-slate-50 rounded-lg p-3 text-sm text-slate-700 border border-slate-100">
+            <p className="font-medium text-slate-500 text-xs uppercase tracking-wide mb-1">Deschidere</p>
+            <p className="italic">{brief.deschidere}</p>
+          </div>
+          <div className="bg-blue-50 rounded-lg p-3 text-sm text-blue-900 border border-blue-100">
+            <p className="font-medium text-blue-500 text-xs uppercase tracking-wide mb-1">Pitch</p>
+            <p>{brief.pitch}</p>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function Home() {
   const [judet, setJudet] = useState("Sibiu");
@@ -85,9 +135,7 @@ export default function Home() {
               onChange={(e) => setJudet(e.target.value)}
               className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              {JUDETE.map((j) => (
-                <option key={j}>{j}</option>
-              ))}
+              {JUDETE.map((j) => <option key={j}>{j}</option>)}
             </select>
           </div>
           <div className="flex-1 min-w-[140px]">
@@ -111,9 +159,7 @@ export default function Home() {
               className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <datalist id="nise-list">
-              {NISE.map((n) => (
-                <option key={n} value={n} />
-              ))}
+              {NISE.map((n) => <option key={n} value={n} />)}
             </datalist>
           </div>
           <button
@@ -121,11 +167,7 @@ export default function Home() {
             disabled={loading || !nisa.trim()}
             className="bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-6 py-2.5 text-sm font-medium flex items-center gap-2 disabled:opacity-50 transition-colors shrink-0"
           >
-            {loading ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              <Search className="w-4 h-4" />
-            )}
+            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
             Cauta
           </button>
         </div>
@@ -150,15 +192,19 @@ export default function Home() {
               className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow"
             >
               <div className="flex justify-between items-start gap-3">
-                <div className="min-w-0">
+                <div className="min-w-0 flex-1">
                   <div className="font-semibold text-slate-900">{l.nume}</div>
-                  <div className="text-sm text-slate-500 mt-1 flex items-center gap-3 flex-wrap">
+                  <div className="text-sm text-slate-500 mt-1.5 flex items-center gap-4 flex-wrap">
                     <span className="flex items-center gap-1">
                       <MapPin className="w-3.5 h-3.5 shrink-0" /> {l.adresa}
                     </span>
                     <span className="flex items-center gap-1">
-                      <Star className="w-3.5 h-3.5 text-amber-400 shrink-0" /> {l.rating}{" "}
-                      <span className="text-slate-400">({l.nr_reviews})</span>
+                      <Star className="w-3.5 h-3.5 text-amber-400 shrink-0 fill-amber-400" />
+                      <span className="font-medium text-slate-700">{l.rating}</span>
+                    </span>
+                    <span className={`flex items-center gap-1 ${reviewsColor(l.nr_reviews)}`}>
+                      <MessageSquare className="w-3.5 h-3.5 shrink-0" />
+                      {l.nr_reviews} recenzii
                     </span>
                   </div>
                   <div className="text-sm mt-2 flex items-center gap-3 flex-wrap">
@@ -188,6 +234,8 @@ export default function Home() {
                   </div>
                 </div>
               </div>
+
+              <BriefCard lead={l} />
             </div>
           );
         })}
