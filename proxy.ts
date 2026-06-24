@@ -3,7 +3,12 @@ import { NextRequest, NextResponse } from "next/server";
 export function proxy(req: NextRequest) {
   const path = req.nextUrl.pathname;
 
-  if (path === "/login" || path === "/api/login" || path === "/api/logout") {
+  if (
+    path === "/login" ||
+    path === "/api/login" ||
+    path === "/api/logout" ||
+    path.startsWith("/audit/")
+  ) {
     return NextResponse.next();
   }
 
