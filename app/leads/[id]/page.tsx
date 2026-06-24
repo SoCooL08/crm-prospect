@@ -6,6 +6,7 @@ import Link from "next/link";
 import {
   Phone, Globe, Globe2, Star, MapPin, Gauge,
   Loader2, Plus, ArrowLeft, ExternalLink, MessageSquare,
+  Link2, CheckCheck,
 } from "lucide-react";
 import { etichetaScor, genereazaBrief } from "@/lib/scoring";
 import ServiciiBreakdown from "@/components/ServiciiBreakdown";
@@ -50,6 +51,7 @@ export default function FisaLead() {
   const [nota, setNota] = useState("");
   const [followup, setFollowup] = useState("");
   const [salvand, setSalvand] = useState(false);
+  const [copiat, setCopiat] = useState(false);
 
   async function incarca() {
     const [resLead, resAct] = await Promise.all([
@@ -232,6 +234,50 @@ export default function FisaLead() {
             <p className="text-sm text-blue-900">{brief.pitch}</p>
           </div>
         </div>
+      </div>
+
+      {/* Audit Report */}
+      <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm mb-4">
+        <h2 className="font-semibold text-slate-900 mb-1 flex items-center gap-2">
+          <Link2 className="w-4 h-4 text-violet-500" /> Audit Report
+        </h2>
+        <p className="text-xs text-slate-400 mb-4">
+          Trimite prospectului un raport personalizat cu problemele detectate si serviciile recomandate.
+          Se deschide fara login — ideal de trimis pe WhatsApp in timpul apelului.
+        </p>
+        <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3">
+          <span className="text-xs text-slate-500 truncate flex-1 font-mono select-all">
+            {typeof window !== "undefined" ? `${window.location.origin}/audit/${id}` : `/audit/${id}`}
+          </span>
+          <button
+            onClick={() => {
+              const url = `${window.location.origin}/audit/${id}`;
+              navigator.clipboard.writeText(url).then(() => {
+                setCopiat(true);
+                setTimeout(() => setCopiat(false), 2500);
+              });
+            }}
+            className={`shrink-0 flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors ${
+              copiat
+                ? "bg-emerald-500 text-white"
+                : "bg-slate-900 text-white hover:bg-slate-700"
+            }`}
+          >
+            {copiat ? (
+              <><CheckCheck className="w-3.5 h-3.5" /> Copiat!</>
+            ) : (
+              <><Link2 className="w-3.5 h-3.5" /> Copiaza link</>
+            )}
+          </button>
+        </div>
+        <a
+          href={`/audit/${id}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-2.5 inline-flex items-center gap-1.5 text-xs text-violet-600 hover:text-violet-800 transition-colors"
+        >
+          <ExternalLink className="w-3 h-3" /> Preview audit
+        </a>
       </div>
 
       {/* Adauga activitate */}
