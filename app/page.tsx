@@ -1,32 +1,50 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { Search, MapPin, Star, Phone, Globe, Globe2, Loader2 } from "lucide-react";
 import { etichetaScor, oferta } from "@/lib/scoring";
 import HartaLeads from "@/components/HartaLeads";
 
-const JUDETE = ["Sibiu", "Cluj", "Brasov", "Timis", "Bucuresti", "Iasi", "Constanta", "Mures"];
-const NISE = [
-  "Restaurante",
-  "Saloane infrumusetare",
-  "Cabinete stomatologice",
-  "Service auto",
-  "Sali de fitness",
-  "Cabinete avocatura",
-  "Firme constructii",
-  "Cabinete veterinare",
+const JUDETE = [
+  "Alba","Arad","Arges","Bacau","Bihor","Bistrita-Nasaud","Botosani",
+  "Braila","Brasov","Bucuresti","Buzau","Calarasi","Cluj","Constanta",
+  "Covasna","Dambovita","Dolj","Galati","Giurgiu","Gorj","Harghita",
+  "Hunedoara","Ialomita","Iasi","Ilfov","Maramures","Mehedinti","Mures",
+  "Neamt","Olt","Prahova","Salaj","Satu Mare","Sibiu","Suceava",
+  "Teleorman","Timis","Tulcea","Valcea","Vaslui","Vrancea",
 ];
 
+const NISE = [
+  "Restaurante","Pizzerii","Cafenele","Fast food",
+  "Saloane infrumusetare","Frizerii","Saloane unghii",
+  "Cabinete stomatologice","Cabinete medicale","Farmacii","Optici",
+  "Cabinete veterinare","Cabinete psihologie",
+  "Service auto","Vulcanizari","Spalatorii auto",
+  "Sali de fitness","Sali de sport",
+  "Cabinete avocatura","Notariate","Contabili","Firme consultanta",
+  "Agentii imobiliare","Firme constructii","Firme instalatii",
+  "Hoteluri","Pensiuni","Sali de evenimente",
+  "Gradinite private","Florarii","Brutarii","Patiserii",
+  "Agentii turism","Firme transport",
+];
+
+const scorBadge = (et: string) =>
+  ({
+    Fierbinte: "bg-red-50 text-red-700 border border-red-200",
+    Cald: "bg-amber-50 text-amber-700 border border-amber-200",
+    Rece: "bg-slate-50 text-slate-600 border border-slate-200",
+  }[et] ?? "bg-slate-50 text-slate-600 border border-slate-200");
+
 export default function Home() {
-  const [judet, setJudet] = useState(JUDETE[0]);
+  const [judet, setJudet] = useState("Sibiu");
   const [oras, setOras] = useState("");
-  const [nisa, setNisa] = useState(NISE[0]);
+  const [nisa, setNisa] = useState("");
   const [leads, setLeads] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [mesaj, setMesaj] = useState("");
 
   async function cauta() {
+    if (!nisa.trim()) return;
     setLoading(true);
     setMesaj("");
     try {
@@ -49,119 +67,124 @@ export default function Home() {
     setLoading(false);
   }
 
-  const fmtCuloare = (et: string) =>
-    et === "Fierbinte"
-      ? "bg-green-100 text-green-800"
-      : et === "Cald"
-      ? "bg-amber-100 text-amber-800"
-      : "bg-gray-100 text-gray-600";
-
   return (
-    <main className="max-w-4xl mx-auto p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-medium">CRM Prospectare</h1>
-        <div className="flex gap-4 text-sm">
-          <Link href="/dashboard" className="text-blue-600 hover:underline">
-            Dashboard
-          </Link>
-          <Link href="/leads" className="text-blue-600 hover:underline">
-            Leaduri →
-          </Link>
+    <div className="p-8 max-w-5xl">
+      <div className="mb-8">
+        <h1 className="text-2xl font-semibold text-slate-900">Cautare leaduri</h1>
+        <p className="text-slate-500 text-sm mt-1">
+          Gaseste afaceri dupa judet si nisa, direct din Google Maps
+        </p>
+      </div>
+
+      <div className="bg-white border border-slate-200 rounded-2xl p-5 mb-6 shadow-sm">
+        <div className="flex flex-wrap gap-4 items-end">
+          <div className="flex-1 min-w-[150px]">
+            <label className="text-xs font-medium text-slate-600 block mb-1.5">Judet</label>
+            <select
+              value={judet}
+              onChange={(e) => setJudet(e.target.value)}
+              className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              {JUDETE.map((j) => (
+                <option key={j}>{j}</option>
+              ))}
+            </select>
+          </div>
+          <div className="flex-1 min-w-[140px]">
+            <label className="text-xs font-medium text-slate-600 block mb-1.5">
+              Oras / Zona <span className="text-slate-400 font-normal">(optional)</span>
+            </label>
+            <input
+              value={oras}
+              onChange={(e) => setOras(e.target.value)}
+              placeholder="ex. Medias, Cisnadie..."
+              className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <div className="flex-1 min-w-[160px]">
+            <label className="text-xs font-medium text-slate-600 block mb-1.5">Nisa</label>
+            <input
+              list="nise-list"
+              value={nisa}
+              onChange={(e) => setNisa(e.target.value)}
+              placeholder="ex. Restaurante..."
+              className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <datalist id="nise-list">
+              {NISE.map((n) => (
+                <option key={n} value={n} />
+              ))}
+            </datalist>
+          </div>
+          <button
+            onClick={cauta}
+            disabled={loading || !nisa.trim()}
+            className="bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-6 py-2.5 text-sm font-medium flex items-center gap-2 disabled:opacity-50 transition-colors shrink-0"
+          >
+            {loading ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <Search className="w-4 h-4" />
+            )}
+            Cauta
+          </button>
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-3 items-end bg-gray-50 p-4 rounded-xl mb-4">
-        <div className="flex-1 min-w-[140px]">
-          <label className="text-xs text-gray-500 block mb-1">Judet</label>
-          <select
-            value={judet}
-            onChange={(e) => setJudet(e.target.value)}
-            className="w-full border rounded-lg px-3 py-2 text-sm"
-          >
-            {JUDETE.map((j) => (
-              <option key={j}>{j}</option>
-            ))}
-          </select>
-        </div>
-        <div className="flex-1 min-w-[140px]">
-          <label className="text-xs text-gray-500 block mb-1">Oras (optional)</label>
-          <input
-            value={oras}
-            onChange={(e) => setOras(e.target.value)}
-            placeholder="ex. Medias"
-            className="w-full border rounded-lg px-3 py-2 text-sm"
-          />
-        </div>
-        <div className="flex-1 min-w-[140px]">
-          <label className="text-xs text-gray-500 block mb-1">Nisa</label>
-          <select
-            value={nisa}
-            onChange={(e) => setNisa(e.target.value)}
-            className="w-full border rounded-lg px-3 py-2 text-sm"
-          >
-            {NISE.map((n) => (
-              <option key={n}>{n}</option>
-            ))}
-          </select>
-        </div>
-        <button
-          onClick={cauta}
-          disabled={loading}
-          className="bg-blue-600 text-white rounded-lg px-5 py-2 text-sm flex items-center gap-2 disabled:opacity-50"
-        >
-          {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
-          Cauta
-        </button>
-      </div>
-
-      {mesaj && <p className="text-sm text-gray-600 mb-4">{mesaj}</p>}
+      {mesaj && (
+        <p className="text-sm text-slate-600 mb-5 flex items-center gap-2">
+          <span className="w-1.5 h-1.5 rounded-full bg-green-500 inline-block shrink-0" />
+          {mesaj}
+        </p>
+      )}
 
       {leads.length > 0 && <HartaLeads leads={leads} />}
 
       <div className="space-y-3">
         {leads.map((l) => {
           const et = etichetaScor(l.scor);
-          const semnale = {
-            areWebsite: l.are_website,
-            rating: l.rating,
-            reviews: l.nr_reviews,
-          };
+          const semnale = { areWebsite: l.are_website, rating: l.rating, reviews: l.nr_reviews };
           return (
-            <div key={l.google_place_id} className="border rounded-xl p-4 bg-white">
+            <div
+              key={l.google_place_id}
+              className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow"
+            >
               <div className="flex justify-between items-start gap-3">
                 <div className="min-w-0">
-                  <div className="font-medium">{l.nume}</div>
-                  <div className="text-sm text-gray-500 mt-1 flex items-center gap-3 flex-wrap">
+                  <div className="font-semibold text-slate-900">{l.nume}</div>
+                  <div className="text-sm text-slate-500 mt-1 flex items-center gap-3 flex-wrap">
                     <span className="flex items-center gap-1">
-                      <MapPin className="w-3.5 h-3.5" /> {l.adresa}
+                      <MapPin className="w-3.5 h-3.5 shrink-0" /> {l.adresa}
                     </span>
                     <span className="flex items-center gap-1">
-                      <Star className="w-3.5 h-3.5" /> {l.rating} ({l.nr_reviews})
+                      <Star className="w-3.5 h-3.5 text-amber-400 shrink-0" /> {l.rating}{" "}
+                      <span className="text-slate-400">({l.nr_reviews})</span>
                     </span>
                   </div>
                   <div className="text-sm mt-2 flex items-center gap-3 flex-wrap">
                     {l.telefon && (
-                      <a href={`tel:${l.telefon}`} className="text-blue-600 flex items-center gap-1">
-                        <Phone className="w-3.5 h-3.5" /> {l.telefon}
+                      <a href={`tel:${l.telefon}`} className="text-blue-600 flex items-center gap-1 font-medium">
+                        <Phone className="w-3.5 h-3.5 shrink-0" /> {l.telefon}
                       </a>
                     )}
                     {l.are_website ? (
-                      <span className="text-gray-500 flex items-center gap-1">
-                        <Globe className="w-3.5 h-3.5" /> are website
+                      <span className="text-slate-400 flex items-center gap-1 text-xs">
+                        <Globe className="w-3.5 h-3.5 shrink-0" /> are website
                       </span>
                     ) : (
-                      <span className="text-red-600 flex items-center gap-1">
-                        <Globe2 className="w-3.5 h-3.5" /> fara website
+                      <span className="text-red-600 flex items-center gap-1 text-xs font-medium">
+                        <Globe2 className="w-3.5 h-3.5 shrink-0" /> fara website
                       </span>
                     )}
                   </div>
                 </div>
-                <div className="text-right shrink-0">
-                  <span className={`text-xs px-2.5 py-1 rounded-md ${fmtCuloare(et)}`}>
+                <div className="text-right shrink-0 flex flex-col items-end gap-2">
+                  <span className={`text-xs px-2.5 py-1 rounded-md font-medium ${scorBadge(et)}`}>
                     {et} · {l.scor}
                   </span>
-                  <div className="text-xs text-gray-500 mt-2">
-                    Vinde: <b className="font-medium">{oferta(semnale)}</b>
+                  <div className="text-xs text-slate-500">
+                    <span className="text-slate-400">Ofera: </span>
+                    <span className="font-medium text-slate-700">{oferta(semnale)}</span>
                   </div>
                 </div>
               </div>
@@ -169,6 +192,6 @@ export default function Home() {
           );
         })}
       </div>
-    </main>
+    </div>
   );
 }

@@ -3,11 +3,40 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { Phone, Globe, Globe2, Star, MapPin, Gauge, Loader2, Plus } from "lucide-react";
+import {
+  Phone, Globe, Globe2, Star, MapPin, Gauge,
+  Loader2, Plus, ArrowLeft, ExternalLink,
+} from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { etichetaScor } from "@/lib/scoring";
 
 const STATUSURI = ["Nou", "Contactat", "Interesat", "Oferta", "Client", "Pierdut"];
 const TIPURI = ["apel", "email", "intalnire", "nota"];
+
+const statusColor = (s: string) =>
+  ({
+    Nou: "bg-slate-100 text-slate-700",
+    Contactat: "bg-blue-100 text-blue-700",
+    Interesat: "bg-violet-100 text-violet-700",
+    Oferta: "bg-amber-100 text-amber-700",
+    Client: "bg-emerald-100 text-emerald-700",
+    Pierdut: "bg-red-100 text-red-700",
+  }[s] ?? "bg-slate-100 text-slate-700");
+
+const scorBadge = (et: string) =>
+  ({
+    Fierbinte: "bg-red-50 text-red-700 border border-red-200",
+    Cald: "bg-amber-50 text-amber-700 border border-amber-200",
+    Rece: "bg-slate-50 text-slate-600 border border-slate-200",
+  }[et] ?? "bg-slate-50 text-slate-600 border border-slate-200");
+
+const tipColor = (t: string) =>
+  ({
+    apel: "bg-blue-50 text-blue-700",
+    email: "bg-violet-50 text-violet-700",
+    intalnire: "bg-emerald-50 text-emerald-700",
+    nota: "bg-slate-100 text-slate-600",
+  }[t] ?? "bg-slate-100 text-slate-600");
 
 export default function FisaLead() {
   const params = useParams();
@@ -16,10 +45,10 @@ export default function FisaLead() {
   const [lead, setLead] = useState<any>(null);
   const [activitati, setActivitati] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-
   const [tip, setTip] = useState("apel");
   const [nota, setNota] = useState("");
   const [followup, setFollowup] = useState("");
+  const [salvand, setSalvand] = useState(false);
 
   async function incarca() {
     const { data: l } = await supabase.from("leads").select("*").eq("id", id).single();
@@ -33,12 +62,11 @@ export default function FisaLead() {
     setLoading(false);
   }
 
-  useEffect(() => {
-    incarca();
-  }, [id]);
+  useEffect(() => { incarca(); }, [id]);
 
   async function adaugaActivitate() {
     if (!nota.trim()) return;
+    setSalvand(true);
     await supabase.from("activitati").insert({
       lead_id: id,
       tip,
@@ -47,6 +75,7 @@ export default function FisaLead() {
     });
     setNota("");
     setFollowup("");
+    setSalvand(false);
     incarca();
   }
 
@@ -57,61 +86,77 @@ export default function FisaLead() {
 
   if (loading)
     return (
-      <main className="max-w-3xl mx-auto p-6">
-        <Loader2 className="w-5 h-5 animate-spin" />
-      </main>
+      <div className="p-8 flex items-center gap-2 text-slate-500">
+        <Loader2 className="w-5 h-5 animate-spin" /> Se incarca...
+      </div>
     );
 
   if (!lead)
     return (
-      <main className="max-w-3xl mx-auto p-6">
-        <p>Lead negasit.</p>
-        <Link href="/leads" className="text-blue-600">
-          ← Inapoi
+      <div className="p-8">
+        <p className="text-slate-500 mb-4">Lead negasit.</p>
+        <Link href="/leads" className="text-blue-600 text-sm flex items-center gap-1 hover:underline">
+          <ArrowLeft className="w-4 h-4" /> Inapoi la leaduri
         </Link>
-      </main>
+      </div>
     );
 
+  const et = etichetaScor(lead.scor);
+
   return (
-    <main className="max-w-3xl mx-auto p-6">
-      <Link href="/leads" className="text-blue-600 hover:underline text-sm">
-        ← Toate leadurile
+    <div className="p-8 max-w-3xl">
+      <Link
+        href="/leads"
+        className="text-sm text-slate-500 hover:text-slate-900 flex items-center gap-1.5 mb-6 transition-colors w-fit"
+      >
+        <ArrowLeft className="w-4 h-4" /> Toate leadurile
       </Link>
 
-      <div className="border rounded-xl p-5 bg-white mt-4">
-        <div className="flex justify-between items-start gap-3 flex-wrap">
+      {/* Fisa */}
+      <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm mb-4">
+        <div className="flex justify-between items-start gap-4 flex-wrap mb-5">
           <div>
-            <h1 className="text-xl font-medium">{lead.nume}</h1>
-            <div className="text-sm text-gray-500 mt-1">
+            <h1 className="text-xl font-semibold text-slate-900">{lead.nume}</h1>
+            <p className="text-slate-500 text-sm mt-0.5">
               {lead.nisa} · {lead.oras}, {lead.judet}
-            </div>
+            </p>
           </div>
-          <select
-            value={lead.status}
-            onChange={(e) => schimbaStatus(e.target.value)}
-            className="border rounded-lg px-3 py-2 text-sm"
-          >
-            {STATUSURI.map((s) => (
-              <option key={s}>{s}</option>
-            ))}
-          </select>
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className={`text-xs px-2.5 py-1 rounded-md font-medium ${scorBadge(et)}`}>
+              {et} · {lead.scor}
+            </span>
+            <select
+              value={lead.status}
+              onChange={(e) => schimbaStatus(e.target.value)}
+              className={`text-sm rounded-lg px-3 py-1.5 font-medium border-0 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 ${statusColor(lead.status)}`}
+            >
+              {STATUSURI.map((s) => (
+                <option key={s}>{s}</option>
+              ))}
+            </select>
+          </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-3 mt-4 text-sm">
-          <div className="flex items-center gap-2">
-            <MapPin className="w-4 h-4 text-gray-400" /> {lead.adresa || "-"}
+        <div className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm border-t border-slate-100 pt-5">
+          <div className="flex items-start gap-2 text-slate-600">
+            <MapPin className="w-4 h-4 mt-0.5 text-slate-400 shrink-0" />
+            <span>{lead.adresa || "—"}</span>
           </div>
-          <div className="flex items-center gap-2">
-            <Star className="w-4 h-4 text-gray-400" /> {lead.rating} ({lead.nr_reviews} recenzii)
+          <div className="flex items-center gap-2 text-slate-600">
+            <Star className="w-4 h-4 text-amber-400 shrink-0" />
+            <span>
+              {lead.rating}{" "}
+              <span className="text-slate-400">({lead.nr_reviews} recenzii)</span>
+            </span>
           </div>
           <div className="flex items-center gap-2">
             {lead.telefon ? (
-              <a href={`tel:${lead.telefon}`} className="text-blue-600 flex items-center gap-2">
-                <Phone className="w-4 h-4" /> {lead.telefon}
+              <a href={`tel:${lead.telefon}`} className="text-blue-600 flex items-center gap-2 font-medium">
+                <Phone className="w-4 h-4 shrink-0" /> {lead.telefon}
               </a>
             ) : (
-              <span className="text-gray-400 flex items-center gap-2">
-                <Phone className="w-4 h-4" /> fara telefon
+              <span className="text-slate-400 flex items-center gap-2">
+                <Phone className="w-4 h-4 shrink-0" /> fara telefon
               </span>
             )}
           </div>
@@ -120,85 +165,101 @@ export default function FisaLead() {
               <a
                 href={lead.website}
                 target="_blank"
-                className="text-blue-600 flex items-center gap-2"
+                className="text-blue-600 flex items-center gap-1.5 font-medium"
               >
-                <Globe className="w-4 h-4" /> vezi website
+                <Globe className="w-4 h-4 shrink-0" /> website{" "}
+                <ExternalLink className="w-3 h-3" />
               </a>
             ) : (
-              <span className="text-red-600 flex items-center gap-2">
-                <Globe2 className="w-4 h-4" /> fara website
+              <span className="text-red-600 flex items-center gap-2 font-medium">
+                <Globe2 className="w-4 h-4 shrink-0" /> fara website
               </span>
             )}
           </div>
           {lead.scor_viteza != null && (
-            <div className="flex items-center gap-2">
-              <Gauge className="w-4 h-4 text-gray-400" /> Viteza site: {lead.scor_viteza}/100
+            <div className="flex items-center gap-2 text-slate-600">
+              <Gauge className="w-4 h-4 text-slate-400 shrink-0" />
+              <span>
+                Viteza site:{" "}
+                <b className={lead.scor_viteza < 50 ? "text-red-600" : "text-emerald-600"}>
+                  {lead.scor_viteza}/100
+                </b>
+              </span>
             </div>
           )}
-          <div className="flex items-center gap-2">
-            Scor oportunitate: <b>{lead.scor}</b>
-          </div>
         </div>
       </div>
 
-      <div className="border rounded-xl p-5 bg-white mt-4">
-        <h2 className="font-medium mb-3">Adauga activitate</h2>
-        <div className="flex flex-wrap gap-2 mb-2">
-          <select
-            value={tip}
-            onChange={(e) => setTip(e.target.value)}
-            className="border rounded-lg px-3 py-2 text-sm"
-          >
+      {/* Adauga activitate */}
+      <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm mb-4">
+        <h2 className="font-semibold text-slate-900 mb-4">Adauga activitate</h2>
+        <div className="flex flex-wrap gap-3 mb-3 items-center">
+          <div className="flex gap-1.5">
             {TIPURI.map((t) => (
-              <option key={t}>{t}</option>
+              <button
+                key={t}
+                onClick={() => setTip(t)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors capitalize ${
+                  tip === t
+                    ? "bg-blue-600 text-white"
+                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                }`}
+              >
+                {t}
+              </button>
             ))}
-          </select>
-          <div className="flex items-center gap-2 text-sm text-gray-500">
-            Reaminteste pe:
-            <input
-              type="datetime-local"
-              value={followup}
-              onChange={(e) => setFollowup(e.target.value)}
-              className="border rounded-lg px-2 py-1.5 text-sm"
-            />
           </div>
+          <input
+            type="datetime-local"
+            value={followup}
+            onChange={(e) => setFollowup(e.target.value)}
+            className="border border-slate-200 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500 ml-auto"
+          />
         </div>
         <textarea
           value={nota}
           onChange={(e) => setNota(e.target.value)}
           placeholder="Ce ati discutat? Ex: a cerut oferta, suna inapoi luni..."
-          className="w-full border rounded-lg px-3 py-2 text-sm h-20"
+          className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm h-24 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
         />
         <button
           onClick={adaugaActivitate}
-          className="mt-2 bg-blue-600 text-white rounded-lg px-4 py-2 text-sm flex items-center gap-2"
+          disabled={salvand || !nota.trim()}
+          className="mt-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-4 py-2 text-sm font-medium flex items-center gap-2 disabled:opacity-50 transition-colors"
         >
-          <Plus className="w-4 h-4" /> Salveaza
+          {salvand ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
+          Salveaza activitate
         </button>
       </div>
 
-      <div className="mt-4">
-        <h2 className="font-medium mb-3">Istoric</h2>
-        {activitati.length === 0 && (
-          <p className="text-gray-500 text-sm">Nicio activitate inca.</p>
-        )}
-        <div className="space-y-2">
-          {activitati.map((a) => (
-            <div key={a.id} className="border rounded-lg p-3 bg-white text-sm">
-              <div className="flex justify-between text-gray-500 text-xs mb-1">
-                <span className="uppercase tracking-wide">{a.tip}</span>
-                <span>{new Date(a.data).toLocaleString("ro-RO")}</span>
-              </div>
-              <div>{a.nota}</div>
-              {a.urmator_followup && (
-                <div className="text-amber-600 text-xs mt-1">
-                  ⏰ Follow-up: {new Date(a.urmator_followup).toLocaleString("ro-RO")}
+      {/* Istoric */}
+      {activitati.length > 0 && (
+        <div>
+          <h2 className="font-semibold text-slate-900 mb-3">Istoric activitati</h2>
+          <div className="space-y-2">
+            {activitati.map((a) => (
+              <div key={a.id} className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
+                <div className="flex justify-between items-center mb-2">
+                  <span
+                    className={`text-xs px-2.5 py-1 rounded-md font-semibold uppercase tracking-wide ${tipColor(a.tip)}`}
+                  >
+                    {a.tip}
+                  </span>
+                  <span className="text-xs text-slate-400">
+                    {new Date(a.data).toLocaleString("ro-RO")}
+                  </span>
                 </div>
-              )}
-            </div>
-          ))}
+                <p className="text-sm text-slate-700">{a.nota}</p>
+                {a.urmator_followup && (
+                  <div className="text-amber-600 text-xs mt-2 font-medium">
+                    ⏰ Follow-up: {new Date(a.urmator_followup).toLocaleString("ro-RO")}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
-    </main>
+      )}
+    </div>
   );
 }
