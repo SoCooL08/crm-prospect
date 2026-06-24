@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { Loader2, Clock, TrendingUp, Users, AlertCircle, Star } from "lucide-react";
-import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 
 const statusBarColor = (s: string) =>
@@ -19,27 +18,31 @@ export default function Dashboard() {
   const [leads, setLeads] = useState<any[]>([]);
   const [followups, setFollowups] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [eroare, setEroare] = useState("");
 
   useEffect(() => {
-    (async () => {
-      const { data: l } = await supabase.from("leads").select("*");
-      const { data: f } = await supabase
-        .from("activitati")
-        .select("*, leads(nume)")
-        .not("urmator_followup", "is", null)
-        .gte("urmator_followup", new Date().toISOString())
-        .order("urmator_followup", { ascending: true })
-        .limit(10);
-      setLeads(l || []);
-      setFollowups(f || []);
-      setLoading(false);
-    })();
+    fetch("/api/dashboard")
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.error) { setEroare(d.error); return; }
+        setLeads(d.leads);
+        setFollowups(d.followups);
+      })
+      .catch((e) => setEroare(e.message))
+      .finally(() => setLoading(false));
   }, []);
 
   if (loading)
     return (
       <div className="p-8 flex items-center gap-2 text-slate-500">
         <Loader2 className="w-5 h-5 animate-spin" /> Se incarca...
+      </div>
+    );
+
+  if (eroare)
+    return (
+      <div className="p-8">
+        <p className="text-red-600 text-sm">Eroare: {eroare}</p>
       </div>
     );
 

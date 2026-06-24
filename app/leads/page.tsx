@@ -3,14 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Phone, Globe2, Gauge, Loader2, Search, Star, MessageSquare } from "lucide-react";
-import { supabase } from "@/lib/supabase";
 import { etichetaScor } from "@/lib/scoring";
-
-const reviewsColor = (nr: number) => {
-  if (nr > 200) return "text-emerald-600 font-semibold";
-  if (nr > 50) return "text-blue-600 font-semibold";
-  return "text-slate-400";
-};
 
 const STATUSURI = ["Nou", "Contactat", "Interesat", "Oferta", "Client", "Pierdut"];
 
@@ -31,9 +24,16 @@ const scorBadge = (et: string) =>
     Rece: "bg-slate-50 text-slate-600 border border-slate-200",
   }[et] ?? "bg-slate-50 text-slate-600 border border-slate-200");
 
+const reviewsColor = (nr: number) => {
+  if (nr > 200) return "text-emerald-600 font-semibold";
+  if (nr > 50) return "text-blue-600 font-semibold";
+  return "text-slate-400";
+};
+
 export default function LeadsPage() {
   const [leads, setLeads] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [eroare, setEroare] = useState("");
   const [filtruFaraSite, setFiltruFaraSite] = useState(false);
   const [filtruStatus, setFiltruStatus] = useState("");
   const [cautare, setCautare] = useState("");
@@ -41,18 +41,25 @@ export default function LeadsPage() {
 
   async function incarca() {
     setLoading(true);
-    let q = supabase.from("leads").select("*").order("scor", { ascending: false });
-    if (filtruFaraSite) q = q.eq("are_website", false);
-    if (filtruStatus) q = q.eq("status", filtruStatus);
-    const { data } = await q;
-    setLeads(data || []);
+    const params = new URLSearchParams();
+    if (filtruFaraSite) params.set("faraSite", "true");
+    if (filtruStatus) params.set("status", filtruStatus);
+
+    const res = await fetch(`/api/leads?${params}`);
+    const data = await res.json();
+    if (data.error) { setEroare(data.error); }
+    else { setLeads(data); }
     setLoading(false);
   }
 
   useEffect(() => { incarca(); }, [filtruFaraSite, filtruStatus]);
 
   async function schimbaStatus(id: string, status: string) {
-    await supabase.from("leads").update({ status }).eq("id", id);
+    await fetch(`/api/leads/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status }),
+    });
     incarca();
   }
 
@@ -97,9 +104,7 @@ export default function LeadsPage() {
           className="border border-slate-200 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           <option value="">Toate statusurile</option>
-          {STATUSURI.map((s) => (
-            <option key={s}>{s}</option>
-          ))}
+          {STATUSURI.map((s) => <option key={s}>{s}</option>)}
         </select>
         <label className="flex items-center gap-2 text-sm text-slate-600 cursor-pointer select-none">
           <input
@@ -111,6 +116,8 @@ export default function LeadsPage() {
           Fara website
         </label>
       </div>
+
+      {eroare && <p className="text-red-600 text-sm mb-4">Eroare: {eroare}</p>}
 
       {loading ? (
         <div className="flex items-center gap-2 text-slate-500 py-8">
@@ -134,9 +141,7 @@ export default function LeadsPage() {
                       >
                         {l.nume}
                       </Link>
-                      <span className="text-xs text-slate-400">
-                        {l.nisa} · {l.oras}
-                      </span>
+                      <span className="text-xs text-slate-400">{l.nisa} · {l.oras}</span>
                     </div>
                     <div className="text-sm mt-1.5 flex items-center gap-3 flex-wrap">
                       {l.telefon && (
@@ -158,11 +163,7 @@ export default function LeadsPage() {
                         </span>
                       )}
                       {l.scor_viteza != null && (
-                        <span
-                          className={`flex items-center gap-1 text-xs ${
-                            l.scor_viteza < 50 ? "text-red-600" : "text-slate-500"
-                          }`}
-                        >
+                        <span className={`flex items-center gap-1 text-xs ${l.scor_viteza < 50 ? "text-red-600" : "text-slate-500"}`}>
                           <Gauge className="w-3.5 h-3.5 shrink-0" /> viteza {l.scor_viteza}/100
                         </span>
                       )}
@@ -179,11 +180,7 @@ export default function LeadsPage() {
                         disabled={analizez === l.id}
                         className="text-xs border border-slate-200 rounded-md px-2.5 py-1 flex items-center gap-1 hover:bg-slate-50 disabled:opacity-50 transition-colors"
                       >
-                        {analizez === l.id ? (
-                          <Loader2 className="w-3 h-3 animate-spin" />
-                        ) : (
-                          <Gauge className="w-3 h-3" />
-                        )}
+                        {analizez === l.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <Gauge className="w-3 h-3" />}
                         Analizeaza
                       </button>
                     )}
@@ -192,9 +189,7 @@ export default function LeadsPage() {
                       onChange={(e) => schimbaStatus(l.id, e.target.value)}
                       className={`text-xs rounded-md px-2.5 py-1 font-medium border-0 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 ${statusColor(l.status)}`}
                     >
-                      {STATUSURI.map((s) => (
-                        <option key={s}>{s}</option>
-                      ))}
+                      {STATUSURI.map((s) => <option key={s}>{s}</option>)}
                     </select>
                   </div>
                 </div>
