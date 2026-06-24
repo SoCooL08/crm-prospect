@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Phone, Globe2, Gauge, Loader2, Search, Star, MessageSquare } from "lucide-react";
 import { etichetaScor } from "@/lib/scoring";
+import MarketingBadges from "@/components/MarketingBadges";
 
 const STATUSURI = ["Nou", "Contactat", "Interesat", "Oferta", "Client", "Pierdut"];
 
@@ -171,6 +172,7 @@ export default function LeadsPage() {
                   </div>
 
                   <div className="flex items-center gap-2 flex-wrap shrink-0">
+                    <MarketingBadges semnale={{ areWebsite: l.are_website, rating: l.rating, reviews: l.nr_reviews, scorViteza: l.scor_viteza }} />
                     <span className={`text-xs px-2.5 py-1 rounded-md font-medium ${scorBadge(et)}`}>
                       {et} · {l.scor}
                     </span>

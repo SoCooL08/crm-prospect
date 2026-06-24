@@ -78,3 +78,51 @@ export function genereazaBrief(
 
   return { cuvinte_cheie: cuvinte, deschidere, pitch };
 }
+
+export interface NevoiMarketing {
+  ads: "Ideal" | "Potential" | "Nu inca";
+  adsMotiv: string;
+  seo: "Urgent" | "Recomandat" | "N/A";
+  seoMotiv: string;
+}
+
+export function nevoiMarketing(s: SemnaleLead): NevoiMarketing {
+  let ads: NevoiMarketing["ads"];
+  let adsMotiv: string;
+
+  if (!s.areWebsite) {
+    ads = "Nu inca";
+    adsMotiv = "Necesita website inainte de ads";
+  } else if (s.reviews > 50 && s.rating >= 4.0) {
+    ads = "Ideal";
+    adsMotiv = "Afacere activa cu reputatie buna — ads aduc ROI rapid";
+  } else if (s.rating > 0 && s.rating < 4.0) {
+    ads = "Nu inca";
+    adsMotiv = "Rating slab — rezolva reputatia inainte de ads";
+  } else {
+    ads = "Potential";
+    adsMotiv = "Are website — poate scala cu Google Ads";
+  }
+
+  let seo: NevoiMarketing["seo"];
+  let seoMotiv: string;
+
+  if (!s.areWebsite) {
+    seo = "N/A";
+    seoMotiv = "Nu are website";
+  } else if (s.scorViteza != null && s.scorViteza < 30) {
+    seo = "Urgent";
+    seoMotiv = `Site extrem de lent (${s.scorViteza}/100) — Google il penalizeaza`;
+  } else if (s.scorViteza != null && s.scorViteza < 60) {
+    seo = "Urgent";
+    seoMotiv = `Viteza slaba (${s.scorViteza}/100) — afecteaza rankingul`;
+  } else if (s.reviews < 30 && s.areWebsite) {
+    seo = "Recomandat";
+    seoMotiv = "Putine recenzii — SEO local ii poate creste vizibilitatea";
+  } else {
+    seo = "Recomandat";
+    seoMotiv = "Are website — SEO poate aduce trafic organic constant";
+  }
+
+  return { ads, adsMotiv, seo, seoMotiv };
+}

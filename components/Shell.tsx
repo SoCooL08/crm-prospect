@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Search, LayoutDashboard, Users, LogOut } from "lucide-react";
+import { Search, LayoutDashboard, Users, LogOut, Flame } from "lucide-react";
 
 const nav = [
   { href: "/", label: "Cautare", icon: Search },
+  { href: "/recomandate", label: "Recomandate", icon: Flame, accent: true },
   { href: "/leads", label: "Leaduri", icon: Users },
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
 ];
@@ -24,7 +25,7 @@ export default function Shell({ children }: { children: React.ReactNode }) {
         </div>
 
         <nav className="flex-1 px-3 py-4 space-y-0.5">
-          {nav.map(({ href, label, icon: Icon }) => {
+          {nav.map(({ href, label, icon: Icon, accent }) => {
             const active = href === "/" ? path === "/" : path.startsWith(href);
             return (
               <Link
@@ -33,6 +34,8 @@ export default function Shell({ children }: { children: React.ReactNode }) {
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                   active
                     ? "bg-blue-600 text-white"
+                    : accent
+                    ? "text-red-400 hover:text-white hover:bg-slate-800"
                     : "text-slate-400 hover:text-white hover:bg-slate-800"
                 }`}
               >
