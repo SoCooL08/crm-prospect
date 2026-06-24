@@ -259,6 +259,7 @@ export default function FisaLead() {
       <GeneratorOferta
         semnale={{ areWebsite: lead.are_website, rating: lead.rating, reviews: lead.nr_reviews, scorViteza: lead.scor_viteza, nisa: lead.nisa }}
         numeLead={lead.nume}
+        telefon={lead.telefon}
       />
 
       {/* Brief cold calling */}
