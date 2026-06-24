@@ -4,10 +4,10 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   Loader2, Phone, Globe2, Star, MessageSquare,
-  Flame, CheckCircle2, Filter,
+  Flame, CheckCircle2,
 } from "lucide-react";
-import { etichetaScor, genereazaBrief, nevoiMarketing } from "@/lib/scoring";
-import MarketingBadges from "@/components/MarketingBadges";
+import { genereazaBrief } from "@/lib/scoring";
+import ServiciiBreakdown from "@/components/ServiciiBreakdown";
 
 const TABS = [
   { id: "necontactate", label: "Necontactate" },
@@ -177,12 +177,12 @@ export default function RecomandatePage() {
                       <Globe2 className="w-3.5 h-3.5 shrink-0" /> fara website
                     </span>
                   )}
-                  <MarketingBadges semnale={semnale} />
                 </div>
 
-                {/* Brief */}
-                <div className="space-y-2 mb-4">
-                  <div className="flex flex-wrap gap-1.5 mb-2">
+                {/* Analiza + Brief */}
+                <div className="space-y-3 mb-4">
+                  <ServiciiBreakdown semnale={semnale} compact />
+                  <div className="flex flex-wrap gap-1.5">
                     {brief.cuvinte_cheie.map((k) => (
                       <span key={k} className="bg-blue-50 text-blue-700 text-xs px-2 py-0.5 rounded-md font-medium">
                         {k}
