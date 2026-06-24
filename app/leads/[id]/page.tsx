@@ -8,6 +8,7 @@ import {
   Loader2, Plus, ArrowLeft, ExternalLink, MessageSquare,
 } from "lucide-react";
 import { etichetaScor, genereazaBrief } from "@/lib/scoring";
+import ServiciiBreakdown from "@/components/ServiciiBreakdown";
 
 const STATUSURI = ["Nou", "Contactat", "Interesat", "Oferta", "Client", "Pierdut"];
 const TIPURI = ["apel", "email", "intalnire", "nota"];
@@ -197,6 +198,16 @@ export default function FisaLead() {
             </div>
           )}
         </div>
+      </div>
+
+      {/* Analiza oportunitate */}
+      <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm mb-4">
+        <h2 className="font-semibold text-slate-900 mb-4 flex items-center gap-2">
+          <span className="text-base">📊</span> Analiza oportunitate
+        </h2>
+        <ServiciiBreakdown
+          semnale={{ areWebsite: lead.are_website, rating: lead.rating, reviews: lead.nr_reviews, scorViteza: lead.scor_viteza, nisa: lead.nisa }}
+        />
       </div>
 
       {/* Brief cold calling */}

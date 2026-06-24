@@ -3,22 +3,112 @@ export interface SemnaleLead {
   rating: number;
   reviews: number;
   scorViteza?: number | null;
+  nisa?: string;
+}
+
+// ─── Scorer complex ──────────────────────────────────────────────────────────
+
+export interface ServiciuRecomandat {
+  nume: string;
+  scor: number;   // 0-100 cat de mult au nevoie
+  motiv: string;
+}
+
+export interface ScorOpportunitate {
+  total: number;          // scor general oportunitate 0-100
+  probabilitate: number;  // probabilitate conversie 0-100
+  servicii: ServiciuRecomandat[];
+  prioritate: "Urgent" | "Ridicata" | "Medie" | "Scazuta";
+  motivPrincipal: string;
+}
+
+export function scorOpportunitate(s: SemnaleLead): ScorOpportunitate {
+  const servicii: ServiciuRecomandat[] = [];
+
+  // 1. Website / Redesign
+  if (!s.areWebsite) {
+    const sc = s.reviews > 150 ? 100 : s.reviews > 50 ? 88 : 72;
+    servicii.push({
+      nume: "Website nou",
+      scor: sc,
+      motiv: s.reviews > 50
+        ? `Afacere activa (${s.reviews} recenzii) fara website — pierd clienti zilnic`
+        : "Prezenta online zero — cea mai clara oportunitate",
+    });
+  } else if (s.scorViteza != null) {
+    if (s.scorViteza < 30)
+      servicii.push({ nume: "Redesign urgent", scor: 90, motiv: `Site extrem de lent (${s.scorViteza}/100) — Google il penalizeaza sever` });
+    else if (s.scorViteza < 50)
+      servicii.push({ nume: "Optimizare site", scor: 68, motiv: `Viteza slaba (${s.scorViteza}/100) — pierd 53% din vizitatori` });
+    else if (s.scorViteza < 70)
+      servicii.push({ nume: "Optimizare site", scor: 38, motiv: `Site mediu (${s.scorViteza}/100) — loc de imbunatatire` });
+  }
+
+  // 2. Google Ads
+  if (s.areWebsite && s.rating >= 4.0 && s.reviews > 50) {
+    const sc = Math.min(62 + Math.floor(s.reviews / 8), 94);
+    servicii.push({ nume: "Google Ads", scor: sc, motiv: `Afacere activa cu reputatie buna — ads pot scala rapid` });
+  } else if (s.areWebsite && s.rating >= 3.5) {
+    servicii.push({ nume: "Google Ads", scor: 52, motiv: "Are website si rating decent — gata pentru campanii" });
+  } else if (!s.areWebsite && s.reviews > 100) {
+    servicii.push({ nume: "Google Ads (dupa site)", scor: 30, motiv: "Potential mare, dar necesita site mai intai" });
+  }
+
+  // 3. SEO Local
+  if (s.areWebsite) {
+    if (s.scorViteza != null && s.scorViteza < 50) {
+      servicii.push({ nume: "SEO Local", scor: 82, motiv: `Viteza slaba = ranking slab — SEO tehnic urgent` });
+    } else if (s.reviews < 30) {
+      servicii.push({ nume: "SEO Local", scor: 68, motiv: "Putine recenzii — SEO local ii poate dubla vizibilitatea" });
+    } else {
+      servicii.push({ nume: "SEO Local", scor: 48, motiv: "Are website — SEO aduce trafic organic constant" });
+    }
+  }
+
+  // 4. Management Reputatie
+  if (s.rating > 0 && s.rating < 3.5 && s.reviews > 20) {
+    servicii.push({ nume: "Management Reputatie", scor: 92, motiv: `Rating critic (${s.rating}★) cu ${s.reviews} recenzii — pierd clienti activ` });
+  } else if (s.rating >= 3.5 && s.rating < 4.0 && s.reviews > 30) {
+    servicii.push({ nume: "Management Reputatie", scor: 65, motiv: `Rating sub medie (${s.rating}★) — concurentii cu 4.5+ ii depasesc` });
+  }
+
+  // Sort descending
+  servicii.sort((a, b) => b.scor - a.scor);
+
+  // Scor total — ponderat top 3 servicii
+  const top = servicii.slice(0, 3).map((s) => s.scor);
+  const total = Math.min(
+    Math.round((top[0] ?? 0) * 0.55 + (top[1] ?? 0) * 0.30 + (top[2] ?? 0) * 0.15),
+    100
+  );
+
+  // Probabilitate conversie
+  let prob = 35;
+  if (!s.areWebsite) prob += 28;               // durere evidenta
+  if (s.reviews > 200) prob += 22;              // afacere mare, are buget
+  else if (s.reviews > 50) prob += 13;
+  if (s.rating > 0 && s.rating < 4.0) prob += 16; // durere resimtita
+  if (s.scorViteza != null && s.scorViteza < 50) prob += 14; // problema demonstrabila
+  const probabilitate = Math.min(prob, 95);
+
+  // Prioritate
+  let prioritate: ScorOpportunitate["prioritate"];
+  if (total >= 72 && probabilitate >= 60) prioritate = "Urgent";
+  else if (total >= 55 || probabilitate >= 58) prioritate = "Ridicata";
+  else if (total >= 35) prioritate = "Medie";
+  else prioritate = "Scazuta";
+
+  return {
+    total,
+    probabilitate,
+    servicii,
+    prioritate,
+    motivPrincipal: servicii[0]?.motiv ?? "Oportunitate generala de marketing",
+  };
 }
 
 export function calculScor(s: SemnaleLead): number {
-  let scor = 0;
-
-  if (!s.areWebsite) scor += 50;
-  if (s.rating > 0 && s.rating < 4.0) scor += 20;
-  if (s.reviews > 100 && !s.areWebsite) scor += 15;
-
-  if (s.areWebsite && s.scorViteza != null) {
-    if (s.scorViteza < 30) scor += 40;
-    else if (s.scorViteza < 50) scor += 25;
-    else if (s.scorViteza < 70) scor += 10;
-  }
-
-  return Math.min(scor, 100);
+  return scorOpportunitate(s).total;
 }
 
 export function etichetaScor(scor: number): "Fierbinte" | "Cald" | "Rece" {

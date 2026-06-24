@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import { Search, MapPin, Star, Phone, Globe, Globe2, Loader2, MessageSquare, ChevronDown, ChevronUp } from "lucide-react";
-import { etichetaScor, oferta, genereazaBrief } from "@/lib/scoring";
+import { etichetaScor, genereazaBrief } from "@/lib/scoring";
 import HartaLeads from "@/components/HartaLeads";
-import MarketingBadges from "@/components/MarketingBadges";
+import ServiciiBreakdown from "@/components/ServiciiBreakdown";
 
 const JUDETE = [
   "Alba","Arad","Arges","Bacau","Bihor","Bistrita-Nasaud","Botosani",
@@ -229,14 +229,10 @@ export default function Home() {
                   <span className={`text-xs px-2.5 py-1 rounded-md font-medium ${scorBadge(et)}`}>
                     {et} · {l.scor}
                   </span>
-                  <MarketingBadges semnale={semnale} />
-                  <div className="text-xs text-slate-500">
-                    <span className="text-slate-400">Ofera: </span>
-                    <span className="font-medium text-slate-700">{oferta(semnale)}</span>
-                  </div>
                 </div>
               </div>
 
+              <ServiciiBreakdown semnale={semnale} compact />
               <BriefCard lead={l} />
             </div>
           );
