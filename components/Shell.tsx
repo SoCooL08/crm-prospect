@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Search, LayoutDashboard, Users, LogOut, Flame, CalendarClock, Target } from "lucide-react";
+import { Search, LayoutDashboard, Users, LogOut, Flame, CalendarClock, Target, Kanban } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const nav = [
   { href: "/", label: "Cautare", icon: Search },
   { href: "/recomandate", label: "Recomandate", icon: Flame, accent: "red" },
   { href: "/leads", label: "Leaduri", icon: Users },
+  { href: "/kanban", label: "Kanban", icon: Kanban },
   { href: "/azi", label: "Urmariri", icon: CalendarClock, accent: "amber" },
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/sostac", label: "SOSTAC + Ads", icon: Target, accent: "violet" },
