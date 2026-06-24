@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Loader2, Clock, TrendingUp, Users, AlertCircle, Star } from "lucide-react";
+import { Loader2, Clock, TrendingUp, Users, AlertCircle, Star, Euro } from "lucide-react";
 import Link from "next/link";
 
 const statusBarColor = (s: string) =>
@@ -51,10 +51,17 @@ export default function Dashboard() {
   const fierbinti = leads.filter((l) => l.scor >= 65).length;
   const clienti = leads.filter((l) => l.status === "Client").length;
 
-  const peStatus = ["Nou", "Contactat", "Interesat", "Oferta", "Client", "Pierdut"].map((s) => ({
-    status: s,
-    nr: leads.filter((l) => l.status === s).length,
-  }));
+  const STATUSURI_PIPELINE = ["Nou", "Contactat", "Interesat", "Oferta", "Client", "Pierdut"];
+
+  const peStatus = STATUSURI_PIPELINE.map((s) => {
+    const lst = leads.filter((l) => l.status === s);
+    const valoare = lst.reduce((sum: number, l: any) => sum + (l.valoare_estimata ?? 0), 0);
+    return { status: s, nr: lst.length, valoare };
+  });
+
+  const valoareTotalaActiva = peStatus
+    .filter((s) => !["Pierdut", "Nou"].includes(s.status))
+    .reduce((sum, s) => sum + s.valoare, 0);
 
   const stats = [
     { label: "Total leaduri", val: total, icon: Users, color: "text-blue-600", bg: "bg-blue-50" },
@@ -84,9 +91,19 @@ export default function Dashboard() {
 
       <div className="grid lg:grid-cols-2 gap-6">
         <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
-          <h2 className="font-semibold text-slate-900 mb-5">Pipeline vanzari</h2>
+          <div className="flex items-start justify-between mb-5">
+            <h2 className="font-semibold text-slate-900">Pipeline vanzari</h2>
+            {valoareTotalaActiva > 0 && (
+              <div className="text-right">
+                <p className="text-xs text-slate-400">Valoare pipeline activ</p>
+                <p className="text-lg font-black text-emerald-600">
+                  {valoareTotalaActiva.toLocaleString("ro-RO")} €
+                </p>
+              </div>
+            )}
+          </div>
           <div className="space-y-3">
-            {peStatus.map(({ status, nr }) => (
+            {peStatus.map(({ status, nr, valoare }) => (
               <div key={status} className="flex items-center gap-3">
                 <span className="text-sm text-slate-600 w-24 shrink-0">{status}</span>
                 <div className="flex-1 bg-slate-100 rounded-full h-2 overflow-hidden">
@@ -96,6 +113,11 @@ export default function Dashboard() {
                   />
                 </div>
                 <span className="text-sm font-semibold text-slate-700 w-5 text-right">{nr}</span>
+                {valoare > 0 && (
+                  <span className="text-xs text-slate-400 w-20 text-right shrink-0">
+                    {valoare.toLocaleString("ro-RO")} €
+                  </span>
+                )}
               </div>
             ))}
           </div>
