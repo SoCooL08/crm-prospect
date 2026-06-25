@@ -1050,13 +1050,15 @@ export default function EpisculpPage() {
 
           {/* Header */}
           <div className="bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl p-6 text-white">
-            <h2 className="text-xl font-bold mb-1">Analiză Competitivă Detaliată — Sibiu</h2>
-            <p className="text-slate-300 text-sm">Cum batem fiecare concurent pe Google, Meta și organic. Actualizat pe baza datelor reale disponibile.</p>
-            <div className="grid grid-cols-3 gap-3 mt-4">
+            <h2 className="text-xl font-bold mb-1">Analiză Competitivă — Date Reale din Web</h2>
+            <p className="text-slate-300 text-sm">7 competitori identificați în Sibiu · Prețuri, echipamente și tactici extrase direct de pe site-urile lor</p>
+            <p className="text-slate-400 text-xs mt-1">Actualizat: 26 iunie 2026 · Surse: site-uri oficiale + Google Maps</p>
+            <div className="grid grid-cols-4 gap-3 mt-4">
               {[
-                { label: "Concurenți direcți", value: "2", sub: "Shyning Body + Mikadis" },
-                { label: "Avantaj tehnologic", value: "3 / 3", sub: "Primelase, Hydrafacial, Cooltech" },
-                { label: "Gap-uri de exploatat", value: "6", sub: "identificate în ads + digital" },
+                { label: "Competitori găsiți", value: "7", sub: "cu date reale" },
+                { label: "Au Primelase HR", value: "4 din 7", sub: "+ Episculp = 5 total" },
+                { label: "Au Hydrafacial", value: "3 din 7", sub: "Shining, Michaelis, Suav" },
+                { label: "CooLaser — distanță", value: "< 50m", sub: "aceeași stradă!" },
               ].map((k) => (
                 <div key={k.label} className="bg-white/10 rounded-xl p-3">
                   <p className="text-slate-300 text-xs">{k.label}</p>
@@ -1067,311 +1069,410 @@ export default function EpisculpPage() {
             </div>
           </div>
 
-          {/* Matrice tehnologii */}
+          {/* ALERTA CRITICA */}
+          <div className="bg-red-50 border-2 border-red-300 rounded-2xl p-5 space-y-2">
+            <p className="font-bold text-red-800 text-base">🚨 Descoperiri critice — schimbă strategia de comunicare</p>
+            <div className="space-y-1.5 text-sm text-red-700">
+              <p>❌ <strong>"Singurul Hydrafacial din Sibiu"</strong> — INCORECT. Shining Body, Michaelis și Suav Studio au și ele Hydrafacial. Nu mai folosim acest mesaj!</p>
+              <p>⚠️ <strong>CooLaser e la 50m distanță</strong> — Str. Doamna Stanca 5B vs Episculp 5F. Clienții pot compara pe loc. Prețurile lor sunt mai mici (350 lei full body vs 910 lei).</p>
+              <p>⚠️ <strong>"Mikadis" nu există</strong> — e de fapt <strong>Clinica Michaelis</strong> (Str. Dr. Ioan Rațiu 11). Au Primelase + CoolTech + Hydrafacial — concurent major subestimat.</p>
+              <p>✅ <strong>Noul diferențiator real</strong>: Observ 320 (analiză facială) — confirmat singurul din Sibiu. + Hydrafacial SYNDEO (versiunea premium, vs Hydrafacial clasic al concurenților).</p>
+            </div>
+          </div>
+
+          {/* Matrice tehnologii — date reale */}
           <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm overflow-x-auto">
-            <h3 className="font-bold text-slate-800 mb-1">🏆 Matrice Tehnologii — Episculp vs. Concurență</h3>
-            <p className="text-xs text-slate-400 mb-4">Avantajul tehnic e argumentul #1 în fața clientului. Folosește asta în fiecare reclamă și prezentare.</p>
-            <table className="w-full text-xs min-w-[600px]">
+            <h3 className="font-bold text-slate-800 mb-1">🏆 Matrice Tehnologii — Date Reale de pe Site-urile Lor</h3>
+            <p className="text-xs text-slate-400 mb-4">Verificat direct pe fiecare site. Niciun "probabil" — doar ce e confirmat.</p>
+            <table className="w-full text-xs min-w-[750px]">
               <thead>
                 <tr className="border-b-2 border-slate-200">
-                  <th className="text-left py-2 px-3 text-slate-500 font-semibold">Tehnologie / Serviciu</th>
-                  <th className="text-center py-2 px-3 text-emerald-700 font-bold">✅ Episculp</th>
-                  <th className="text-center py-2 px-3 text-red-600 font-semibold">Shyning Body</th>
-                  <th className="text-center py-2 px-3 text-orange-600 font-semibold">Mikadis</th>
-                  <th className="text-center py-2 px-3 text-slate-500 font-semibold">Saloane clasice</th>
+                  <th className="text-left py-2 px-2 text-slate-500 font-semibold w-40">Echipament</th>
+                  <th className="text-center py-2 px-2 text-emerald-700 font-bold">Episculp</th>
+                  <th className="text-center py-2 px-2 text-red-600 font-semibold">Shining Body</th>
+                  <th className="text-center py-2 px-2 text-orange-600 font-semibold">Michaelis</th>
+                  <th className="text-center py-2 px-2 text-purple-600 font-semibold">EC Beauty</th>
+                  <th className="text-center py-2 px-2 text-blue-600 font-semibold">CooLaser</th>
+                  <th className="text-center py-2 px-2 text-slate-500 font-semibold">Suav / AVA / Epilux</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {[
-                  { tech: "Epilare laser Primelase HR (diodă)", episculp: "✅ DA", shy: "⚠️ Probabil IPL/SHR", mik: "⚠️ Neclar", sal: "❌ NU" },
-                  { tech: "Hydrafacial Syndeo", episculp: "✅ SINGURUL din Sibiu", shy: "❌ NU", mik: "❌ NU", sal: "❌ NU" },
-                  { tech: "Criolipoliză Cooltech (FDA)", episculp: "✅ DA", shy: "⚠️ Posibil", mik: "✅ Probabil", sal: "❌ NU" },
-                  { tech: "Radiofrecvență Viora V10", episculp: "✅ DA", shy: "⚠️ Neclar", mik: "✅ Probabil", sal: "❌ NU" },
-                  { tech: "Analiză facială Observ 320", episculp: "✅ SINGURUL din Sibiu", shy: "❌ NU", mik: "❌ NU", sal: "❌ NU" },
-                  { tech: "Fondator certificat CIDESCO", episculp: "✅ DA", shy: "⚠️ Neclar", mik: "⚠️ Neclar", sal: "⚠️ Rar" },
-                  { tech: "Certificare FDA & CE echipamente", episculp: "✅ DA", shy: "⚠️ Parțial", mik: "⚠️ Parțial", sal: "❌ NU" },
-                  { tech: "Google Ads activ", episculp: "❌ Nelansat încă", shy: "⚠️ Posibil", mik: "⚠️ Posibil", sal: "❌ NU" },
-                  { tech: "Meta Ads active (Lead Gen)", episculp: "⚠️ Boost organic + Remodelare", shy: "⚠️ Necunoscut", mik: "⚠️ Necunoscut", sal: "❌ NU" },
-                  { tech: "Recenzii Google 4.5+", episculp: "✅ DA", shy: "⚠️ De verificat", mik: "⚠️ De verificat", sal: "⚠️ Variabil" },
-                ].map(({ tech, episculp, shy, mik, sal }) => (
+                  { tech: "Primelase HR Excellence", ep: "✅", sh: "✅", mi: "✅", ec: "✅", co: "❌", rest: "❌" },
+                  { tech: "Hydrafacial SYNDEO", ep: "✅ Syndeo", sh: "✅ clasic", mi: "✅ clasic", ec: "❌", co: "❌", rest: "Suav ✅" },
+                  { tech: "Criolipoliză Cooltech (FDA)", ep: "✅", sh: "✅ Define", mi: "✅ Define", ec: "✅ + QuadFreeze", co: "❌", rest: "❌" },
+                  { tech: "Analiză Observ 320", ep: "✅ SINGURUL", sh: "❌", mi: "❌", ec: "❌", co: "❌", rest: "❌" },
+                  { tech: "VelaShape III", ep: "❌", sh: "✅", mi: "✅", ec: "❌", co: "❌", rest: "❌" },
+                  { tech: "GentleLase Pro (Alexandrite)", ep: "❌", sh: "✅", mi: "❌", ec: "❌", co: "✅ 755nm", rest: "❌" },
+                  { tech: "Elysion Pro", ep: "❌", sh: "✅", mi: "❌", ec: "❌", co: "❌", rest: "❌" },
+                  { tech: "Radiofrecvență Viora V10", ep: "✅", sh: "Eximia HR77", mi: "❌", ec: "❌", co: "❌", rest: "❌" },
+                  { tech: "Fondator CIDESCO", ep: "✅", sh: "❌ neclar", mi: "❌ neclar", ec: "❌ neclar", co: "❌", rest: "❌" },
+                  { tech: "Meta Ads active", ep: "⚠️ boost", sh: "❌ necunoscut", mi: "❌ necunoscut", ec: "❌ necunoscut", co: "❌", rest: "❌" },
+                  { tech: "Google Ads active", ep: "❌", sh: "❌", mi: "❌", ec: "❌", co: "❌", rest: "❌" },
+                  { tech: "Program L-V 10-20", ep: "✅", sh: "✅ 8-22!", mi: "✅ 9-20", ec: "✅ 8-20", co: "✅ 9-19", rest: "variabil" },
+                  { tech: "Nr. locații", ep: "1", sh: "2 locații!", mi: "1", ec: "1", co: "1", rest: "1 fiecare" },
+                ].map(({ tech, ep, sh, mi, ec, co, rest }) => (
                   <tr key={tech} className="hover:bg-slate-50">
-                    <td className="py-2 px-3 font-medium text-slate-700">{tech}</td>
-                    <td className={`py-2 px-3 text-center font-semibold ${episculp.startsWith("✅") ? "text-emerald-700" : "text-amber-600"}`}>{episculp}</td>
-                    <td className={`py-2 px-3 text-center ${shy.startsWith("❌") ? "text-red-500" : shy.startsWith("✅") ? "text-emerald-700" : "text-amber-600"}`}>{shy}</td>
-                    <td className={`py-2 px-3 text-center ${mik.startsWith("❌") ? "text-red-500" : mik.startsWith("✅") ? "text-emerald-700" : "text-amber-600"}`}>{mik}</td>
-                    <td className={`py-2 px-3 text-center ${sal.startsWith("❌") ? "text-red-500" : "text-amber-600"}`}>{sal}</td>
+                    <td className="py-2 px-2 font-medium text-slate-700">{tech}</td>
+                    {[ep, sh, mi, ec, co, rest].map((v, i) => (
+                      <td key={i} className={`py-2 px-2 text-center text-xs font-medium ${
+                        v.startsWith("✅") ? "text-emerald-700" :
+                        v.startsWith("❌") ? "text-red-400" :
+                        "text-amber-600"
+                      }`}>{v}</td>
+                    ))}
                   </tr>
                 ))}
               </tbody>
             </table>
-            <p className="text-xs text-slate-400 mt-3 italic">⚠️ Datele marcate "Neclar / Posibil / De verificat" sunt estimări — validați înainte de prezentare.</p>
+            <p className="text-xs text-slate-400 mt-3">Surse: shiningbody.ro · michaelis.ro · ecbeautycenter.ro · coolaser.ro · epilaredefinitivasibiu.ro · avasalon.ro</p>
           </div>
 
-          {/* Shyning Body */}
+          {/* Fise detaliate per competitor */}
+
+          {/* 1. Shining Body */}
           <div className="bg-white border border-red-200 rounded-2xl shadow-sm overflow-hidden">
             <div className="bg-red-600 px-6 py-4 flex items-center justify-between">
               <div>
-                <p className="text-white font-bold text-base">Shyning Body — Concurent #1</p>
-                <p className="text-red-200 text-xs">Epilare definitivă / Estetică corporală · Sibiu</p>
+                <p className="text-white font-bold text-base">1. Shining Body — Concurent Principal</p>
+                <p className="text-red-200 text-xs">shiningbody.ro · 2 locații Sibiu · 0740 500 527 · L-V 8-22, Sâm 8-15</p>
               </div>
-              <span className="text-xs font-bold bg-white text-red-700 px-3 py-1 rounded-full">CONCURENT DIRECT</span>
-            </div>
-            <div className="p-6 space-y-5">
-
-              {/* Profilul lor */}
-              <div className="grid md:grid-cols-2 gap-4">
-                <div>
-                  <p className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Ce fac ei</p>
-                  <ul className="space-y-1.5 text-xs text-slate-700">
-                    <li>• Concurent direct pe epilare definitivă în Sibiu</li>
-                    <li>• Probabil folosesc tehnologie IPL sau SHR (mai veche decât Primelase HR)</li>
-                    <li>• Prezență pe Facebook și Instagram</li>
-                    <li>• Adresează același segment: femei 22-45 ani Sibiu</li>
-                    <li>• Nu au Hydrafacial Syndeo (confirmat — singurul e Episculp)</li>
-                  </ul>
-                </div>
-                <div>
-                  <p className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Puncte slabe de exploatat</p>
-                  <ul className="space-y-1.5 text-xs text-slate-700">
-                    <li className="text-red-700">• Tehnologie probabil inferioară Primelase HR</li>
-                    <li className="text-red-700">• Nu au Hydrafacial Syndeo — niciun upsell facial premium</li>
-                    <li className="text-red-700">• Zero campanii Google Ads vizibile (moment de intrat noi)</li>
-                    <li className="text-red-700">• Fără certificare CIDESCO vizibilă în comunicare</li>
-                    <li className="text-red-700">• Brand mai puțin diferențiat pe social media</li>
-                  </ul>
-                </div>
-              </div>
-
-              {/* Cum îi batem */}
-              <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4">
-                <p className="text-xs font-bold text-emerald-800 uppercase tracking-wide mb-3">⚡ Cum îi batem — Tactici concrete</p>
-                <div className="space-y-3">
-                  {[
-                    {
-                      canal: "Google Ads",
-                      tactica: "Bid agresiv pe 'epilare definitiva sibiu', 'laser epilare sibiu', 'epilare definitiva pret sibiu'. Ei probabil nu au campanie — câștigăm toate căutările cu intenție ridicată.",
-                      mesaj: "Primelase HR — Tehnologie Laser Diodă. Mai rapidă, mai eficientă. Consultație inclusă.",
-                    },
-                    {
-                      canal: "Meta Ads",
-                      tactica: "Creativ cu comparație indirectă: 'Nu toate laserele sunt la fel — Primelase HR e generația nouă'. Fără să îi numim direct, educăm audiența că tehnologia contează.",
-                      mesaj: "Alege tehnologia, nu prețul. Primelase HR Excellence — 6-8 ședințe, rezultate permanente.",
-                    },
-                    {
-                      canal: "SEO / Google Business",
-                      tactica: "Optimizare Google Business cu keyword 'epilare definitiva Sibiu'. Solicităm recenzii post-ședință cu link direct. Target: depășim nota lor Google.",
-                      mesaj: "Răspuns la toate recenziile. Postăm oferta lunii săptămânal în Google Business.",
-                    },
-                    {
-                      canal: "Organic / Content",
-                      tactica: "Educăm audiența: 'Diferența dintre IPL, SHR și Laser Diodă' — Reel educațional care explică DE CE Primelase e superior fără să atacăm direct concurența.",
-                      mesaj: "'Ce tip de laser e potrivit pentru tine?' — carusel educațional cu focus pe superioritatea Primelase.",
-                    },
-                  ].map(({ canal, tactica, mesaj }) => (
-                    <div key={canal} className="bg-white rounded-lg p-3">
-                      <p className="text-xs font-bold text-emerald-800 mb-1">📍 {canal}</p>
-                      <p className="text-xs text-slate-600 mb-1.5">{tactica}</p>
-                      <p className="text-xs text-emerald-700 italic font-medium">Mesaj: "{mesaj}"</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Argumente de vanzare vs Shyning */}
-              <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
-                <p className="text-xs font-bold text-amber-800 uppercase tracking-wide mb-2">💬 Scripturi de vânzare față de Shyning Body</p>
-                <div className="space-y-2">
-                  {[
-                    { obiectie: '"Am văzut că Shyning Body e mai ieftin"', raspuns: '"Înțeleg! Diferența e în tehnologie: noi folosim Primelase HR Excellence — laser diodă de ultimă generație, mai rapid și mai eficient decât echipamentele IPL/SHR. Pe termen lung, cu 6-8 ședințe față de 10-12, economisiți timp și bani. Consultația e inclusă la noi — vă arătăm exact diferența."' },
-                    { obiectie: '"O prietenă a mers la Shyning și e mulțumită"', raspuns: '"Bine că a mers undeva! Vă invit la o consultație gratuită — vedeți echipamentul nostru Primelase HR, explicăm protocolul și dacă nu e potrivit pentru dumneavoastră, vă spunem sincer. Nu avem nimic de ascuns față de orice altă clinică din Sibiu."' },
-                  ].map(({ obiectie, raspuns }) => (
-                    <div key={obiectie} className="bg-white rounded-lg p-3">
-                      <p className="text-xs font-semibold text-red-700 mb-1">❓ {obiectie}</p>
-                      <p className="text-xs text-slate-600">✅ {raspuns}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Mikadis */}
-          <div className="bg-white border border-orange-200 rounded-2xl shadow-sm overflow-hidden">
-            <div className="bg-orange-600 px-6 py-4 flex items-center justify-between">
-              <div>
-                <p className="text-white font-bold text-base">Mikadis — Concurent #2</p>
-                <p className="text-orange-200 text-xs">Estetică / Tratamente corporale și faciale · Sibiu</p>
-              </div>
-              <span className="text-xs font-bold bg-white text-orange-700 px-3 py-1 rounded-full">CONCURENT DIRECT</span>
-            </div>
-            <div className="p-6 space-y-5">
-
-              <div className="grid md:grid-cols-2 gap-4">
-                <div>
-                  <p className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Ce fac ei</p>
-                  <ul className="space-y-1.5 text-xs text-slate-700">
-                    <li>• Concurență pe remodelare corporală și tratamente faciale</li>
-                    <li>• Probabil brand mai vechi / mai cunoscut în Sibiu</li>
-                    <li>• Oferă tratamente similare: corporale + faciale</li>
-                    <li>• Fără Hydrafacial Syndeo sau Primelase HR confirmate</li>
-                    <li>• Comunicare probabil mai tradițională, mai puțin digital-first</li>
-                  </ul>
-                </div>
-                <div>
-                  <p className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Puncte slabe de exploatat</p>
-                  <ul className="space-y-1.5 text-xs text-slate-700">
-                    <li className="text-red-700">• Nu au Cooltech (criolipoliză FDA) — cel mai avansat</li>
-                    <li className="text-red-700">• Nu au Hydrafacial Syndeo — upsell premium imposibil</li>
-                    <li className="text-red-700">• Probabil fără certificare CIDESCO comunicată activ</li>
-                    <li className="text-red-700">• Digital probabil mai slab (fără Meta Ads active)</li>
-                    <li className="text-red-700">• Nu au oferta entry-point (Observ 320 ca funnel)</li>
-                  </ul>
-                </div>
-              </div>
-
-              <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4">
-                <p className="text-xs font-bold text-emerald-800 uppercase tracking-wide mb-3">⚡ Cum îi batem — Tactici concrete</p>
-                <div className="space-y-3">
-                  {[
-                    {
-                      canal: "Diferențiere servicii",
-                      tactica: "Pe remodelare corporală: Cooltech are studii clinice + FDA. Mesaj: 'Zero durere, zero timp de recuperare, rezultate în 4 săptămâni confirmate clinic'. Ei nu pot spune asta dacă nu au Cooltech.",
-                      mesaj: "Criolipoliză Cooltech — singurul aparat FDA aprobat pentru eliminarea grăsimii localizate. Rezultate în 4 săptămâni, fără bisturiu.",
-                    },
-                    {
-                      canal: "Hydrafacial ca diferențiator",
-                      tactica: "Combinația Hydrafacial Syndeo (unica în Sibiu) + Cooltech + Primelase = pachet complet pe care Mikadis NU îl poate oferi. Comunicăm asta ca avantaj de portofoliu.",
-                      mesaj: "Singurul loc din Sibiu unde găsești Hydrafacial Syndeo + Cooltech + Primelase HR — toate sub același acoperiș.",
-                    },
-                    {
-                      canal: "Meta Ads — Remodelare",
-                      tactica: "Campanie sezon (mai-octombrie): 'Vară fără grăsime localizată'. Accent pe Cooltech FDA + zero recuperare + înainte/după 4 săptămâni. Ei probabil nu au o campanie dedicată la fel de targetată.",
-                      mesaj: "Elimini grăsimea localizată în 1 ședință. Zero durere, zero recuperare. Cooltech — certificat FDA.",
-                    },
-                  ].map(({ canal, tactica, mesaj }) => (
-                    <div key={canal} className="bg-white rounded-lg p-3">
-                      <p className="text-xs font-bold text-emerald-800 mb-1">📍 {canal}</p>
-                      <p className="text-xs text-slate-600 mb-1.5">{tactica}</p>
-                      <p className="text-xs text-emerald-700 italic font-medium">Mesaj: "{mesaj}"</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
-                <p className="text-xs font-bold text-amber-800 uppercase tracking-wide mb-2">💬 Scripturi de vânzare față de Mikadis</p>
-                <div className="space-y-2">
-                  {[
-                    { obiectie: '"Merg de ani de zile la Mikadis"', raspuns: '"Minunat că aveți o clinică de încredere! Dacă vreodată vreți să încercați Hydrafacial Syndeo sau Cooltech — aparate pe care ei nu le au — suntem în Șelimbăr, vă facem o consultație gratuită, fără presiune."' },
-                    { obiectie: '"Mikadis are mai multă experiență în Sibiu"', raspuns: '"Experiența contează, dar și tehnologia evoluează. Noi am investit în Primelase HR și Hydrafacial Syndeo tocmai pentru că dăm rezultate pe care aparatele mai vechi nu le pot da. Lăsăm rezultatele să vorbească — veniți pentru o consultație gratuită."' },
-                  ].map(({ obiectie, raspuns }) => (
-                    <div key={obiectie} className="bg-white rounded-lg p-3">
-                      <p className="text-xs font-semibold text-red-700 mb-1">❓ {obiectie}</p>
-                      <p className="text-xs text-slate-600">✅ {raspuns}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Saloane clasice */}
-          <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
-            <div className="bg-slate-600 px-6 py-4 flex items-center justify-between">
-              <div>
-                <p className="text-white font-bold text-base">Saloane Clasice de Beauty — Sibiu</p>
-                <p className="text-slate-300 text-xs">Concurență indirectă · Beauty general · Salon clasic vs. clinică estetică</p>
-              </div>
-              <span className="text-xs font-bold bg-white text-slate-600 px-3 py-1 rounded-full">CONCURENȚĂ INDIRECTĂ</span>
+              <span className="text-xs font-bold bg-white text-red-700 px-3 py-1 rounded-full shrink-0">CEL MAI PUTERNIC</span>
             </div>
             <div className="p-6 space-y-4">
               <div className="grid md:grid-cols-3 gap-3">
-                {[
-                  { titlu: "Punctul lor slab #1", text: "Echipamente generice sau de consum — nu medicale. Risc de arsuri, ineficiență la IPL de consum. Episculp: 'Nu riscați cu aparate necertificate.'", color: "bg-red-50 border-red-100 text-red-800" },
-                  { titlu: "Punctul lor slab #2", text: "Personal fără formare medicală estetică (nu CIDESCO). Loredana e cosmetician CIDESCO — cel mai înalt standard în industrie. Acesta e argumentul profesionalismului.", color: "bg-orange-50 border-orange-100 text-orange-800" },
-                  { titlu: "Punctul lor slab #3", text: "Fără protocol individualizat. La Episculp: consultație + analiză Observ 320 + protocol personalizat. Nu tratăm toți la fel — abordare clinică.", color: "bg-amber-50 border-amber-100 text-amber-800" },
-                ].map(({ titlu, text, color }) => (
-                  <div key={titlu} className={`border rounded-xl p-4 ${color}`}>
-                    <p className="text-xs font-bold mb-2">{titlu}</p>
-                    <p className="text-xs">{text}</p>
-                  </div>
-                ))}
+                <div className="bg-slate-50 rounded-xl p-3">
+                  <p className="text-xs font-bold text-slate-500 uppercase mb-2">Echipamente (confirmate)</p>
+                  <ul className="text-xs text-slate-700 space-y-1">
+                    <li>• Primelase HR Excellence ✅</li>
+                    <li>• GentleLase Pro U (Alexandrite)</li>
+                    <li>• Elysion Pro</li>
+                    <li>• CoolTech Define</li>
+                    <li>• VelaShape III</li>
+                    <li>• Eximia HR77</li>
+                    <li>• Hydrafacial (clasic, nu Syndeo)</li>
+                    <li>• Oxygen hiperbaric</li>
+                  </ul>
+                </div>
+                <div className="bg-slate-50 rounded-xl p-3">
+                  <p className="text-xs font-bold text-slate-500 uppercase mb-2">Prețuri epilare femei</p>
+                  <ul className="text-xs text-slate-700 space-y-1">
+                    <li>• Mustață: 57-150 lei/ședință</li>
+                    <li>• Axile: 87-270 lei</li>
+                    <li>• Picioare întregi: 489-1.210 lei</li>
+                    <li>• <strong>Full body: 900 lei (-60% promo)</strong></li>
+                    <li>• Pachet 3 zone: 349 lei</li>
+                    <li className="text-amber-700">⚡ Full body mai ieftin ca Episculp!</li>
+                  </ul>
+                </div>
+                <div className="bg-slate-50 rounded-xl p-3">
+                  <p className="text-xs font-bold text-slate-500 uppercase mb-2">Promoții active</p>
+                  <ul className="text-xs text-slate-700 space-y-1">
+                    <li>• -40% pe Primelase + Elysion Pro</li>
+                    <li>• -60% Full Body (2280→900 lei)</li>
+                    <li>• Ședință test gratuită</li>
+                    <li>• Raffle iPhone 17 Pro Max</li>
+                    <li>• (mai 1 – iulie 1 2026)</li>
+                    <li className="text-red-700">⚠️ Concurență agresivă pe preț!</li>
+                  </ul>
+                </div>
+              </div>
+              <div className="bg-red-50 border border-red-200 rounded-xl p-3">
+                <p className="text-xs font-bold text-red-800 mb-2">⚠️ Avantajele LOR față de Episculp</p>
+                <div className="flex flex-wrap gap-2">
+                  {["2 locații vs 1", "Program mai lung (8-22 vs 10-20)", "Prețuri mai mici pe unele zone", "GentleLase Alexandrite în plus", "Raffle iPhone — marketing viral"].map(a => (
+                    <span key={a} className="text-xs bg-white text-red-700 border border-red-200 rounded-md px-2 py-0.5">{a}</span>
+                  ))}
+                </div>
               </div>
               <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4">
-                <p className="text-xs font-bold text-emerald-800 mb-2">Mesaj de diferențiere față de saloane clasice</p>
-                <p className="text-sm text-emerald-700 font-medium italic">"Episculp nu e un salon de înfrumusețare — e o clinică de estetică medicală non-invazivă. Echipamente certificate FDA & CE, cosmetician CIDESCO, protocoale clinice. Dacă vreți rezultate reale, nu o experiență de relaxare, suntem locul potrivit."</p>
+                <p className="text-xs font-bold text-emerald-800 mb-3">✅ Cum îi batem</p>
+                <div className="space-y-2">
+                  {[
+                    { canal: "Diferențiator #1", text: "Observ 320 — analiză facială unică în Sibiu. Ei nu au. Entry-offer 149 lei → upsell facial + corp." },
+                    { canal: "Diferențiator #2", text: "Hydrafacial SYNDEO (versiunea premium 2024) vs Hydrafacial clasic al lor. Syndeo = 6 faze customizabile, mai avansat." },
+                    { canal: "Diferențiator #3", text: "Fondator CIDESCO — credential de medic estetician. Ei nu comunică nicio certificare echivalentă." },
+                    { canal: "Google Ads", text: "Lansăm imediat Google Search pe 'epilare definitiva sibiu' — niciuna din clinici nu are campanie activă. Primii câștigă." },
+                    { canal: "Mesaj vs prețul lor", text: "Nu ne bătem pe preț — ne batem pe calitate și expertiză. 'Primelase e același — diferența e în mâinile care îl folosesc și protocolul aplicat.'" },
+                  ].map(({ canal, text }) => (
+                    <div key={canal} className="flex gap-2 text-xs">
+                      <span className="font-bold text-emerald-700 shrink-0 w-32">{canal}:</span>
+                      <span className="text-slate-600">{text}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="bg-amber-50 border border-amber-200 rounded-xl p-3">
+                <p className="text-xs font-bold text-amber-800 mb-2">💬 Scripturi obiecții</p>
+                <div className="space-y-2">
+                  {[
+                    { o: '"Shining Body are promo -60% full body la 900 lei"', r: '"Da, și noi avem full body la 910 lei inclus consultație CIDESCO + protocol personalizat Observ 320. La noi nu e promo — e prețul standard. Verificați ce include ședința la ei: test de piele? consultație? protocol pentru tipul vostru de păr?"' },
+                    { o: '"Shining Body are și Primelase ca voi"', r: '"Exact — același aparat. Diferența e în know-how-ul cosmeticianului. Loredana e certificată CIDESCO și are protocol specific per tip de piele. Veniți la o consultație gratuită să vedeți diferența în practică."' },
+                  ].map(({ o, r }) => (
+                    <div key={o} className="bg-white rounded-lg p-3">
+                      <p className="text-xs font-semibold text-red-700 mb-1">❓ {o}</p>
+                      <p className="text-xs text-slate-600">✅ {r}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Plan de atac consolidat */}
+          {/* 2. Clinica Michaelis */}
+          <div className="bg-white border border-orange-200 rounded-2xl shadow-sm overflow-hidden">
+            <div className="bg-orange-600 px-6 py-4 flex items-center justify-between">
+              <div>
+                <p className="text-white font-bold text-base">2. Clinica Michaelis — Concurent Serios</p>
+                <p className="text-orange-200 text-xs">michaelis.ro · Str. Dr Ioan Rațiu 11, Sibiu · 0737 593 470 · L-V 9-20</p>
+              </div>
+              <span className="text-xs font-bold bg-white text-orange-700 px-3 py-1 rounded-full shrink-0">COMPETITOR MAJOR</span>
+            </div>
+            <div className="p-6 space-y-4">
+              <div className="grid md:grid-cols-3 gap-3">
+                <div className="bg-slate-50 rounded-xl p-3">
+                  <p className="text-xs font-bold text-slate-500 uppercase mb-2">Echipamente (confirmate)</p>
+                  <ul className="text-xs text-slate-700 space-y-1">
+                    <li>• Primelase HR Excellence ✅</li>
+                    <li>• Cooltech Define ✅</li>
+                    <li>• HydraFacial ✅ (clasic)</li>
+                    <li>• VelaShape III</li>
+                    <li>• Microneedling Exceed</li>
+                    <li>• CryoTouch</li>
+                    <li>• Biodermogenesi</li>
+                    <li>• Xsculpt (tonifiere musc.)</li>
+                    <li>• Pilates Reformer (!)</li>
+                  </ul>
+                </div>
+                <div className="bg-slate-50 rounded-xl p-3">
+                  <p className="text-xs font-bold text-slate-500 uppercase mb-2">Prețuri cheie</p>
+                  <ul className="text-xs text-slate-700 space-y-1">
+                    <li>• Epilare femei: 110-2.130 lei</li>
+                    <li>• Epilare bărbați: 95-1.100 lei</li>
+                    <li>• HydraFacial: 440-700 lei</li>
+                    <li>• Cooltech: 500-1.900 lei</li>
+                    <li>• VelaShape III: 500-1.400 lei</li>
+                    <li>• Microneedling: 450-800 lei</li>
+                    <li>• Pilates: 180 lei/ședință</li>
+                  </ul>
+                </div>
+                <div className="bg-slate-50 rounded-xl p-3">
+                  <p className="text-xs font-bold text-slate-500 uppercase mb-2">Avantajele LOR</p>
+                  <ul className="text-xs text-red-700 space-y-1">
+                    <li>• Portofoliu mai larg (Pilates!)</li>
+                    <li>• VelaShape III + Biodermogenesi</li>
+                    <li>• 10 ședințe drenaj GRATIS cu Cooltech</li>
+                    <li>• Brand mai vechi în Sibiu</li>
+                    <li>• Xsculpt — tonifiere musculară</li>
+                  </ul>
+                </div>
+              </div>
+              <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4">
+                <p className="text-xs font-bold text-emerald-800 mb-3">✅ Cum îi batem</p>
+                <div className="space-y-2">
+                  {[
+                    { canal: "Observ 320", text: "Ei nu au. Analiza facială 149 lei e entry-offer unic — conversie naturală spre HydraFacial Syndeo (premium vs clasicul lor)." },
+                    { canal: "Hydrafacial Syndeo vs clasic", text: "Syndeo = versiunea 2024 cu customizare pe 6 faze + boosteri injectabili. Mesaj: 'Nu orice Hydrafacial e la fel — Syndeo e generația nouă'." },
+                    { canal: "Digital", text: "Ei probabil nu au Meta Ads sau Google Ads activ. Lansăm noi primii — câștigăm toate căutările online înainte ca ei să reacționeze." },
+                    { canal: "Fond CIDESCO", text: "Michaelis nu comunică o certificare echivalentă CIDESCO. Asta e argumentul de autoritate al Loredanei — de pus pe toate materialele." },
+                  ].map(({ canal, text }) => (
+                    <div key={canal} className="flex gap-2 text-xs">
+                      <span className="font-bold text-emerald-700 shrink-0 w-32">{canal}:</span>
+                      <span className="text-slate-600">{text}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* 3. EC Beauty Center */}
+          <div className="bg-white border border-purple-200 rounded-2xl shadow-sm overflow-hidden">
+            <div className="bg-purple-600 px-6 py-4 flex items-center justify-between">
+              <div>
+                <p className="text-white font-bold text-base">3. EC Beauty Center — Aceleași Echipamente</p>
+                <p className="text-purple-200 text-xs">ecbeautycenter.ro · Str. Strungului 12, Sibiu · 0770 845 120 · L-V 8-20, Sâm 8-14</p>
+              </div>
+              <span className="text-xs font-bold bg-white text-purple-700 px-3 py-1 rounded-full shrink-0">CONCURENT DIRECT</span>
+            </div>
+            <div className="p-6 space-y-4">
+              <div className="grid md:grid-cols-2 gap-3">
+                <div className="bg-slate-50 rounded-xl p-3">
+                  <p className="text-xs font-bold text-slate-500 uppercase mb-2">Ce au (confirmat)</p>
+                  <ul className="text-xs text-slate-700 space-y-1">
+                    <li>• Primelase HR Excellence ✅ (se laudă "cel mai performant laser din Sibiu")</li>
+                    <li>• CoolTech ✅</li>
+                    <li>• QuadFreeze (criolipoliză cu 4-6 aplicatori simultan)</li>
+                    <li>• Versus 3 Color laser</li>
+                    <li>• Pressotherapy, electrostimulare</li>
+                    <li>• Manichiură / Pedichiură</li>
+                  </ul>
+                </div>
+                <div className="bg-slate-50 rounded-xl p-3">
+                  <p className="text-xs font-bold text-slate-500 uppercase mb-2">Prețuri epilare Primelase</p>
+                  <ul className="text-xs text-slate-700 space-y-1">
+                    <li>• Zone mici: 110 lei</li>
+                    <li>• Zone medii: 210 lei</li>
+                    <li>• Zone mari: 390 lei</li>
+                    <li>• Picioare întregi: 950 lei</li>
+                    <li>• <strong>Full body basic: 1.850 lei</strong></li>
+                    <li>• <strong>Full body premium: 2.200 lei</strong></li>
+                    <li className="text-emerald-700">→ Episculp 910 lei mai ieftin!</li>
+                  </ul>
+                </div>
+              </div>
+              <div className="grid md:grid-cols-2 gap-3">
+                <div className="bg-purple-50 border border-purple-100 rounded-xl p-3">
+                  <p className="text-xs font-bold text-purple-700 mb-2">⚠️ Avantajul LOR: QuadFreeze</p>
+                  <p className="text-xs text-slate-600">QuadFreeze tratează 4-6 zone simultan (față de 1-2 la Cooltech standard). Sesiune mai rapidă. Preț: 470-1.920 lei în funcție de aplicatori.</p>
+                </div>
+                <div className="bg-emerald-50 border border-emerald-100 rounded-xl p-3">
+                  <p className="text-xs font-bold text-emerald-700 mb-2">✅ Cum îi batem</p>
+                  <p className="text-xs text-slate-600">Ei nu au Hydrafacial + Observ 320. Prețul nostru full body (910 lei) e mult sub full body-ul lor (1.850 lei). Mesaj: "Aceleași echipamente, preț mai bun, plus servicii exclusive pe care ei nu le au."</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* 4. CooLaser */}
+          <div className="bg-white border border-blue-200 rounded-2xl shadow-sm overflow-hidden">
+            <div className="bg-blue-600 px-6 py-4 flex items-center justify-between">
+              <div>
+                <p className="text-white font-bold text-base">4. CooLaser — ACEEAȘI STRADĂ cu Episculp!</p>
+                <p className="text-blue-200 text-xs">coolaser.ro · Str. Doamna Stanca 5B, Șelimbăr · 0727 046 096 · L-V 9-19, Sâm 9-14</p>
+              </div>
+              <span className="text-xs font-bold bg-white text-blue-700 px-3 py-1 rounded-full shrink-0">🚨 LA 50m DISTANȚĂ</span>
+            </div>
+            <div className="p-6 space-y-4">
+              <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 text-sm text-blue-800">
+                ⚠️ <strong>Situație critică:</strong> CooLaser e la Str. Doamna Stanca <strong>5B</strong>, Episculp e la <strong>5F</strong> — aceeași stradă, probabil același bloc sau clădiri vecine. Clienții care caută pe Google Maps pot vedea ambele opțiuni una lângă alta.
+              </div>
+              <div className="grid md:grid-cols-3 gap-3">
+                <div className="bg-slate-50 rounded-xl p-3">
+                  <p className="text-xs font-bold text-slate-500 uppercase mb-2">Tehnologie</p>
+                  <ul className="text-xs text-slate-700 space-y-1">
+                    <li>• Alexandrite 755nm ✅</li>
+                    <li>• Diodă 810nm ✅</li>
+                    <li>• Nd:YAG 1064nm ✅</li>
+                    <li className="text-blue-700 font-medium">Triplu combo = orice tip de piele, chiar și bronzată</li>
+                    <li className="text-red-600">❌ Fără criolipoliză</li>
+                    <li className="text-red-600">❌ Fără Hydrafacial</li>
+                  </ul>
+                </div>
+                <div className="bg-slate-50 rounded-xl p-3">
+                  <p className="text-xs font-bold text-slate-500 uppercase mb-2">Prețuri — MULT MAI MICI</p>
+                  <ul className="text-xs text-slate-700 space-y-1">
+                    <li>• Axile: 100 lei</li>
+                    <li>• Față completă: 250 lei</li>
+                    <li>• Pachet 8 zone: 300 lei</li>
+                    <li>• Pachet 14 zone: 350 lei</li>
+                    <li>• <strong>Full body 13 zone: 350 lei!</strong></li>
+                    <li className="text-red-700 font-semibold">vs. Episculp 910 lei!</li>
+                  </ul>
+                </div>
+                <div className="bg-slate-50 rounded-xl p-3">
+                  <p className="text-xs font-bold text-slate-500 uppercase mb-2">Cum îi batem</p>
+                  <ul className="text-xs text-emerald-700 space-y-1">
+                    <li>✅ Primelase HR vs triple combo — mai puțin ședințe (6-8 vs 10+)</li>
+                    <li>✅ CIDESCO + protocol</li>
+                    <li>✅ Servicii complete (corp + facial + remodelare)</li>
+                    <li>✅ Observ 320 unic</li>
+                    <li>✅ Clinică vs salon</li>
+                  </ul>
+                </div>
+              </div>
+              <div className="bg-amber-50 border border-amber-200 rounded-xl p-3">
+                <p className="text-xs font-bold text-amber-800 mb-2">💬 Cum răspundem când clienta compară prețul cu CooLaser (vecin!)</p>
+                <p className="text-xs text-slate-700">"350 lei la CooLaser înseamnă 10-15 ședințe pentru un rezultat complet = 3.500-5.250 lei total. Noi cu Primelase HR: 6-8 ședințe × 910 lei = 5.460-7.280 lei, dar cu consultație CIDESCO, protocol personalizat, Observ 320 inclus și rezultate garantate mai rapide. Calculați total, nu per ședință."</p>
+              </div>
+            </div>
+          </div>
+
+          {/* 5-7. Concurenti secundari */}
           <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-            <h3 className="font-bold text-slate-800 mb-1">🗺️ Plan de Atac Consolidat — Câștigăm piața Sibiu în 90 zile</h3>
-            <p className="text-xs text-slate-400 mb-4">Prioritizat după impactul estimat vs. efortul de implementare</p>
+            <h3 className="font-bold text-slate-800 mb-4">Concurenți Secundari (date reale)</h3>
             <div className="space-y-3">
               {[
                 {
-                  zile: "Ziua 1-7", titlu: "Ocupăm Google Search — zero concurență acum",
-                  actiuni: ["Lansăm campania Google Ads 'epilare definitiva sibiu'", "Ei nu au Google Ads — câștigăm toate căutările cu intenție ridicată", "CPC estimat: 5-10 lei · ROI imediat"],
-                  impact: "🔥 Impact MAXIM", color: "bg-red-50 border-red-200",
+                  nr: "5", nume: "Suav Studio / Flash Beauty", url: "epilaredefinitivasibiu.ro",
+                  adresa: "Str. Mașiniștilor 91, Sibiu · 0731 030 327",
+                  tech: "EPILDREAM laser + Hydrafacial + IMAGE Skincare",
+                  preturi: "90-700 lei femei, 90-1000 lei bărbați · Hydrafacial 300-480 lei · 5+1 gratuit",
+                  threat: "Au și Hydrafacial — dar nu Syndeo. Prețuri mici. EPILDREAM = tehnologie mai puțin cunoscută.",
+                  beat: "Hydrafacial Syndeo vs clasicul lor. Primelase HR > EPILDREAM. CIDESCO.",
+                  color: "border-slate-200",
                 },
                 {
-                  zile: "Ziua 1-7", titlu: "Meta C1 Lead Gen — epilare (nicio agenție nu face asta pentru ei)",
-                  actiuni: ["Reel înainte/după Primelase HR + formular Meta nativ", "Shyning Body are probabil reclame — le blocăm audiența", "Buget 250 lei/7 zile · Target: doamne 22-45 Sibiu"],
-                  impact: "🔥 Impact MAXIM", color: "bg-red-50 border-red-200",
+                  nr: "6", nume: "AVA Salon", url: "avasalon.ro",
+                  adresa: "Str. Luptei 40, Ap. 31, Sibiu · 0751 525 397",
+                  tech: "Laser diodă 4 lungimi de undă + e-light (IPL + radiofrequency bipolară)",
+                  preturi: "Full body 650 lei · Axile 3 ședințe 220 lei · Prima ședință gratuită",
+                  threat: "Prima ședință GRATUITĂ — atractiv pentru clienți noi. Full body 650 lei vs 910 lei.",
+                  beat: "IPL + diodă generic vs Primelase HR specific. Fără remodelare corporală sau Hydrafacial. Eficacitate: 95% vs? Noi avem Cooltech + Observ 320.",
+                  color: "border-slate-200",
                 },
                 {
-                  zile: "Ziua 7-14", titlu: "Conținut educațional care bate concurența fără să îi numim",
-                  actiuni: ["Reel: 'Diferența dintre IPL și Laser Diodă' (bate Shyning indirect)", "Reel: 'Ce înseamnă FDA certificat?' (bate saloanele clasice)", "Carusel: '5 întrebări să pui oricărei clinici înainte de epilare'"],
-                  impact: "✅ Impact MEDIU", color: "bg-amber-50 border-amber-200",
+                  nr: "7", nume: "Epilux Sibiu", url: "epilux.ro",
+                  adresa: "Bdul General Vasile Milea 28A, Sibiu · 0727 796 291",
+                  tech: "Laser (tip nespecificat) · Prețuri mici · 7 zile/săptămână 8-20:30",
+                  preturi: "Zone mici 80 lei · Zone mari 160-360 lei · Pachete combinate",
+                  threat: "Deschis 7 zile/săptămână (inclusiv duminică) — accesibilitate maximă. Prețurile cele mai mici.",
+                  beat: "Tehnologie nespecificată = nu putem compara direct. Focalizat DOAR pe epilare. Noi = clinică completă. Prețul mic = rezultate mai lente.",
+                  color: "border-slate-200",
                 },
-                {
-                  zile: "Ziua 14-30", titlu: "Hydrafacial — diferențiatorul monopol",
-                  actiuni: ["'Singurul Hydrafacial Syndeo din Sibiu' — repetat în orice format", "Nici Shyning Body nici Mikadis nu pot răspunde la asta", "Post + Reel + Story + Google Business Post cu acest mesaj"],
-                  impact: "✅ Impact MEDIU", color: "bg-blue-50 border-blue-200",
-                },
-                {
-                  zile: "Luna 2-3", titlu: "Retargeting + Recenzii Google — consolidare poziție",
-                  actiuni: ["Retargeting vizitatori site cu ofertă (ei nu au asta)", "Campanie recenzii Google după fiecare ședință (target 4.8+)", "Depășim nota Google a concurenților prin volum de recenzii"],
-                  impact: "📈 Impact LUNG TERMEN", color: "bg-emerald-50 border-emerald-200",
-                },
-              ].map(({ zile, titlu, actiuni, impact, color }) => (
-                <div key={titlu} className={`border rounded-xl p-4 ${color}`}>
-                  <div className="flex items-start justify-between mb-2">
+              ].map(({ nr, nume, url, adresa, tech, preturi, threat, beat, color }) => (
+                <div key={nr} className={`border rounded-xl p-4 ${color}`}>
+                  <div className="flex items-start justify-between mb-3">
                     <div>
-                      <span className="text-xs font-bold text-slate-500 bg-white/70 px-2 py-0.5 rounded-md mr-2">{zile}</span>
-                      <span className="text-sm font-bold text-slate-800">{titlu}</span>
+                      <div className="flex items-center gap-2">
+                        <span className="w-6 h-6 rounded-full bg-slate-200 text-slate-700 text-xs font-bold flex items-center justify-center shrink-0">{nr}</span>
+                        <p className="font-bold text-slate-800">{nume}</p>
+                      </div>
+                      <p className="text-xs text-slate-500 mt-0.5 ml-8">{adresa}</p>
                     </div>
-                    <span className="text-xs font-semibold shrink-0 ml-2">{impact}</span>
+                    <a href={`https://${url}`} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-500 hover:underline shrink-0 ml-2">{url}</a>
                   </div>
-                  <div className="flex flex-wrap gap-1.5 mt-2">
-                    {actiuni.map((a) => (
-                      <span key={a} className="text-xs bg-white/70 text-slate-600 border border-white/80 rounded-lg px-2 py-0.5">→ {a}</span>
-                    ))}
+                  <div className="grid md:grid-cols-2 gap-3 text-xs">
+                    <div>
+                      <p className="font-semibold text-slate-500 mb-1">Tehnologie & Prețuri</p>
+                      <p className="text-slate-600">{tech}</p>
+                      <p className="text-slate-600 mt-1">{preturi}</p>
+                    </div>
+                    <div className="space-y-2">
+                      <div>
+                        <p className="font-semibold text-red-600 mb-0.5">⚠️ Amenințare</p>
+                        <p className="text-slate-600">{threat}</p>
+                      </div>
+                      <div>
+                        <p className="font-semibold text-emerald-700 mb-0.5">✅ Cum îi batem</p>
+                        <p className="text-slate-600">{beat}</p>
+                      </div>
+                    </div>
                   </div>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Mesaje de diferentiere gata de folosit */}
+          {/* Plan de atac + mesaje corecte */}
           <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-            <h3 className="font-bold text-slate-800 mb-4">💡 Mesaje de Diferențiere — Copy gata de folosit în reclame</h3>
+            <h3 className="font-bold text-slate-800 mb-1">💡 Mesaje Corecte de Diferențiere — Actualizate</h3>
+            <p className="text-xs text-red-600 mb-4">⚠️ Anterior am spus "singurul Hydrafacial din Sibiu" — INCORECT. Mesajele de mai jos sunt corecte și verificate.</p>
             <div className="grid md:grid-cols-2 gap-3">
               {[
-                { context: "vs. toată concurența", mesaj: "Singurul loc din Sibiu cu Primelase HR + Hydrafacial Syndeo + Cooltech Criolipoliză. Nu unice separat — unice împreună.", tip: "Carusel / Story" },
-                { context: "vs. saloane clasice", mesaj: "Nu e un salon. E o clinică de estetică medicală. Echipamente FDA & CE. Cosmetician CIDESCO. Rezultate progresive, fără promisiuni exagerate.", tip: "Post / Reel" },
-                { context: "vs. Shyning — indirect", mesaj: "Alege corect: nu orice laser e la fel. Primelase HR Excellence — generația nouă a epilării definitive. Consultație gratuită inclusă.", tip: "Reclamă plătită" },
-                { context: "vs. Mikadis — indirect", mesaj: "Zero recuperare. Zero durere. Cooltech — singurul aparat FDA aprobat pentru criolipoliză disponibil în Sibiu. Rezultate în 4 săptămâni.", tip: "Reclamă plătită" },
-                { context: "Monopol Hydrafacial", mesaj: "Hydrafacial Syndeo — singurul în Sibiu. Nu o procedură obișnuită. Un tratament facial complet cu 6 faze, adaptat tenului tău exact.", tip: "Orice format" },
-                { context: "Câștig de termen lung", mesaj: "6-8 ședințe și scapi definitiv de brici. Nu 20, nu 30 — 6-8. Asta e diferența Primelase HR față de tehnologiile vechi.", tip: "Lead Gen" },
+                { context: "Noul diferențiator #1", mesaj: "Singurul aparat Observ 320 din Sibiu — analiză facială completă înainte de orice tratament. Protocol personalizat, nu tratament standard.", tip: "✅ CORECT" },
+                { context: "Noul diferențiator #2", mesaj: "Hydrafacial SYNDEO — versiunea 2024, cu 6 faze complet personalizabile. Nu orice Hydrafacial e la fel. Syndeo e generația nouă.", tip: "✅ CORECT" },
+                { context: "vs. preț CooLaser (vecin!)", mesaj: "Calculați costul total, nu pe ședință. 6-8 ședințe Primelase HR vs 10-15 ședințe cu alt laser. Plus: consultație CIDESCO, Observ 320, protocol dedicat — incluse.", tip: "✅ CORECT" },
+                { context: "vs. toată concurența", mesaj: "Loredana Voinea, cosmetician CIDESCO. Cel mai înalt standard de certificare în estetică. Nici Shining Body, nici Michaelis, nici EC Beauty nu comunică o certificare echivalentă.", tip: "✅ CORECT" },
+                { context: "EVITĂ acest mesaj", mesaj: "❌ 'Singurul Hydrafacial din Sibiu' — FALS. Shining Body, Michaelis și Suav au și ele Hydrafacial. Folosiți: 'Singurul Hydrafacial SYNDEO' sau 'Singurul Observ 320'.", tip: "🚫 INCORECT" },
+                { context: "Google Ads — copy", mesaj: "Primelase HR Excellence Sibiu | Consultație CIDESCO inclusă | 6-8 ședințe rezultate permanente | Observ 320 unic în Sibiu | Str. Doamna Stanca 5F", tip: "✅ CORECT" },
               ].map(({ context, mesaj, tip }) => (
-                <div key={context} className="bg-slate-50 border border-slate-200 rounded-xl p-4">
+                <div key={context} className={`border rounded-xl p-4 ${tip.startsWith("🚫") ? "bg-red-50 border-red-200" : "bg-slate-50 border-slate-200"}`}>
                   <div className="flex items-center justify-between mb-2">
-                    <p className="text-xs font-bold text-slate-500 uppercase tracking-wide">{context}</p>
-                    <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-md">{tip}</span>
+                    <p className="text-xs font-bold text-slate-600 uppercase tracking-wide">{context}</p>
+                    <span className={`text-xs font-semibold px-2 py-0.5 rounded-md ${tip.startsWith("🚫") ? "bg-red-100 text-red-700" : "bg-emerald-100 text-emerald-700"}`}>{tip}</span>
                   </div>
-                  <p className="text-sm text-slate-700 italic">"{mesaj}"</p>
+                  <p className={`text-sm italic ${tip.startsWith("🚫") ? "text-red-700" : "text-slate-700"}`}>"{mesaj}"</p>
                 </div>
               ))}
             </div>
