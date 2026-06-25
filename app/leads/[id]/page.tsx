@@ -64,6 +64,8 @@ export default function FisaLead() {
   const [copiat, setCopiat] = useState(false);
   const [valoare, setValoare] = useState<string>("");
   const [salvandValoare, setSalvandValoare] = useState(false);
+  const [verificandSocial, setVerificandSocial] = useState(false);
+  const [socialGasit, setSocialGasit] = useState<{ facebook_url?: string; instagram_url?: string; error?: string } | null>(null);
 
   // Motiv pierdere
   const [motivModal, setMotivModal] = useState(false);
@@ -125,6 +127,16 @@ export default function FisaLead() {
     });
     setMotivModal(false);
     incarca();
+  }
+
+  async function verificaSocial() {
+    setVerificandSocial(true);
+    setSocialGasit(null);
+    const res = await fetch(`/api/leads/${id}/verifica-social`, { method: "POST" });
+    const data = await res.json();
+    setSocialGasit(data);
+    setVerificandSocial(false);
+    if (data.facebook_url || data.instagram_url) incarca();
   }
 
   async function salveazaValoare() {
@@ -300,6 +312,53 @@ export default function FisaLead() {
               </span>
             </div>
           )}
+          {/* Social media */}
+          <div className="col-span-2 pt-1 border-t border-slate-100 mt-1">
+            <div className="flex items-center gap-3 flex-wrap">
+              {(lead.facebook_url || (socialGasit?.facebook_url)) && (
+                <a
+                  href={lead.facebook_url || socialGasit?.facebook_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1.5 text-sm text-blue-700 font-medium hover:underline"
+                >
+                  <span className="w-4 h-4 bg-blue-600 rounded text-white text-xs flex items-center justify-center font-bold">f</span>
+                  Facebook <ExternalLink className="w-3 h-3" />
+                </a>
+              )}
+              {(lead.instagram_url || (socialGasit?.instagram_url)) && (
+                <a
+                  href={lead.instagram_url || socialGasit?.instagram_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1.5 text-sm text-pink-700 font-medium hover:underline"
+                >
+                  <span className="w-4 h-4 bg-gradient-to-br from-pink-500 to-violet-600 rounded text-white text-xs flex items-center justify-center">📷</span>
+                  Instagram <ExternalLink className="w-3 h-3" />
+                </a>
+              )}
+              {lead.are_website && !lead.facebook_url && !socialGasit?.facebook_url && (
+                <button
+                  onClick={verificaSocial}
+                  disabled={verificandSocial}
+                  className="flex items-center gap-1.5 text-xs text-slate-500 hover:text-slate-800 border border-slate-200 rounded-lg px-2.5 py-1.5 hover:bg-slate-50 transition-colors disabled:opacity-50"
+                >
+                  {verificandSocial ? (
+                    <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Caut socials...</>
+                  ) : (
+                    <><Link2 className="w-3.5 h-3.5" /> Detecteaza FB / Instagram</>
+                  )}
+                </button>
+              )}
+              {socialGasit && !socialGasit.facebook_url && !socialGasit.instagram_url && !socialGasit.error && (
+                <span className="text-xs text-slate-400">Nu s-au găsit linkuri sociale pe site.</span>
+              )}
+              {socialGasit?.error && (
+                <span className="text-xs text-red-500">{socialGasit.error}</span>
+              )}
+            </div>
+          </div>
+
           <div className="flex items-center gap-2 col-span-2 pt-1 border-t border-slate-100 mt-1">
             <span className="text-slate-400 text-sm shrink-0">Valoare estimata deal:</span>
             <div className="flex items-center gap-2">
