@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Phone, Globe2, Gauge, Loader2, Search, Star, MessageSquare } from "lucide-react";
+import { Phone, Globe2, Gauge, Loader2, Search, Star, MessageSquare, Download } from "lucide-react";
 import { etichetaScor } from "@/lib/scoring";
 import ServiciiBreakdown from "@/components/ServiciiBreakdown";
 
@@ -75,6 +75,40 @@ export default function LeadsPage() {
     incarca();
   }
 
+  function exportCSV() {
+    const cols = [
+      ["Nume", "nisa", "Nisa"],
+      ["Oras", "oras", "Oras"],
+      ["Judet", "judet", "Judet"],
+      ["Telefon", "telefon", "Telefon"],
+      ["Status", "status", "Status"],
+      ["Rating", "rating", "Rating"],
+      ["Nr Recenzii", "nr_reviews", "Nr Recenzii"],
+      ["Are Website", "are_website", "Are Website"],
+      ["Scor Viteza", "scor_viteza", "Scor Viteza"],
+      ["Scor", "scor", "Scor"],
+      ["Adresa", "adresa", "Adresa"],
+      ["Website", "website", "Website"],
+    ] as const;
+
+    const header = ["Nume", "Nisa", "Oras", "Judet", "Telefon", "Status", "Rating", "Nr Recenzii", "Are Website", "Scor Viteza", "Scor", "Adresa", "Website"];
+    const rows = afisate.map((l) => [
+      l.nume, l.nisa, l.oras, l.judet, l.telefon, l.status,
+      l.rating, l.nr_reviews, l.are_website ? "Da" : "Nu",
+      l.scor_viteza ?? "", l.scor, l.adresa, l.website,
+    ]);
+    const csv = [header, ...rows]
+      .map((r) => r.map((v) => `"${String(v ?? "").replace(/"/g, '""')}"`).join(","))
+      .join("\n");
+    const blob = new Blob(["﻿" + csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `leaduri_${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
   const afisate = leads.filter(
     (l) =>
       cautare.trim() === "" ||
@@ -116,6 +150,12 @@ export default function LeadsPage() {
           />
           Fara website
         </label>
+        <button
+          onClick={exportCSV}
+          className="flex items-center gap-1.5 text-sm font-medium px-3 py-2 rounded-lg border border-slate-200 hover:bg-slate-50 transition-colors text-slate-600"
+        >
+          <Download className="w-4 h-4" /> Export CSV
+        </button>
       </div>
 
       {eroare && <p className="text-red-600 text-sm mb-4">Eroare: {eroare}</p>}
