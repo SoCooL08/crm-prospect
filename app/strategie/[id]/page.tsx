@@ -5,8 +5,9 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import {
   ArrowLeft, Plus, Trash2, Loader2, CheckCircle2, Users, BarChart2, Target,
-  Sparkles, Megaphone,
+  Sparkles, Megaphone, Download,
 } from "lucide-react";
+import * as XLSX from "xlsx";
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
@@ -646,6 +647,124 @@ export default function StrategiePage() {
     if (!loading) scheduleSave();
   }, [segmente, concurenti, sostac, ads]);
 
+  function exportExcel() {
+    const wb = XLSX.utils.book_new();
+
+    // Sheet 1: Business info
+    const businessRows = [
+      ["INFORMATII BUSINESS", ""],
+      ["Nume", lead.nume || ""],
+      ["Nisa", lead.nisa || ""],
+      ["Oras", lead.oras || ""],
+      ["Judet", lead.judet || ""],
+      ["Status CRM", lead.status || ""],
+      ["Rating Google", lead.rating || ""],
+      ["Nr. recenzii", lead.nr_reviews || ""],
+      ["Are website", lead.are_website ? "Da" : "Nu"],
+      ["Scor viteza site", lead.scor_viteza || "Nemasurat"],
+      ["Telefon", lead.telefon || ""],
+      ["Adresa", lead.adresa || ""],
+      ["", ""],
+      ["PROMPT PENTRU CLAUDE DESKTOP", ""],
+      ["Copiaza textul de mai jos si trimite-l la Claude Desktop:", ""],
+      [
+        `Esti un expert in marketing digital si analiza de piata din Romania.\n\nAnalizeaza urmatorul business si completeaza TOATE campurile goale din fisierul Excel:\n\nBusiness: ${lead.nume}\nNisa: ${lead.nisa}\nOras: ${lead.oras}, ${lead.judet}\nRating Google: ${lead.rating || "N/A"} (${lead.nr_reviews || 0} recenzii)\nAre website: ${lead.are_website ? "Da" : "Nu"}\nScor viteza: ${lead.scor_viteza || "Nemasurat"}\n\nCompleteaza sheet-urile: Audienta (3 segmente), Concurenti (3 concurenti generici din nisa), SOSTAC (toate cele 6 sectiuni), Google_Ads si Meta_Ads cu recomandari concrete si specifice pentru aceasta nisa din Romania. Returneaza valorile completate pentru fiecare camp.`,
+        "",
+      ],
+    ];
+    const wsInfo = XLSX.utils.aoa_to_sheet(businessRows);
+    wsInfo["!cols"] = [{ wch: 30 }, { wch: 80 }];
+    XLSX.utils.book_append_sheet(wb, wsInfo, "Business");
+
+    // Sheet 2: Audienta
+    const audHeader = ["CRITERIU", ...segmente.map((s) => s.nume || `Segment ${segmente.indexOf(s) + 1}`)];
+    const audRows: string[][] = [audHeader];
+    for (const row of AUDIENTA_ROWS) {
+      if (row.group) {
+        audRows.push([`--- ${row.group} ---`, ...segmente.map(() => "")]);
+      } else if (row.key) {
+        audRows.push([row.label || "", ...segmente.map((s) => s[row.key!] || "")]);
+      }
+    }
+    const wsAud = XLSX.utils.aoa_to_sheet(audRows);
+    wsAud["!cols"] = [{ wch: 35 }, ...segmente.map(() => ({ wch: 40 }))];
+    XLSX.utils.book_append_sheet(wb, wsAud, "Audienta");
+
+    // Sheet 3: Concurenti
+    const concHeader = ["CRITERIU", ...concurenti.map((c, i) => c.nume || `Concurent ${i + 1}`)];
+    const concRows: string[][] = [concHeader];
+    for (const row of CONCURENTI_ROWS) {
+      if (row.group) {
+        concRows.push([`--- ${row.group} ---`, ...concurenti.map(() => "")]);
+      } else if (row.key) {
+        concRows.push([row.label || "", ...concurenti.map((c) => c[row.key!] || "")]);
+      }
+    }
+    const wsConc = XLSX.utils.aoa_to_sheet(concRows);
+    wsConc["!cols"] = [{ wch: 35 }, ...concurenti.map(() => ({ wch: 40 }))];
+    XLSX.utils.book_append_sheet(wb, wsConc, "Concurenti");
+
+    // Sheet 4: SOSTAC
+    const sostacRows = [
+      ["SECTIUNE", "CONTINUT"],
+      ["S — SITUATIE", sostac.situatie || ""],
+      ["O — OBIECTIVE", sostac.obiective || ""],
+      ["ST — STRATEGIE", sostac.strategie || ""],
+      ["T — TACTICI", sostac.tactici || ""],
+      ["A — ACTIUNI", sostac.actiuni || ""],
+      ["C — CONTROL", sostac.control || ""],
+    ];
+    const wsSostac = XLSX.utils.aoa_to_sheet(sostacRows);
+    wsSostac["!cols"] = [{ wch: 20 }, { wch: 80 }];
+    XLSX.utils.book_append_sheet(wb, wsSostac, "SOSTAC");
+
+    // Sheet 5: Google Ads
+    const g = ads.google || {};
+    const googleRows = [
+      ["PARAMETRU", "VALOARE"],
+      ["Tip campanie", g.tip_campanie || ""],
+      ["Obiectiv", g.obiectiv || ""],
+      ["Cuvinte cheie", (g.cuvinte_cheie || []).join(", ") || ""],
+      ["Cuvinte negative", (g.cuvinte_negative || []).join(", ") || ""],
+      ["Titluri reclame", (g.titluri || []).join(" | ") || ""],
+      ["Descrieri", (g.descrieri || []).join(" | ") || ""],
+      ["Targeting geografic", g.targeting_geo || ""],
+      ["Buget recomandat", g.buget_recomandat || ""],
+      ["Strategia de bid", g.bid_strategy || ""],
+      ["Extensii", (g.extensii || []).join(", ") || ""],
+      ["Landing page", g.landing_page || ""],
+    ];
+    const wsGoogle = XLSX.utils.aoa_to_sheet(googleRows);
+    wsGoogle["!cols"] = [{ wch: 25 }, { wch: 80 }];
+    XLSX.utils.book_append_sheet(wb, wsGoogle, "Google_Ads");
+
+    // Sheet 6: Meta Ads
+    const m = ads.meta || {};
+    const metaRows = [
+      ["PARAMETRU", "VALOARE"],
+      ["Tip campanie", m.tip_campanie || ""],
+      ["Obiectiv", m.obiectiv || ""],
+      ["Audienta primara", m.audienta_primara || ""],
+      ["Audienta Lookalike", m.audienta_lookalike || ""],
+      ["Interese targeting", (m.interese_targeting || []).join(", ") || ""],
+      ["Varsta targeting", m.varsta_targeting || ""],
+      ["Locatii targeting", m.locatii_targeting || ""],
+      ["Formate reclama", (m.formate_reclama || []).join(", ") || ""],
+      ["Titlu reclama", m.titlu_reclama || ""],
+      ["Text principal", m.text_principal || ""],
+      ["Call to Action", m.cta || ""],
+      ["Buget recomandat", m.buget_recomandat || ""],
+      ["Durata campanie", m.durata_campanie || ""],
+      ["Retargeting", m.retargeting || ""],
+    ];
+    const wsMeta = XLSX.utils.aoa_to_sheet(metaRows);
+    wsMeta["!cols"] = [{ wch: 25 }, { wch: 80 }];
+    XLSX.utils.book_append_sheet(wb, wsMeta, "Meta_Ads");
+
+    const numeLead = (lead.nume || "strategie").replace(/[^a-zA-Z0-9]/g, "_");
+    XLSX.writeFile(wb, `${numeLead}_strategie.xlsx`);
+  }
+
   async function genereazaAI() {
     setGenerating(true);
     setGenError("");
@@ -721,6 +840,13 @@ export default function StrategiePage() {
               Salvat {savedAt.toLocaleTimeString("ro-RO", { hour: "2-digit", minute: "2-digit" })}
             </span>
           )}
+
+          <button
+            onClick={exportExcel}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-600 text-white text-sm font-semibold hover:bg-emerald-700 transition-colors shadow-sm"
+          >
+            <Download className="w-4 h-4" /> Export Excel
+          </button>
 
           <button
             onClick={genereazaAI}
