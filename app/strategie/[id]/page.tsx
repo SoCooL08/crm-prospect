@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import {
   ArrowLeft, Plus, Trash2, Loader2, CheckCircle2, Users, BarChart2, Target,
+  Sparkles, Megaphone,
 } from "lucide-react";
 
 // ── Types ──────────────────────────────────────────────────────────────────
@@ -14,6 +15,37 @@ type Concurent = Record<string, string> & { id: string; nume: string; link: stri
 type SOSTACData = {
   situatie: string; obiective: string; strategie: string;
   tactici: string; actiuni: string; control: string;
+};
+type AdsData = {
+  google?: {
+    tip_campanie?: string;
+    obiectiv?: string;
+    cuvinte_cheie?: string[];
+    cuvinte_negative?: string[];
+    titluri?: string[];
+    descrieri?: string[];
+    targeting_geo?: string;
+    buget_recomandat?: string;
+    bid_strategy?: string;
+    extensii?: string[];
+    landing_page?: string;
+  };
+  meta?: {
+    tip_campanie?: string;
+    obiectiv?: string;
+    audienta_primara?: string;
+    audienta_lookalike?: string;
+    interese_targeting?: string[];
+    varsta_targeting?: string;
+    locatii_targeting?: string;
+    formate_reclama?: string[];
+    titlu_reclama?: string;
+    text_principal?: string;
+    cta?: string;
+    buget_recomandat?: string;
+    durata_campanie?: string;
+    retargeting?: string;
+  };
 };
 
 // ── Row definitions ────────────────────────────────────────────────────────
@@ -425,9 +457,106 @@ function TabSOSTAC({
   );
 }
 
+// ── Tab: Ads ──────────────────────────────────────────────────────────────
+
+function TagList({ items }: { items?: string[] }) {
+  if (!items?.length) return <span className="text-slate-400 text-sm">—</span>;
+  return (
+    <div className="flex flex-wrap gap-1.5 mt-1">
+      {items.map((item, i) => (
+        <span key={i} className="text-xs bg-white/60 border border-current/20 rounded-md px-2 py-0.5">
+          {item}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+function AdsRow({ label, value }: { label: string; value?: string | string[] }) {
+  if (!value || (Array.isArray(value) && value.length === 0)) return null;
+  return (
+    <div className="py-2.5 border-b border-white/30 last:border-0">
+      <p className="text-xs font-semibold text-current/60 uppercase tracking-wide mb-0.5">{label}</p>
+      {Array.isArray(value) ? (
+        <TagList items={value} />
+      ) : (
+        <p className="text-sm text-current/90 leading-relaxed">{value}</p>
+      )}
+    </div>
+  );
+}
+
+function TabAds({ ads }: { ads: AdsData }) {
+  const hasGoogle = ads.google && Object.keys(ads.google).length > 0;
+  const hasMeta = ads.meta && Object.keys(ads.meta).length > 0;
+
+  if (!hasGoogle && !hasMeta) {
+    return (
+      <div className="text-center py-16 text-slate-400">
+        <Megaphone className="w-10 h-10 mx-auto mb-3 opacity-30" />
+        <p className="text-sm">Nicio recomandare Ads generata inca.</p>
+        <p className="text-xs mt-1">Apasa &quot;Genereaza cu AI&quot; pentru a genera strategia completa.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="grid md:grid-cols-2 gap-6">
+      {/* Google Ads */}
+      {hasGoogle && (
+        <div className="bg-blue-50 border border-blue-200 rounded-xl p-5 text-blue-900">
+          <div className="flex items-center gap-2 mb-4">
+            <div className="w-7 h-7 bg-blue-600 rounded-lg flex items-center justify-center">
+              <span className="text-white text-xs font-bold">G</span>
+            </div>
+            <h3 className="font-bold text-blue-800">Google Ads</h3>
+          </div>
+          <AdsRow label="Tip campanie" value={ads.google?.tip_campanie} />
+          <AdsRow label="Obiectiv" value={ads.google?.obiectiv} />
+          <AdsRow label="Cuvinte cheie" value={ads.google?.cuvinte_cheie} />
+          <AdsRow label="Cuvinte negative" value={ads.google?.cuvinte_negative} />
+          <AdsRow label="Titluri reclame" value={ads.google?.titluri} />
+          <AdsRow label="Descrieri" value={ads.google?.descrieri} />
+          <AdsRow label="Targeting geografic" value={ads.google?.targeting_geo} />
+          <AdsRow label="Buget recomandat" value={ads.google?.buget_recomandat} />
+          <AdsRow label="Strategia de bid" value={ads.google?.bid_strategy} />
+          <AdsRow label="Extensii" value={ads.google?.extensii} />
+          <AdsRow label="Landing page" value={ads.google?.landing_page} />
+        </div>
+      )}
+
+      {/* Meta Ads */}
+      {hasMeta && (
+        <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-5 text-indigo-900">
+          <div className="flex items-center gap-2 mb-4">
+            <div className="w-7 h-7 bg-indigo-600 rounded-lg flex items-center justify-center">
+              <span className="text-white text-xs font-bold">f</span>
+            </div>
+            <h3 className="font-bold text-indigo-800">Meta Ads (Facebook + Instagram)</h3>
+          </div>
+          <AdsRow label="Tip campanie" value={ads.meta?.tip_campanie} />
+          <AdsRow label="Obiectiv" value={ads.meta?.obiectiv} />
+          <AdsRow label="Audienta primara" value={ads.meta?.audienta_primara} />
+          <AdsRow label="Audienta Lookalike" value={ads.meta?.audienta_lookalike} />
+          <AdsRow label="Interese targeting" value={ads.meta?.interese_targeting} />
+          <AdsRow label="Varsta targeting" value={ads.meta?.varsta_targeting} />
+          <AdsRow label="Locatii targeting" value={ads.meta?.locatii_targeting} />
+          <AdsRow label="Formate reclama" value={ads.meta?.formate_reclama} />
+          <AdsRow label="Titlu reclama" value={ads.meta?.titlu_reclama} />
+          <AdsRow label="Text principal" value={ads.meta?.text_principal} />
+          <AdsRow label="Call to Action" value={ads.meta?.cta} />
+          <AdsRow label="Buget recomandat" value={ads.meta?.buget_recomandat} />
+          <AdsRow label="Durata campanie" value={ads.meta?.durata_campanie} />
+          <AdsRow label="Retargeting" value={ads.meta?.retargeting} />
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ── Main Page ──────────────────────────────────────────────────────────────
 
-type Tab = "audienta" | "concurenti" | "sostac";
+type Tab = "audienta" | "concurenti" | "sostac" | "ads";
 
 export default function StrategiePage() {
   const params = useParams();
@@ -445,9 +574,12 @@ export default function StrategiePage() {
     concurentGol(), concurentGol(), concurentGol(),
   ]);
   const [sostac, setSOSTAC] = useState<SOSTACData>(sostacGol());
+  const [ads, setAds] = useState<AdsData>({});
 
   const [saving, setSaving] = useState(false);
   const [savedAt, setSavedAt] = useState<Date | null>(null);
+  const [generating, setGenerating] = useState(false);
+  const [genError, setGenError] = useState("");
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const modifiedRef = useRef(false);
 
@@ -475,6 +607,9 @@ export default function StrategiePage() {
         if (stratData.sostac && Object.keys(stratData.sostac).length) {
           setSOSTAC({ ...sostacGol(), ...stratData.sostac });
         }
+        if (stratData.ads) {
+          setAds(stratData.ads);
+        }
       }
       setLoading(false);
     }
@@ -497,23 +632,49 @@ export default function StrategiePage() {
             audienta: { segmente },
             concurenti,
             sostac,
+            ads,
           }),
         });
         setSavedAt(new Date());
       } catch {}
       setSaving(false);
     }, 1500);
-  }, [id, segmente, concurenti, sostac]);
+  }, [id, segmente, concurenti, sostac, ads]);
 
   // Trigger save when state changes
   useEffect(() => {
     if (!loading) scheduleSave();
-  }, [segmente, concurenti, sostac]);
+  }, [segmente, concurenti, sostac, ads]);
+
+  async function genereazaAI() {
+    setGenerating(true);
+    setGenError("");
+    try {
+      const res = await fetch(`/api/strategii/${id}/genereaza`, { method: "POST" });
+      const data = await res.json();
+      if (!res.ok) {
+        setGenError(data.error || "Eroare la generare");
+        return;
+      }
+      // Update all state from generated data
+      if (data.audienta?.segmente?.length) setSegmente(data.audienta.segmente);
+      if (data.concurenti?.length) setConcurenti(data.concurenti);
+      if (data.sostac && Object.keys(data.sostac).length) setSOSTAC({ ...sostacGol(), ...data.sostac });
+      if (data.ads) setAds(data.ads);
+      setSavedAt(new Date());
+      setTab("audienta");
+    } catch {
+      setGenError("Eroare de retea");
+    } finally {
+      setGenerating(false);
+    }
+  }
 
   const TABS: { id: Tab; label: string; icon: any }[] = [
     { id: "audienta", label: "Audienta", icon: Users },
     { id: "concurenti", label: "Concurenti", icon: BarChart2 },
     { id: "sostac", label: "Strategie SOSTAC", icon: Target },
+    { id: "ads", label: "Google & Meta Ads", icon: Megaphone },
   ];
 
   if (loading)
@@ -548,23 +709,49 @@ export default function StrategiePage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2 text-sm mt-2">
+        <div className="flex items-center gap-3 mt-2 flex-wrap">
           {saving && (
-            <span className="flex items-center gap-1.5 text-slate-400">
+            <span className="flex items-center gap-1.5 text-sm text-slate-400">
               <Loader2 className="w-3.5 h-3.5 animate-spin" /> Se salveaza...
             </span>
           )}
           {!saving && savedAt && (
-            <span className="flex items-center gap-1.5 text-emerald-600">
+            <span className="flex items-center gap-1.5 text-sm text-emerald-600">
               <CheckCircle2 className="w-3.5 h-3.5" />
               Salvat {savedAt.toLocaleTimeString("ro-RO", { hour: "2-digit", minute: "2-digit" })}
             </span>
           )}
+
+          <button
+            onClick={genereazaAI}
+            disabled={generating}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-violet-600 text-white text-sm font-semibold hover:bg-violet-700 disabled:opacity-60 transition-colors shadow-sm"
+          >
+            {generating ? (
+              <><Loader2 className="w-4 h-4 animate-spin" /> Se genereaza...</>
+            ) : (
+              <><Sparkles className="w-4 h-4" /> Genereaza cu AI</>
+            )}
+          </button>
         </div>
       </div>
 
+      {genError && (
+        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700">
+          {genError}
+        </div>
+      )}
+
+      {generating && (
+        <div className="mb-4 p-4 bg-violet-50 border border-violet-200 rounded-xl text-sm text-violet-700 flex items-center gap-2">
+          <Loader2 className="w-4 h-4 animate-spin shrink-0" />
+          Claude analizeaza business-ul si genereaza strategia completa (audienta, concurenti, SOSTAC, Google & Meta Ads)...
+          Poate dura 30-60 secunde.
+        </div>
+      )}
+
       {/* Tabs */}
-      <div className="flex gap-1 mb-6 bg-slate-100 rounded-xl p-1 w-fit">
+      <div className="flex gap-1 mb-6 bg-slate-100 rounded-xl p-1 w-fit flex-wrap">
         {TABS.map(({ id: tabId, label, icon: Icon }) => (
           <button
             key={tabId}
@@ -577,6 +764,9 @@ export default function StrategiePage() {
           >
             <Icon className="w-4 h-4" />
             {label}
+            {tabId === "ads" && (ads.google || ads.meta) && (
+              <span className="w-2 h-2 rounded-full bg-violet-500 ml-0.5" />
+            )}
           </button>
         ))}
       </div>
@@ -586,7 +776,7 @@ export default function StrategiePage() {
         <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-xl text-sm text-amber-800">
           <strong>SQL migration necesara:</strong> Ruleaza in Supabase:
           <code className="block mt-1 font-mono text-xs bg-amber-100 rounded p-2">
-            CREATE TABLE strategii (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, lead_id uuid REFERENCES leads(id) ON DELETE CASCADE, audienta jsonb DEFAULT &apos;{"{}"}&apos;, concurenti jsonb DEFAULT &apos;[]&apos;, sostac jsonb DEFAULT &apos;{"{}"}&apos;, updated_at timestamptz DEFAULT now(), CONSTRAINT strategii_lead_id_unique UNIQUE(lead_id));
+            CREATE TABLE strategii (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, lead_id uuid REFERENCES leads(id) ON DELETE CASCADE, audienta jsonb DEFAULT &apos;{"{}"}&apos;, concurenti jsonb DEFAULT &apos;[]&apos;, sostac jsonb DEFAULT &apos;{"{}"}&apos;, ads jsonb DEFAULT &apos;{"{}"}&apos;, updated_at timestamptz DEFAULT now(), CONSTRAINT strategii_lead_id_unique UNIQUE(lead_id));
           </code>
         </div>
       )}
@@ -600,6 +790,9 @@ export default function StrategiePage() {
       )}
       {tab === "sostac" && (
         <TabSOSTAC sostac={sostac} onChange={(s) => { setSOSTAC(s); }} />
+      )}
+      {tab === "ads" && (
+        <TabAds ads={ads} />
       )}
     </div>
   );
