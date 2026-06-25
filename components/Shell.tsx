@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Search, LayoutDashboard, Users, LogOut, Flame, CalendarClock, Target, Kanban, LayoutTemplate } from "lucide-react";
+import { Search, LayoutDashboard, Users, LogOut, Flame, CalendarClock, Target, Kanban, LayoutTemplate, BarChart3 } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const nav = [
@@ -12,6 +12,7 @@ const nav = [
   { href: "/kanban", label: "Kanban", icon: Kanban },
   { href: "/azi", label: "Urmariri", icon: CalendarClock, accent: "amber" },
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/statistici", label: "Statistici Nișe", icon: BarChart3, accent: "blue" },
   { href: "/sostac", label: "SOSTAC + Ads", icon: Target, accent: "violet" },
   { href: "/strategie", label: "Strategie SMM", icon: LayoutTemplate, accent: "violet" },
 ];
@@ -60,6 +61,8 @@ export default function Shell({ children }: { children: React.ReactNode }) {
                     ? "text-amber-400 hover:text-white hover:bg-slate-800"
                     : accent === "violet"
                     ? "text-violet-400 hover:text-white hover:bg-slate-800"
+                    : accent === "blue"
+                    ? "text-blue-400 hover:text-white hover:bg-slate-800"
                     : "text-slate-400 hover:text-white hover:bg-slate-800"
                 }`}
               >
