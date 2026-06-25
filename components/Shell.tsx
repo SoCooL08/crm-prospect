@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Search, LayoutDashboard, Users, LogOut, Flame, CalendarClock, Target, Kanban, LayoutTemplate, BarChart3 } from "lucide-react";
+import { Search, LayoutDashboard, Users, LogOut, Flame, CalendarClock, Target, Kanban, LayoutTemplate, BarChart3, ScanSearch } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const nav = [
@@ -13,6 +13,7 @@ const nav = [
   { href: "/azi", label: "Urmariri", icon: CalendarClock, accent: "amber" },
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/statistici", label: "Statistici Nișe", icon: BarChart3, accent: "blue" },
+  { href: "/analiza-client", label: "Analiză Client", icon: ScanSearch, accent: "blue" },
   { href: "/sostac", label: "SOSTAC + Ads", icon: Target, accent: "violet" },
   { href: "/strategie", label: "Strategie SMM", icon: LayoutTemplate, accent: "violet" },
 ];
