@@ -385,6 +385,14 @@ export default function EpisculpPage() {
   const [leaduri, setLeaduri] = useState({ total_luna: "", cost_per_lead: "", conversie: ">30", buget_cheltuit: "" });
   const [sostac, setSostac] = useState<SostacField[]>(sostacDefault);
   const [sostacOpen, setSostacOpen] = useState<number | null>(0);
+  const [bugetTotal, setBugetTotal] = useState(9000);
+  const [splits, setSplits] = useState([
+    { canal: "Google Ads (1 campanie Search)", key: "google", proc: 16, color: "bg-blue-500", colorText: "text-blue-700", border: "border-blue-200" },
+    { canal: "Meta C1 — Lead Gen Epilare", key: "meta1", proc: 12, color: "bg-indigo-500", colorText: "text-indigo-700", border: "border-indigo-200" },
+    { canal: "Meta C2 — Brand Awareness Boost", key: "meta2", proc: 7, color: "bg-violet-500", colorText: "text-violet-700", border: "border-violet-200" },
+    { canal: "Producție materiale (3/lună)", key: "prod", proc: 17, color: "bg-pink-500", colorText: "text-pink-700", border: "border-pink-200" },
+    { canal: "Management + raportare", key: "mgmt", proc: 48, color: "bg-slate-400", colorText: "text-slate-600", border: "border-slate-200" },
+  ]);
 
   useEffect(() => {
     const saved = localStorage.getItem("episculp_data_v2");
@@ -395,12 +403,14 @@ export default function EpisculpPage() {
         if (d.meta) setMeta(d.meta);
         if (d.materiale) setMateriale(d.materiale);
         if (d.leaduri) setLeaduri(d.leaduri);
+        if (d.bugetTotal) setBugetTotal(d.bugetTotal);
+        if (d.splits) setSplits(d.splits);
       } catch {}
     }
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("episculp_data_v2", JSON.stringify({ google, meta, materiale, leaduri }));
+    localStorage.setItem("episculp_data_v2", JSON.stringify({ google, meta, materiale, leaduri, bugetTotal, splits }));
   }, [google, meta, materiale, leaduri]);
 
   function updateMaterial(id: string, patch: Partial<Material>) {
@@ -776,36 +786,103 @@ export default function EpisculpPage() {
             </div>
           </div>
 
-          {/* Buget total recomandat */}
+          {/* Buget dinamic */}
           <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-            <h3 className="font-bold text-slate-800 mb-4">💰 Alocare Buget Lunară Recomandată</h3>
-            <div className="space-y-2">
-              {[
-                { canal: "Google Search Ads", buget: "1.400 lei/lună", proc: "15%", color: "bg-blue-500" },
-                { canal: "Meta Lead Gen C1 (Epilare)", buget: "1.000 lei/lună", proc: "11%", color: "bg-indigo-500" },
-                { canal: "Meta Retargeting", buget: "400 lei/lună", proc: "4%", color: "bg-violet-500" },
-                { canal: "Meta Brand Awareness C2", buget: "600 lei/lună", proc: "7%", color: "bg-purple-500" },
-                { canal: "Producție materiale (3/lună)", buget: "1.500 lei/lună", proc: "17%", color: "bg-pink-500" },
-                { canal: "Management campanii + raportare", buget: "4.100 lei/lună", proc: "46%", color: "bg-slate-400" },
-              ].map(({ canal, buget, proc, color }) => (
-                <div key={canal} className="flex items-center gap-3">
-                  <div className={`w-2.5 h-2.5 rounded-full ${color} shrink-0`} />
-                  <div className="flex-1">
-                    <div className="flex justify-between text-sm mb-0.5">
-                      <span className="text-slate-700">{canal}</span>
-                      <span className="font-semibold text-slate-800">{buget}</span>
+            <h3 className="font-bold text-slate-800 mb-1">💰 Calculator Buget Lunar</h3>
+            <p className="text-xs text-slate-400 mb-4">Introdu bugetul total — alocarea se calculează automat. Ajustează procentele după preferință.</p>
+
+            {/* Input buget total */}
+            <div className="flex items-center gap-4 mb-5 p-4 bg-slate-50 rounded-xl border border-slate-200">
+              <div className="flex-1">
+                <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wide mb-1">Buget total / lună (lei)</label>
+                <input
+                  type="number"
+                  value={bugetTotal}
+                  onChange={(e) => setBugetTotal(Math.max(0, Number(e.target.value)))}
+                  className="w-full text-2xl font-bold text-slate-900 bg-transparent border-0 outline-none p-0 focus:ring-0"
+                  placeholder="9000"
+                />
+              </div>
+              <div className="text-right">
+                <p className="text-xs text-slate-400">Total alocat</p>
+                <p className={`text-lg font-bold ${splits.reduce((s, x) => s + x.proc, 0) === 100 ? "text-emerald-600" : "text-red-500"}`}>
+                  {splits.reduce((s, x) => s + x.proc, 0)}%
+                </p>
+                <p className="text-xs text-slate-400">{splits.reduce((s, x) => s + x.proc, 0) !== 100 ? "≠ 100%" : "✓ OK"}</p>
+              </div>
+            </div>
+
+            {/* Splits */}
+            <div className="space-y-4">
+              {splits.map((s, i) => {
+                const lei = Math.round(bugetTotal * s.proc / 100);
+                const leiSapt = Math.round(lei / 4.3);
+                return (
+                  <div key={s.key}>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <div className="flex items-center gap-2">
+                        <div className={`w-2.5 h-2.5 rounded-full ${s.color} shrink-0`} />
+                        <span className="text-sm font-medium text-slate-700">{s.canal}</span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <span className="text-xs text-slate-400">~{leiSapt} lei/săpt.</span>
+                        <span className={`text-sm font-bold ${s.colorText}`}>{lei.toLocaleString("ro")} lei</span>
+                        <div className="flex items-center gap-1">
+                          <input
+                            type="number"
+                            value={s.proc}
+                            min={0}
+                            max={100}
+                            onChange={(e) => {
+                              const next = [...splits];
+                              next[i] = { ...next[i], proc: Math.min(100, Math.max(0, Number(e.target.value))) };
+                              setSplits(next);
+                            }}
+                            className="w-12 text-xs text-center border border-slate-200 rounded-lg py-1 focus:outline-none focus:ring-1 focus:ring-blue-400"
+                          />
+                          <span className="text-xs text-slate-400">%</span>
+                        </div>
+                      </div>
                     </div>
-                    <div className="h-1.5 bg-slate-100 rounded-full">
-                      <div className={`h-full rounded-full ${color}`} style={{ width: proc }} />
+                    <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+                      <div
+                        className={`h-full rounded-full transition-all ${s.color}`}
+                        style={{ width: `${Math.min(s.proc, 100)}%` }}
+                      />
                     </div>
                   </div>
-                  <span className="text-xs text-slate-400 w-8 text-right">{proc}</span>
+                );
+              })}
+            </div>
+
+            {/* Summary cards */}
+            <div className="grid grid-cols-3 gap-3 mt-5 pt-4 border-t border-slate-100">
+              {[
+                {
+                  label: "Paid Ads total",
+                  lei: Math.round(bugetTotal * (splits[0].proc + splits[1].proc + splits[2].proc) / 100),
+                  sub: "Google + Meta C1 + Meta C2",
+                  color: "text-blue-600",
+                },
+                {
+                  label: "Producție + Mgmt",
+                  lei: Math.round(bugetTotal * (splits[3].proc + splits[4].proc) / 100),
+                  sub: "Materiale + Management",
+                  color: "text-slate-700",
+                },
+                {
+                  label: "TOTAL LUNAR",
+                  lei: bugetTotal,
+                  sub: `${splits.reduce((s, x) => s + x.proc, 0)}% alocat`,
+                  color: "text-emerald-600",
+                },
+              ].map(({ label, lei, sub, color }) => (
+                <div key={label} className="bg-slate-50 rounded-xl p-3 text-center">
+                  <p className="text-xs text-slate-400 uppercase tracking-wide">{label}</p>
+                  <p className={`text-lg font-bold mt-0.5 ${color}`}>{lei.toLocaleString("ro")} lei</p>
+                  <p className="text-xs text-slate-400">{sub}</p>
                 </div>
               ))}
-              <div className="mt-3 pt-3 border-t border-slate-100 flex justify-between">
-                <span className="font-bold text-slate-800">TOTAL</span>
-                <span className="font-bold text-slate-800">9.000 lei/lună</span>
-              </div>
             </div>
           </div>
 

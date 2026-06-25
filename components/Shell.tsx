@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Search, LayoutDashboard, Users, LogOut, Flame, CalendarClock, Target, Kanban, LayoutTemplate, BarChart3, ScanSearch, Map, Scissors } from "lucide-react";
+import { Search, LayoutDashboard, Users, LogOut, Flame, CalendarClock, Target, Kanban, LayoutTemplate, BarChart3, ScanSearch, Map, Scissors, Building2 } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const nav = [
@@ -18,6 +18,7 @@ const nav = [
   { href: "/sostac", label: "SOSTAC + Ads", icon: Target, accent: "violet" },
   { href: "/strategie", label: "Strategie SMM", icon: LayoutTemplate, accent: "violet" },
   { href: "/episculp", label: "Episculp", icon: Scissors, accent: "pink" },
+  { href: "/novavisio", label: "Nova Visio", icon: Building2, accent: "violet" },
 ];
 
 export default function Shell({ children }: { children: React.ReactNode }) {
