@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from "react";
 import {
-  Sparkles, Target, TrendingUp, Calendar, Image, Users,
-  CheckCircle2, Circle, Phone, Euro, Zap, ChevronDown, ChevronUp,
+  Sparkles, Users, Phone, Euro, MapPin, Clock,
 } from "lucide-react";
 
 // ── Types ──────────────────────────────────────────────────────────────────
@@ -21,89 +20,125 @@ type CampaniaMeta = {
 };
 
 type Material = {
-  id: string; luna: string; tip: string; serviciu: string; descriere: string; status: "idee" | "productie" | "gata" | "publicat";
+  id: string; luna: string; tip: string; serviciu: string; descriere: string;
+  status: "idee" | "productie" | "gata" | "publicat";
 };
 
-// ── Defaults ───────────────────────────────────────────────────────────────
+// ── Pre-filled campaign data ───────────────────────────────────────────────
 
 const googleDefault: CampaniaGoogle = {
-  nume: "Episculp — Epilare Definitivă Search",
+  nume: "Episculp — Epilare Definitivă Laser Sibiu",
   tip: "Search",
   buget_zilnic: "50",
   cpc_tinta: "10",
   cuvinte_cheie: [
-    "epilare definitiva sibiu", "laser epilare sibiu", "epilare definitiva pret",
-    "salon epilare sibiu", "epilare definitiva femei sibiu", "epilare definitiva barbati sibiu",
-    "epilare laser pret sedinta",
+    "epilare definitiva sibiu",
+    "laser epilare sibiu",
+    "epilare definitiva pret sibiu",
+    "salon epilare laser sibiu",
+    "epilare definitiva femei sibiu",
+    "epilare definitiva barbati sibiu",
+    "primelase sibiu",
+    "epilare full body sibiu",
+    "epilare definitiva selimbar",
+    "tratamente estetice sibiu",
+    "criolipoliza sibiu",
+    "hydrafacial sibiu",
   ],
   cuvinte_negative: [
-    "gratuit", "acasa", "aparat", "cumpara aparat", "ipl acasa", "tutorial",
+    "gratuit", "acasa", "aparat ipl", "cumpara aparat", "ipl acasa",
+    "tutorial", "diy", "aparat de epilare", "Brasov", "Cluj", "Bucuresti",
   ],
   titluri: [
-    "Epilare Definitivă Sibiu | Episculp",
-    "Laser Epilare | Rezultate Permanente",
-    "Fără Păr Nedorit — Rezervă Acum",
-    "Bărbați & Femei | 8-10 Ședințe",
-    "Consultație Gratuită Epilare Laser",
+    "Epilare Definitivă Laser | Sibiu",
+    "Primelase HR — Rezultate Permanente",
+    "Episculp Beauty | Selimbar Sibiu",
+    "Full Body 910 Lei | -30% Acum",
+    "Consultație Inclusă | Rezervă Online",
+    "Fără Durere, Fără Brici — Definitiv",
   ],
   descrieri: [
-    "Epilare definitivă cu laser în Sibiu. Femei 6-8 ședințe, bărbați 8-10 ședințe. Consultație inclusă. Rezervă online!",
-    "Rezultate permanente în 12 luni. Tehnologie profesională Mikadis. Prețuri accesibile. Sună acum pentru consultație.",
+    "Epilare definitivă cu laser Primelase HR Excellence — singura clinică cu Hydrafacial Syndeo în Sibiu. Femei 6-8 ședințe, bărbați 8-10 ședințe. Consultație gratuită!",
+    "Tehnologie FDA & CE certificată. Zero timp de recuperare. Program L-V 10:00-20:00. Str. Doamna Stanca 5F, Șelimbăr. Sună acum: 0758 620 996",
   ],
-  extensii: ["Apel telefonic", "Locație", "Prețuri servicii", "Promoții sezoniere"],
-  landing_page: "pagina dedicata epilare definitiva cu formular lead + WhatsApp",
+  extensii: [
+    "Apel telefonic: 0758 620 996",
+    "Locație: Str. Doamna Stanca 5F, Șelimbăr",
+    "Epilare Full Body 910 lei",
+    "Consultație gratuită inclusă",
+    "Program L-V 10:00-20:00",
+  ],
+  landing_page: "pagina dedicata epilare definitiva cu galerie rezultate + formular rezervare + WhatsApp",
   status: "de setat",
-  note: "1 singură campanie Google. CPC țintă 10 lei/click. Prioritate: epilare definitivă.",
+  note: "1 singură campanie Google. CPC țintă 10 lei/click. Boost 250 lei / 7 zile analiză săptămânală. Prioritate: epilare definitivă Primelase.",
 };
 
 const metaDefaults: CampaniaMeta[] = [
   {
     nume: "Meta C1 — Lead Gen Epilare Definitivă",
     obiectiv: "Lead Generation",
-    buget: "250 lei / 7 zile (boost săptămânal)",
-    durata: "rulare continuă cu analiză săptămânală",
-    audienta: "Doamne 22-45 ani, Sibiu + împrejurimi, care lucrează la birou sau au firme",
+    buget: "250 lei / 7 zile (boost săptămânal + analiză)",
+    durata: "Rulare continuă, analiză și optimizare săptămânală",
+    audienta: "Doamne 22-45 ani, Sibiu + Șelimbăr + împrejurimi (30km), angajate sau cu firme proprii",
     varsta: "22-45",
-    interese: ["beauty", "estetică", "îngrijire personală", "epilare", "salon", "fitness", "wellness", "business women"],
-    formate: ["Reel 9:16", "Carusel înainte/după", "Story cu CTA WhatsApp", "Video testimonial"],
-    titlu_ad: "Scapă de brici pentru totdeauna 👙",
-    text_ad: "Epilare definitivă în Sibiu — rezultate vizibile după prima ședință. Femei: 6-8 ședințe. Bărbați: 8-10 ședințe. Consultație gratuită inclusă! 📞 Rezervă acum →",
-    cta: "Trimite mesaj / Completează formularul",
-    tip_form: "Meta Lead Form + Typeform landing page",
+    interese: [
+      "epilare", "beauty", "estetică", "spa & wellness",
+      "îngrijire personală", "salon frumusețe",
+      "business women", "fitness", "moda",
+    ],
+    formate: [
+      "Reel 9:16 — înainte/după epilare",
+      "Carusel zone corporale + preturi",
+      "Story cu CTA WhatsApp Direct",
+      "Video testimonial clientă mulțumită",
+    ],
+    titlu_ad: "Scapă definitiv de brici 🪒✨",
+    text_ad: "Epilare definitivă cu laser Primelase HR Excellence în Sibiu. Rezultate permanente — femei 6-8 ședințe, bărbați 8-10 ședințe în 12 luni. Consultație gratuită inclusă!\n\n📍 Str. Doamna Stanca 5F, Șelimbăr\n📞 0758 620 996\n\nRezervă acum →",
+    cta: "Trimite mesaj WhatsApp / Completează formularul",
+    tip_form: "Meta Lead Form nativ + Typeform landing page",
     status: "de setat",
-    note: "Reclame cu buton de info/WhatsApp. Formulare Meta native + Typeform. 0.3 lei per follow-up retargeting.",
+    note: "Reclame cu buton WhatsApp Direct. Formulare Meta native + Typeform. Retargeting cu oferte 0.3 lei per follow-up. Accent pe diferențiator: Primelase HR = cea mai modernă tehnologie.",
   },
   {
     nume: "Meta C2 — Brand Awareness + Boost Organic",
     obiectiv: "Reach / Engagement",
-    buget: "150 lei / 7 zile",
-    durata: "boost posturi organice performante",
-    audienta: "Lookalike din clienți existenți + interese beauty Sibiu",
-    varsta: "25-50",
-    interese: ["remodelare corporala", "facial", "acnee", "îngrijire ten", "beauty sibiu", "wellness"],
-    formate: ["Post organic boosted", "Reel educațional", "Story ofertă lunară"],
-    titlu_ad: "Episculp Sibiu — Frumusețe Redefinită",
-    text_ad: "Shining Body, Remodelare Corporală, Facial profesional. 3 servicii complete, 1 singur salon. Vino pentru consultație și descoperă ce e potrivit pentru tine.",
-    cta: "Află mai multe / Sună acum",
-    tip_form: "trafic spre profil Instagram + WhatsApp",
+    buget: "150 lei / 7 zile boost posturi organice performante",
+    durata: "Boost cele mai bune posturi organice — rotație lunară",
+    audienta: "Lookalike din clienți existenți + interese beauty premium Sibiu. Femei 25-55 ani cu venit mediu-ridicat.",
+    varsta: "25-55",
+    interese: [
+      "remodelare corporala", "criolipoliza", "hydrafacial",
+      "tratamente faciale", "radiofrecventa", "rejuvenare faciala",
+      "acnee tratament", "beauty premium",
+    ],
+    formate: [
+      "Post educațional — Cum funcționează Hydrafacial Syndeo",
+      "Reel Criolipolizã — înainte/după 4 săptămâni",
+      "Story ofertă lunară cu countdown",
+      "Carusel tehnologii Episculp (Primelase, Cooltech, Viora V10)",
+    ],
+    titlu_ad: "Episculp Sibiu — Estetică Non-Invazivă",
+    text_ad: "Singura clinică din Sibiu cu Hydrafacial Syndeo. Criolipolizã, radiofrecvență, epilare laser — rezultate vizibile fără timp de recuperare. Vino pentru o consultație personalizată.",
+    cta: "Află mai multe / Rezervă consultație",
+    tip_form: "Trafic spre Instagram + WhatsApp + pagina servicii",
     status: "de setat",
-    note: "Boost posturi ce funcționează organic. Materiale beauty din nișă. Clienți fideli — program fidelizare sezon.",
+    note: "Boost posturi organice cu cel mai mare engagement. Materiale beauty din nișă care funcționează. Clienți fideli — program fidelizare sezon. 3 materiale noi/lună.",
   },
 ];
 
 const luniCalendar = [
-  { luna: "Ianuarie", sezon: "Pauza", note: "Sezon slab — pauza sau buget minim. Clienti fideli retention." },
-  { luna: "Februarie", sezon: "Pauza", note: "Continuare pauza. Pregătire materiale pentru martie." },
-  { luna: "Martie", sezon: "Activ", note: "Reluare campanii. Primăvara — mesaj: pregătire vară." },
-  { luna: "Aprilie", sezon: "Activ", note: "Peak sezon. Buget maxim epilare definitivă. Vacanțe se apropie." },
-  { luna: "Mai", sezon: "Activ", note: "Cel mai bun moment — vară se apropie. Push agresiv lead gen." },
-  { luna: "Iunie", sezon: "Activ", note: "Sezon de vârf. Campanii running, analiză săptămânală boost." },
-  { luna: "Iulie", sezon: "Activ", note: "Vară — continuare. Target doamne cu firme (concediu mai târziu)." },
-  { luna: "August", sezon: "Pauza", note: "Concedii — pauza campanii sau buget minimal." },
-  { luna: "Septembrie", sezon: "Target special", note: "🎯 TARGET: Mămici revenite din concediu. Mesaj specific: re-start epilare, corp post-vară." },
-  { luna: "Octombrie", sezon: "Activ", note: "Toamna — remodelare corporală, facial. Buget normal." },
-  { luna: "Noiembrie", sezon: "Activ", note: "Pre-sezon sărbători. Oferte pachet. Facial + epilare." },
-  { luna: "Decembrie", sezon: "Activ", note: "Sărbători — gift vouchers, oferte. Sezon bun facial + corp." },
+  { luna: "Ianuarie", sezon: "Pauza", note: "Sezon slab — buget minim sau pauza. Menținere clienți fideli, trimitere ofertă Valentine's." },
+  { luna: "Februarie", sezon: "Pauza", note: "Pauza sau buget minim. Pregătire campanie primăvară. Valentine's Day — ofertă pachet cuplu." },
+  { luna: "Martie", sezon: "Activ", note: "Relansare campanii! Mesaj: 'Pregătește-te pentru vară — începe acum epilarea'. Sezon nou." },
+  { luna: "Aprilie", sezon: "Activ", note: "Peak sezon. Buget maxim epilare definitivă. 'Vara vine — mai ai 6-8 ședințe de parcurs'." },
+  { luna: "Mai", sezon: "Activ", note: "Cel mai bun moment — sezon de vârf. Push agresiv lead gen. Criolipolizã + remodelare corporală." },
+  { luna: "Iunie", sezon: "Activ", note: "Vară — campanii running. Facial + corp. Analiză săptămânală boost. Clienți noi și fidelizare." },
+  { luna: "Iulie", sezon: "Activ", note: "Vară plină. Target doamne cu firme (concediu mai târziu). Hydrafacial — ten după soare." },
+  { luna: "August", sezon: "Pauza", note: "Concedii generalizate — pauza campanii sau buget minimal. Pregătire materiale septembrie." },
+  { luna: "Septembrie", sezon: "Target special", note: "🎯 TARGET: Mămici revenite! Mesaj specific: 're-start corp post-vară, elimină vergeturile, epilare nouă serie'. Push puternic." },
+  { luna: "Octombrie", sezon: "Activ", note: "Toamnă — remodelare corporală, facial anti-aging. Hydrafacial post-vară. Buget normal." },
+  { luna: "Noiembrie", sezon: "Activ", note: "Pre-sărbători. Oferte pachet cadou (Gift vouchers). Facial + epilare zone mici = cadou." },
+  { luna: "Decembrie", sezon: "Activ", note: "Sărbători — gift vouchers Episculp, oferte pachet. Crăciun = cadou de estetică." },
 ];
 
 const sezonColor = (s: string) =>
@@ -118,16 +153,16 @@ const materialStatusColor = (s: string) => ({
   publicat: "bg-emerald-100 text-emerald-700",
 }[s] ?? "bg-slate-100 text-slate-600");
 
-// ── Editable field ─────────────────────────────────────────────────────────
+// ── Field components ───────────────────────────────────────────────────────
 
-function F({ label, value, onChange, big, mono }: {
-  label: string; value: string; onChange?: (v: string) => void; big?: boolean; mono?: boolean;
+function F({ label, value, onChange, big }: {
+  label: string; value: string; onChange?: (v: string) => void; big?: boolean;
 }) {
   if (!onChange) {
     return (
       <div>
         <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-0.5">{label}</p>
-        <p className={`text-sm text-slate-800 ${mono ? "font-mono bg-slate-50 rounded px-2 py-1" : ""}`}>{value || "—"}</p>
+        <p className="text-sm text-slate-800">{value || "—"}</p>
       </div>
     );
   }
@@ -162,7 +197,8 @@ function TagsField({ label, tags, onChange }: { label: string; tags: string[]; o
         ))}
       </div>
       <div className="flex gap-2">
-        <input value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={(e) => e.key === "Enter" && add()}
+        <input value={input} onChange={(e) => setInput(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), add())}
           placeholder="Adaugă și Enter..."
           className="flex-1 border border-slate-200 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500" />
         <button onClick={add} className="px-3 py-1.5 text-xs bg-blue-600 text-white rounded-lg hover:bg-blue-700">+</button>
@@ -171,35 +207,36 @@ function TagsField({ label, tags, onChange }: { label: string; tags: string[]; o
   );
 }
 
-// ── Main ───────────────────────────────────────────────────────────────────
+// ── Main page ──────────────────────────────────────────────────────────────
 
-type Tab = "overview" | "google" | "meta1" | "meta2" | "calendar" | "materiale";
+type Tab = "overview" | "google" | "meta1" | "meta2" | "calendar" | "materiale" | "concurenti";
 
 export default function EpisculpPage() {
   const [tab, setTab] = useState<Tab>("overview");
   const [google, setGoogle] = useState<CampaniaGoogle>(googleDefault);
   const [meta, setMeta] = useState<CampaniaMeta[]>(metaDefaults);
   const [materiale, setMateriale] = useState<Material[]>([
-    { id: "1", luna: "Iulie 2025", tip: "Reel", serviciu: "Epilare definitivă", descriere: "Transformare înainte/după — femei", status: "idee" },
-    { id: "2", luna: "Iulie 2025", tip: "Story", serviciu: "Remodelare corporală", descriere: "Testimonial clientă + rezultate 10 zile", status: "idee" },
-    { id: "3", luna: "Iulie 2025", tip: "Post", serviciu: "Facial", descriere: "Educațional: tipuri de ten + soluții Episculp", status: "idee" },
+    { id: "1", luna: "Iulie 2025", tip: "Reel", serviciu: "Epilare definitivă", descriere: "Înainte/după — clientă după 6 ședințe Primelase. Text overlay: 'Definitiv scăpată de brici'", status: "idee" },
+    { id: "2", luna: "Iulie 2025", tip: "Video educațional", serviciu: "Criolipolizã", descriere: "Cum funcționează Cooltech — filmulețul dispozitivului pe corp. 'Fără bisturiu, fără recuperare'", status: "idee" },
+    { id: "3", luna: "Iulie 2025", tip: "Post carusel", serviciu: "Hydrafacial", descriere: "Slide 1: Ce e Hydrafacial Syndeo. Slide 2-4: Pașii procedurii. Slide 5: Rezultat. 'Unica în Sibiu'", status: "idee" },
   ]);
   const [leaduri, setLeaduri] = useState({ total_luna: "", cost_per_lead: "", conversie: ">30", buget_cheltuit: "" });
 
-  // Persist în localStorage
   useEffect(() => {
-    const saved = localStorage.getItem("episculp_data");
+    const saved = localStorage.getItem("episculp_data_v2");
     if (saved) {
-      const d = JSON.parse(saved);
-      if (d.google) setGoogle(d.google);
-      if (d.meta) setMeta(d.meta);
-      if (d.materiale) setMateriale(d.materiale);
-      if (d.leaduri) setLeaduri(d.leaduri);
+      try {
+        const d = JSON.parse(saved);
+        if (d.google) setGoogle(d.google);
+        if (d.meta) setMeta(d.meta);
+        if (d.materiale) setMateriale(d.materiale);
+        if (d.leaduri) setLeaduri(d.leaduri);
+      } catch {}
     }
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("episculp_data", JSON.stringify({ google, meta, materiale, leaduri }));
+    localStorage.setItem("episculp_data_v2", JSON.stringify({ google, meta, materiale, leaduri }));
   }, [google, meta, materiale, leaduri]);
 
   function updateMaterial(id: string, patch: Partial<Material>) {
@@ -207,8 +244,9 @@ export default function EpisculpPage() {
   }
 
   function addMaterial() {
-    const id = Date.now().toString();
-    setMateriale((prev) => [...prev, { id, luna: "", tip: "Reel", serviciu: "", descriere: "", status: "idee" }]);
+    setMateriale((prev) => [...prev, {
+      id: Date.now().toString(), luna: "", tip: "Reel", serviciu: "Epilare definitivă", descriere: "", status: "idee",
+    }]);
   }
 
   const TABS: { id: Tab; label: string }[] = [
@@ -216,38 +254,53 @@ export default function EpisculpPage() {
     { id: "google", label: "🔵 Google Ads" },
     { id: "meta1", label: "📘 Meta C1 — Lead Gen" },
     { id: "meta2", label: "📗 Meta C2 — Boost" },
-    { id: "calendar", label: "📅 Calendar Sezoane" },
+    { id: "calendar", label: "📅 Calendar" },
     { id: "materiale", label: "🎬 Materiale" },
+    { id: "concurenti", label: "⚔️ Concurenți" },
   ];
 
   return (
     <div className="p-8 max-w-5xl">
+
       {/* Header */}
       <div className="mb-6">
-        <div className="flex items-center gap-3 mb-1">
-          <div className="w-10 h-10 bg-gradient-to-br from-pink-500 to-violet-600 rounded-xl flex items-center justify-center text-white font-bold text-lg">E</div>
-          <div>
-            <h1 className="text-2xl font-semibold text-slate-900">Episculp</h1>
-            <p className="text-slate-500 text-sm">Ionuț Volnea · Contact: Adi · Salon estetică Sibiu</p>
+        <div className="flex items-start gap-4 mb-4">
+          <div className="w-12 h-12 bg-gradient-to-br from-pink-500 to-violet-600 rounded-2xl flex items-center justify-center text-white font-bold text-xl shrink-0">E</div>
+          <div className="flex-1">
+            <h1 className="text-2xl font-bold text-slate-900">Episculp Beauty</h1>
+            <p className="text-slate-500 text-sm">Loredana Voinea (fondator) · Contact: Ionuț / Adi · Clinică estetică non-invazivă, Sibiu</p>
+            <div className="flex flex-wrap gap-3 mt-2 text-xs text-slate-500">
+              <span className="flex items-center gap-1"><MapPin className="w-3 h-3" /> Str. Doamna Stanca 5F, Șelimbăr, Sibiu</span>
+              <span className="flex items-center gap-1"><Phone className="w-3 h-3" /> 0758 620 996</span>
+              <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> L-V 10:00–20:00</span>
+              <a href="https://episculpt-beauty.ro" target="_blank" rel="noopener noreferrer"
+                className="flex items-center gap-1 text-blue-500 hover:underline">🌐 episculpt-beauty.ro</a>
+            </div>
           </div>
-          <div className="ml-auto flex gap-2">
-            <a href="tel:" className="flex items-center gap-1.5 text-sm px-3 py-2 rounded-xl border border-slate-200 hover:bg-slate-50 transition-colors text-slate-600">
-              <Phone className="w-4 h-4" /> Sună Adi
+          <div className="flex gap-2 shrink-0">
+            <a href="tel:0758620996"
+              className="flex items-center gap-1.5 text-sm px-3 py-2 rounded-xl bg-emerald-600 text-white hover:bg-emerald-700 transition-colors">
+              <Phone className="w-4 h-4" /> Sună
+            </a>
+            <a href="https://wa.me/40758620996" target="_blank" rel="noopener noreferrer"
+              className="flex items-center gap-1.5 text-sm px-3 py-2 rounded-xl bg-green-500 text-white hover:bg-green-600 transition-colors">
+              WhatsApp
             </a>
           </div>
         </div>
 
         {/* KPI bar */}
-        <div className="grid grid-cols-4 gap-3 mt-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {[
-            { label: "Buget total / lună", value: "9.000 lei", color: "text-slate-900" },
-            { label: "Target leads / lună", value: "80–90", color: "text-blue-600" },
-            { label: "Conv. țintă", value: ">30%", color: "text-emerald-600" },
-            { label: "CPC țintă Google", value: "≤10 lei", color: "text-amber-600" },
+            { label: "Buget total / lună", value: "9.000 lei", color: "text-slate-900", sub: "Google + Meta" },
+            { label: "Target leads / lună", value: "80–90", color: "text-blue-600", sub: "min. 50 leads" },
+            { label: "Conv. țintă client", value: ">30%", color: "text-emerald-600", sub: "din leads" },
+            { label: "CPC țintă Google", value: "≤10 lei", color: "text-amber-600", sub: "epilare definitivă" },
           ].map((k) => (
             <div key={k.label} className="bg-white border border-slate-200 rounded-xl p-3 shadow-sm">
               <p className="text-xs text-slate-400 uppercase tracking-wide">{k.label}</p>
               <p className={`text-xl font-bold mt-0.5 ${k.color}`}>{k.value}</p>
+              <p className="text-xs text-slate-400">{k.sub}</p>
             </div>
           ))}
         </div>
@@ -259,49 +312,94 @@ export default function EpisculpPage() {
           <button key={id} onClick={() => setTab(id)}
             className={`px-3 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
               tab === id ? "bg-white text-slate-900 shadow-sm" : "text-slate-500 hover:text-slate-700"
-            }`}
-          >
+            }`}>
             {label}
           </button>
         ))}
       </div>
 
-      {/* ── OVERVIEW ─────────────────────────────────────────────────────── */}
+      {/* ── OVERVIEW ──────────────────────────────────────────────────────── */}
       {tab === "overview" && (
         <div className="space-y-5">
+
           {/* Servicii */}
           <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-            <h2 className="font-bold text-slate-800 mb-4 flex items-center gap-2"><Sparkles className="w-4 h-4 text-pink-500" /> Servicii Episculp</h2>
-            <div className="grid md:grid-cols-2 gap-3">
-              {[
-                { s: "Epilare Definitivă", d: "Femei: 6–8 ședințe / Bărbați: 8–10 ședințe · 12 luni · Consultație inclusă", hot: true },
-                { s: "Shyning Body / Mikadis", d: "Tratamente corporale de strălucire și tonifiere", hot: false },
-                { s: "Remodelare Corporală", d: "Program 10 zile sau 1 lună jumătate · Rezultate vizibile garantate", hot: false },
-                { s: "Facial", d: "Consultație inclusă · Tratamente ten (acnee, anti-aging, hidratare)", hot: false },
-                { s: "Acnee", d: "Protocol specializat acnee · Inclus în servicii facial", hot: false },
-              ].map(({ s, d, hot }) => (
-                <div key={s} className={`rounded-xl p-4 border ${hot ? "bg-pink-50 border-pink-200" : "bg-slate-50 border-slate-200"}`}>
-                  <p className={`font-semibold text-sm ${hot ? "text-pink-800" : "text-slate-800"}`}>
-                    {hot && "🔥 "}{s}
-                  </p>
-                  <p className="text-xs text-slate-500 mt-0.5">{d}</p>
-                </div>
-              ))}
+            <h2 className="font-bold text-slate-800 mb-4 flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-pink-500" /> Servicii & Prețuri (de pe episculpt-beauty.ro)
+            </h2>
+
+            {/* Epilare */}
+            <div className="mb-5">
+              <p className="text-xs font-bold text-pink-700 uppercase tracking-wide mb-2">🔥 Epilare Definitivă — Prioritate #1 Campanie Google</p>
+              <div className="grid md:grid-cols-2 gap-2 mb-2">
+                {[
+                  { s: "Full Body Femei", p: "910 lei (orig. 1.300 lei · -30%)", hot: true },
+                  { s: "Inghinal Femei", p: "245 lei (orig. 350 lei · -30%)", hot: false },
+                  { s: "Axile Femei", p: "154 lei (orig. 220 lei · -30%)", hot: false },
+                  { s: "Axile Bărbați", p: "217 lei (orig. 310 lei · -30%)", hot: false },
+                  { s: "Zone mici-medii", p: "77 – 490 lei (reducere 30%)", hot: false },
+                ].map(({ s, p, hot }) => (
+                  <div key={s} className={`rounded-lg px-3 py-2 flex justify-between items-center border ${hot ? "bg-pink-50 border-pink-200" : "bg-slate-50 border-slate-200"}`}>
+                    <span className={`text-sm font-medium ${hot ? "text-pink-800" : "text-slate-700"}`}>{s}</span>
+                    <span className={`text-xs font-semibold ${hot ? "text-pink-600" : "text-slate-500"}`}>{p}</span>
+                  </div>
+                ))}
+              </div>
+              <p className="text-xs text-slate-400">Tehnologie: <strong>Primelase HR Excellence</strong> (laser diodă) · Consultație inclusă · FDA & CE · F: 6-8 ședințe · B: 8-10 ședințe / 12 luni</p>
+            </div>
+
+            {/* Remodelare */}
+            <div className="mb-5">
+              <p className="text-xs font-bold text-violet-700 uppercase tracking-wide mb-2">Remodelare Corporală</p>
+              <div className="grid md:grid-cols-3 gap-2">
+                {[
+                  { s: "Criolipolizã (Cooltech)", p: "700 lei / 2 aplicatori (-30%)", d: "Grăsime localizată · Non-invaziv · FDA" },
+                  { s: "Radiofrecvență Viora V10", p: "1.620 lei / 6 ședințe (-40%)", d: "Fermitate, tonifiere, conturare siluetă" },
+                  { s: "Electrostimulare Wonder", p: "La cerere", d: "Tonifiere musculară · Wonder Prestige" },
+                ].map(({ s, p, d }) => (
+                  <div key={s} className="rounded-lg px-3 py-2 border border-violet-100 bg-violet-50">
+                    <p className="text-sm font-semibold text-violet-800">{s}</p>
+                    <p className="text-xs text-violet-600 font-medium">{p}</p>
+                    <p className="text-xs text-violet-500 mt-0.5">{d}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Facial */}
+            <div>
+              <p className="text-xs font-bold text-blue-700 uppercase tracking-wide mb-2">Tratamente Faciale</p>
+              <div className="grid md:grid-cols-2 gap-2 mb-2">
+                {[
+                  { s: "Hydrafacial Syndeo + Intraceuticals + Osmosis", p: "750 lei (orig. 1.000 lei · -25%)", hot: true },
+                  { s: "Radiofrecvență facială / fracționată", p: "Protocol personalizat", hot: false },
+                  { s: "Curățare facială profesională", p: "Hidrodermabraziune", hot: false },
+                  { s: "Acnee / Pete / Cicatrici / Riduri", p: "Evaluare + protocol dedicat", hot: false },
+                ].map(({ s, p, hot }) => (
+                  <div key={s} className={`rounded-lg px-3 py-2 border flex justify-between items-center ${hot ? "bg-blue-50 border-blue-200" : "bg-slate-50 border-slate-200"}`}>
+                    <span className={`text-sm font-medium ${hot ? "text-blue-800" : "text-slate-700"}`}>{s}</span>
+                    <span className={`text-xs ${hot ? "text-blue-600 font-semibold" : "text-slate-400"}`}>{p}</span>
+                  </div>
+                ))}
+              </div>
+              <p className="text-xs text-emerald-700 font-semibold">✓ Singurul salon din Sibiu cu Hydrafacial Syndeo — diferențiator major în campanii!</p>
             </div>
           </div>
 
-          {/* Target audience */}
+          {/* Audienta */}
           <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-            <h2 className="font-bold text-slate-800 mb-4 flex items-center gap-2"><Users className="w-4 h-4 text-blue-500" /> Audiență Principală</h2>
+            <h2 className="font-bold text-slate-800 mb-4 flex items-center gap-2">
+              <Users className="w-4 h-4 text-blue-500" /> Audiență Principală
+            </h2>
             <div className="grid md:grid-cols-3 gap-3">
               {[
-                { t: "🏢 Doamne la birou", d: "22–45 ani, angajate corporate, venit mediu-ridicat, Sibiu" },
-                { t: "👩‍💼 Doamne cu firme", d: "Antreprenoare, businesswomen, timp limitat, valorizează eficiența" },
-                { t: "👩 Mămici (Septembrie)", d: "Revenite din concediu, sezon special — mesaj dedicat" },
-              ].map(({ t, d }) => (
-                <div key={t} className="bg-blue-50 border border-blue-100 rounded-xl p-4">
-                  <p className="font-semibold text-sm text-blue-800">{t}</p>
-                  <p className="text-xs text-blue-600 mt-0.5">{d}</p>
+                { t: "🏢 Doamne la birou", d: "22–45 ani, angajate corporate sau în administrație, venit mediu-ridicat, Sibiu + Șelimbăr", prio: true },
+                { t: "👩‍💼 Doamne cu firme", d: "Antreprenoare, businesswomen — timp limitat, valorizează calitatea. Potențial clienți fideli pe termen lung.", prio: true },
+                { t: "👩 Mămici (Septembrie)", d: "Revenite din concediu, corp post-vară / post-sarcină. Mesaj: vergeturi, corp nou, epilare re-start.", prio: false },
+              ].map(({ t, d, prio }) => (
+                <div key={t} className={`rounded-xl p-4 border ${prio ? "bg-blue-50 border-blue-200" : "bg-violet-50 border-violet-200"}`}>
+                  <p className={`font-bold text-sm ${prio ? "text-blue-800" : "text-violet-800"}`}>{t}</p>
+                  <p className={`text-xs mt-0.5 ${prio ? "text-blue-600" : "text-violet-600"}`}>{d}</p>
                 </div>
               ))}
             </div>
@@ -309,14 +407,16 @@ export default function EpisculpPage() {
 
           {/* Budget tracker */}
           <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-            <h2 className="font-bold text-slate-800 mb-4 flex items-center gap-2"><Euro className="w-4 h-4 text-emerald-500" /> Urmărire Buget Lunar</h2>
+            <h2 className="font-bold text-slate-800 mb-4 flex items-center gap-2">
+              <Euro className="w-4 h-4 text-emerald-500" /> Urmărire Buget Lunar
+            </h2>
             <div className="grid md:grid-cols-2 gap-4">
-              {[
-                { label: "Leaduri generate luna aceasta", key: "total_luna" as const, placeholder: "ex: 45" },
-                { label: "Cost per lead (lei)", key: "cost_per_lead" as const, placeholder: "ex: 112" },
-                { label: "Rată conversie (%)", key: "conversie" as const, placeholder: ">30" },
-                { label: "Buget cheltuit (lei)", key: "buget_cheltuit" as const, placeholder: "ex: 4500" },
-              ].map(({ label, key, placeholder }) => (
+              {([
+                ["Leaduri generate luna aceasta", "total_luna", "ex: 45"],
+                ["Cost per lead (lei)", "cost_per_lead", "ex: 112"],
+                ["Rată conversie (%)", "conversie", ">30"],
+                ["Buget cheltuit total (lei)", "buget_cheltuit", "ex: 4500"],
+              ] as [string, keyof typeof leaduri, string][]).map(([label, key, placeholder]) => (
                 <div key={key}>
                   <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wide mb-1">{label}</label>
                   <input value={leaduri[key]} onChange={(e) => setLeaduri({ ...leaduri, [key]: e.target.value })}
@@ -327,7 +427,7 @@ export default function EpisculpPage() {
             </div>
             {leaduri.total_luna && leaduri.cost_per_lead && (
               <div className="mt-4 p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-sm text-emerald-700">
-                📊 <strong>{leaduri.total_luna} leads</strong> × <strong>{leaduri.cost_per_lead} lei</strong> = {Number(leaduri.total_luna) * Number(leaduri.cost_per_lead)} lei cheltuit
+                📊 <strong>{leaduri.total_luna} leads</strong> × <strong>{leaduri.cost_per_lead} lei/lead</strong> = {Number(leaduri.total_luna) * Number(leaduri.cost_per_lead)} lei estimat
                 {leaduri.buget_cheltuit && ` · Buget rămas: ${9000 - Number(leaduri.buget_cheltuit)} lei`}
               </div>
             )}
@@ -335,17 +435,17 @@ export default function EpisculpPage() {
         </div>
       )}
 
-      {/* ── GOOGLE ADS ──────────────────────────────────────────────────────── */}
+      {/* ── GOOGLE ADS ──────────────────────────────────────────────────── */}
       {tab === "google" && (
         <div className="bg-white border border-blue-200 rounded-2xl shadow-sm overflow-hidden">
           <div className="bg-blue-600 px-6 py-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
-                <span className="text-blue-600 font-bold text-sm">G</span>
+                <span className="font-bold text-blue-600 text-sm">G</span>
               </div>
               <div>
-                <p className="text-white font-bold">Google Ads — 1 Campanie</p>
-                <p className="text-blue-200 text-xs">Search · Epilare Definitivă Sibiu</p>
+                <p className="text-white font-bold">Google Ads — 1 Campanie Search</p>
+                <p className="text-blue-200 text-xs">Epilare Definitivă Laser · Primelase HR · Sibiu</p>
               </div>
             </div>
             <select value={google.status} onChange={(e) => setGoogle({ ...google, status: e.target.value })}
@@ -360,7 +460,7 @@ export default function EpisculpPage() {
               <F label="Tip campanie" value={google.tip} onChange={(v) => setGoogle({ ...google, tip: v })} />
             </div>
             <TagsField label="Cuvinte cheie" tags={google.cuvinte_cheie} onChange={(t) => setGoogle({ ...google, cuvinte_cheie: t })} />
-            <TagsField label="Cuvinte negative" tags={google.cuvinte_negative} onChange={(t) => setGoogle({ ...google, cuvinte_negative: t })} />
+            <TagsField label="Cuvinte negative (excludere)" tags={google.cuvinte_negative} onChange={(t) => setGoogle({ ...google, cuvinte_negative: t })} />
             <TagsField label="Titluri reclame (max 30 char fiecare)" tags={google.titluri} onChange={(t) => setGoogle({ ...google, titluri: t })} />
             <div className="space-y-3">
               {google.descrieri.map((d, i) => (
@@ -378,20 +478,23 @@ export default function EpisculpPage() {
         </div>
       )}
 
-      {/* ── META C1 ──────────────────────────────────────────────────────────── */}
+      {/* ── META C1 + C2 ────────────────────────────────────────────────── */}
       {(tab === "meta1" || tab === "meta2") && (() => {
         const idx = tab === "meta1" ? 0 : 1;
         const c = meta[idx];
-        const update = (patch: Partial<CampaniaMeta>) => setMeta((prev) => prev.map((m, i) => i === idx ? { ...m, ...patch } : m));
-        const headerColor = idx === 0 ? "bg-blue-700" : "bg-emerald-700";
+        const update = (patch: Partial<CampaniaMeta>) =>
+          setMeta((prev) => prev.map((m, i) => i === idx ? { ...m, ...patch } : m));
+        const hc = idx === 0 ? "bg-blue-700" : "bg-emerald-700";
+        const bc = idx === 0 ? "border-blue-200" : "border-emerald-200";
         return (
-          <div className={`bg-white border ${idx === 0 ? "border-blue-200" : "border-emerald-200"} rounded-2xl shadow-sm overflow-hidden`}>
-            <div className={`${headerColor} px-6 py-4 flex items-center justify-between`}>
+          <div className={`bg-white border ${bc} rounded-2xl shadow-sm overflow-hidden`}>
+            <div className={`${hc} px-6 py-4 flex items-center justify-between`}>
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center font-bold text-sm" style={{ color: idx === 0 ? "#1d4ed8" : "#15803d" }}>f</div>
+                <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center font-bold text-sm"
+                  style={{ color: idx === 0 ? "#1d4ed8" : "#15803d" }}>f</div>
                 <div>
                   <p className="text-white font-bold">{c.nume}</p>
-                  <p className="text-white/70 text-xs">{c.obiectiv}</p>
+                  <p className="text-white/70 text-xs">{c.obiectiv} · {c.buget}</p>
                 </div>
               </div>
               <select value={c.status} onChange={(e) => update({ status: e.target.value })}
@@ -412,19 +515,19 @@ export default function EpisculpPage() {
               <TagsField label="Formate reclamă" tags={c.formate} onChange={(t) => update({ formate: t })} />
               <F label="Titlu reclamă" value={c.titlu_ad} onChange={(v) => update({ titlu_ad: v })} />
               <F label="Text principal reclamă" value={c.text_ad} onChange={(v) => update({ text_ad: v })} big />
-              <div className="grid md:grid-cols-2 gap-4">
-                <F label="Call to Action" value={c.cta} onChange={(v) => update({ cta: v })} />
-              </div>
+              <F label="Call to Action" value={c.cta} onChange={(v) => update({ cta: v })} />
               <F label="Note" value={c.note} onChange={(v) => update({ note: v })} big />
             </div>
           </div>
         );
       })()}
 
-      {/* ── CALENDAR ─────────────────────────────────────────────────────────── */}
+      {/* ── CALENDAR ──────────────────────────────────────────────────────── */}
       {tab === "calendar" && (
         <div className="space-y-3">
-          <p className="text-sm text-slate-500 mb-2">Campanii per sezoane — pauze: <strong>Ian-Feb</strong> și <strong>Aug</strong>. Target special: <strong>Septembrie = Mămici</strong>.</p>
+          <p className="text-sm text-slate-500 mb-2">
+            Campanii per sezoane · Pauze: <strong>Ian–Feb</strong> și <strong>Aug</strong> · Target special: <strong>Sep = Mămici</strong>
+          </p>
           {luniCalendar.map(({ luna, sezon, note }) => (
             <div key={luna} className={`border rounded-xl px-5 py-4 flex items-center gap-4 ${sezonColor(sezon)}`}>
               <div className="w-28 shrink-0">
@@ -437,35 +540,37 @@ export default function EpisculpPage() {
         </div>
       )}
 
-      {/* ── MATERIALE ────────────────────────────────────────────────────────── */}
+      {/* ── MATERIALE ──────────────────────────────────────────────────────── */}
       {tab === "materiale" && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <p className="text-sm text-slate-500">3 materiale noi / lună · organic + boost. Tipuri: Reel, Story, Post, Video testimonial.</p>
-            <button onClick={addMaterial} className="flex items-center gap-1.5 text-sm font-medium px-3 py-2 rounded-xl bg-pink-600 text-white hover:bg-pink-700 transition-colors">
+            <p className="text-sm text-slate-500">3 materiale noi / lună · organic + boost Instagram / Facebook / TikTok</p>
+            <button onClick={addMaterial}
+              className="flex items-center gap-1.5 text-sm font-medium px-3 py-2 rounded-xl bg-pink-600 text-white hover:bg-pink-700 transition-colors">
               + Material nou
             </button>
           </div>
           {materiale.map((m) => (
             <div key={m.id} className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
-              <div className="grid md:grid-cols-4 gap-3">
+              <div className="grid md:grid-cols-4 gap-3 mb-2">
                 <div>
                   <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wide mb-1">Lună</label>
                   <input value={m.luna} onChange={(e) => updateMaterial(m.id, { luna: e.target.value })}
-                    className="w-full border border-slate-200 rounded-lg px-2.5 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="ex: Iulie 2025" />
+                    placeholder="ex: Iulie 2025"
+                    className="w-full border border-slate-200 rounded-lg px-2.5 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wide mb-1">Tip</label>
                   <select value={m.tip} onChange={(e) => updateMaterial(m.id, { tip: e.target.value })}
                     className="w-full border border-slate-200 rounded-lg px-2.5 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
-                    {["Reel", "Story", "Post", "Video testimonial", "Carusel", "Boost organic"].map((t) => <option key={t}>{t}</option>)}
+                    {["Reel", "Story", "Post carusel", "Video educațional", "Video testimonial", "Boost organic"].map((t) => <option key={t}>{t}</option>)}
                   </select>
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wide mb-1">Serviciu</label>
                   <select value={m.serviciu} onChange={(e) => updateMaterial(m.id, { serviciu: e.target.value })}
                     className="w-full border border-slate-200 rounded-lg px-2.5 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
-                    {["Epilare definitivă", "Shyning Body", "Remodelare corporală", "Facial", "Acnee", "General brand"].map((s) => <option key={s}>{s}</option>)}
+                    {["Epilare definitivă", "Criolipolizã", "Remodelare corporală", "Hydrafacial Syndeo", "Facial", "Radiofrecvență", "Acnee / Pete", "General brand"].map((s) => <option key={s}>{s}</option>)}
                   </select>
                 </div>
                 <div>
@@ -476,17 +581,59 @@ export default function EpisculpPage() {
                   </select>
                 </div>
               </div>
-              <div className="mt-2">
-                <input value={m.descriere} onChange={(e) => updateMaterial(m.id, { descriere: e.target.value })}
-                  placeholder="Descriere material / concept..."
-                  className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              <input value={m.descriere} onChange={(e) => updateMaterial(m.id, { descriere: e.target.value })}
+                placeholder="Descriere concept / script / unghi de comunicare..."
+                className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* ── CONCURENȚI ──────────────────────────────────────────────────────── */}
+      {tab === "concurenti" && (
+        <div className="space-y-4">
+          <p className="text-sm text-slate-500 mb-2">Analiza competiției directe în Sibiu — pentru poziționare campanii și diferențiere mesaje.</p>
+          <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-800 mb-2">
+            ⚠️ <strong>Shyning Body</strong> și <strong>Mikadis</strong> sunt concurenți direcți ai Episculp — nu servicii proprii.
+          </div>
+          {[
+            {
+              nume: "Shyning Body",
+              nisa: "Epilare definitivă / Estetică corporală — Sibiu",
+              diferenta: "Concurent direct pe epilare definitivă. Episculp răspunde cu: tehnologie Primelase HR (mai avansată) + consultație inclusă + locație modernă Șelimbăr.",
+              strategie: "Bid pe cuvinte cheie generice 'epilare definitiva sibiu' — NU pe brandul Shyning Body. Accent pe superioritatea Primelase față de tehnologiile mai vechi.",
+            },
+            {
+              nume: "Mikadis",
+              nisa: "Estetică / Tratamente corporale — Sibiu",
+              diferenta: "Concurent pe remodelare corporală. Episculp diferențiere: Cooltech (criolipolizã FDA) + Viora V10 + zero timp recuperare + abordare non-invazivă.",
+              strategie: "Accent pe 'zero timp recuperare', 'rezultate vizibile în 4 săptămâni', 'certificat FDA & CE' în reclame față de Mikadis.",
+            },
+            {
+              nume: "Alte saloane estetică Sibiu",
+              nisa: "Beauty general — saloane clasice",
+              diferenta: "Episculp e clinică medicală estetică, nu simplu salon. Specialiști CIDESCO, protocoale clare, evaluare personalizată, tehnologie certificată.",
+              strategie: "Mesaj diferențiator: 'Nu un salon — o clinică de estetică non-invazivă. Rezultate progresive, fără promisiuni exagerate.'",
+            },
+          ].map(({ nume, nisa, diferenta, strategie }) => (
+            <div key={nume} className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+              <div className="flex items-start justify-between mb-3">
+                <div>
+                  <p className="font-bold text-slate-800">{nume}</p>
+                  <p className="text-xs text-slate-500">{nisa}</p>
+                </div>
+                <span className="text-xs font-semibold text-red-600 bg-red-50 px-2 py-1 rounded-lg shrink-0">Concurent direct</span>
+              </div>
+              <div className="space-y-1.5">
+                <p className="text-xs"><span className="font-semibold text-slate-600">Diferențiere Episculp: </span><span className="text-slate-600">{diferenta}</span></p>
+                <p className="text-xs"><span className="font-semibold text-emerald-700">Strategie campanie: </span><span className="text-slate-600">{strategie}</span></p>
               </div>
             </div>
           ))}
         </div>
       )}
 
-      <p className="mt-6 text-xs text-slate-400 text-center">Salvat automat în browser · Episculp Campaign Workspace</p>
+      <p className="mt-6 text-xs text-slate-400 text-center">Salvat automat în browser · Episculp Campaign Workspace · episculpt-beauty.ro</p>
     </div>
   );
 }
