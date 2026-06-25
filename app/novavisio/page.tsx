@@ -33,7 +33,9 @@ type PostAgentie = {
   data: string;
 };
 
-type TabNV = "overview" | "campanii" | "posturi" | "strategie";
+type TabNV = "overview" | "strategie" | "campanii" | "posturi";
+
+type SostacItem = { titlu: string; label: string; color: string; continut: string };
 
 // ── Defaults ───────────────────────────────────────────────────────────────
 
@@ -105,77 +107,200 @@ const posturi0: PostAgentie[] = [
   },
 ];
 
-const STRATEGIE_NV = [
+const SOSTAC_NV: SostacItem[] = [
   {
-    titlu: "🎯 Obiectiv principal (3 luni)",
-    continut: `• +500 urmăritori reali pe Instagram (lunar)
-• +200 urmăritori reali pe Facebook (lunar)
-• 5-10 lead-uri/lună din organic + paid combinat
-• Engagement rate Instagram: >5%
-• Reach organic crescut cu 40% față de baseline`,
+    label: "S",
+    titlu: "Situation — Situație actuală",
+    color: "bg-blue-50 border-blue-200 text-blue-700",
+    continut: `BUSINESS: Nova Visio Tech — agenție de marketing digital din Sibiu.
+Servicii: creare site-uri WordPress/custom, Google Ads, Meta Ads (Facebook + Instagram), mentenanță site-uri, SEO on-page + off-page.
+
+PIAȚA LOCALĂ SIBIU:
+→ Cerere ridicată pentru servicii digitale — business-uri locale realizează că au nevoie de prezență online
+→ Competiție: câteva agenții mici în Sibiu, freelanceri, agenții naționale care lucrează remote
+→ Oportunitate: puține agenții locale cu portfolio vizibil, transparență și prețuri clare
+→ CPC estimat Google pentru "agentie marketing sibiu" sau "creare site sibiu": 2-5 lei (competiție scăzută!)
+
+SITUAȚIE SOCIALĂ ACTUALĂ:
+→ Pagini Facebook/Instagram existente, probabil cu engagement redus și fără strategie paid
+→ Fără campanii Google Ads proprii active (sau budget minimal)
+→ Site novavisiotech.ro existent dar trafic organic probabil scăzut
+
+OPORTUNITATE CHEIE:
+Agențiile care investesc în propria lor promovare — și arată rezultatele — câștigă încredere rapid.
+"Dacă îți promovezi tu bine afacerea, înseamnă că poți face asta și pentru mine."`,
   },
   {
-    titlu: "📱 Strategie Instagram",
-    continut: `TONE: Expert accesibil — știi despre ce vorbești, dar nu ești arogant. Valoare la fiecare postare.
+    label: "O",
+    titlu: "Objectives — Obiective (6 luni)",
+    color: "bg-emerald-50 border-emerald-200 text-emerald-700",
+    continut: `OBIECTIV #1 — LEAD GENERATION:
+→ 5-10 lead-uri calificate/lună (antreprenori cu buget real, nu curioși)
+→ Cost per lead țintă: <200 lei
+→ Conversie lead → client: >25%
+→ Valoare medie client nou: 2.000-5.000 lei/lună (pachet ads + site + SEO)
 
-PILONI DE CONȚINUT:
-1. EDUCAȚIE (40%) — Tips marketing aplicabile azi. "3 greșeli Google Ads", "Cum setezi Meta Pixel"
-2. REZULTATE (30%) — Cazuri reale (anonimizate ok). Cifre, procente, comparații
-3. BEHIND THE SCENES (20%) — Oamenii din echipă, procesul, cultura agenției
-4. OFERTĂ (10%) — Audit gratuit, servicii — fără a fi agresiv
+OBIECTIV #2 — BRAND AWARENESS SIBIU:
+→ Top 3 Google pentru "agentie marketing sibiu", "creare site sibiu", "google ads sibiu"
+→ +500 urmăritori reali Instagram/lună
+→ +300 followeri Facebook/lună
+→ Recunoscut ca voce de autoritate în marketing digital în Sibiu
 
-FRECVENTA: 4-5 posturi/săptămână (mix Reel + Story + Carusel)
-Story ZILNIC: tip rapid, poll "Tu ce crezi?", Q&A marketing
+OBIECTIV #3 — SOCIAL MEDIA GROWTH:
+→ Engagement rate Instagram: >5%
+→ Reach organic: 3.000+ conturi/lună pe Instagram
+→ DM-uri cu intenție de colaborare: 10+/lună
+→ Recenzii Google Business: 4.8+ stele, 20+ recenzii
 
-HASHTAGS: amestec nișă (#googleads, #metaads) + local (#sibiu, #agentiesibiu) + general (#marketing, #digitalmarketing)`,
+KPI SECUNDARI:
+→ CTR Google Ads proprii: >6%
+→ Cost/click Google: <5 lei
+→ Vizitatori site din social: +100/lună`,
   },
   {
-    titlu: "📘 Strategie Facebook",
-    continut: `TONE: Mai profesional decât Instagram. Articole mai lungi, resurse, studii de caz.
+    label: "S",
+    titlu: "Strategy — Strategie de poziționare",
+    color: "bg-violet-50 border-violet-200 text-violet-700",
+    continut: `POZIȚIONARE: "Agenția care arată cifrele, nu promisiunile."
+→ Transparență totală: rapoarte lunare cu cifre reale, fără bullshit
+→ ROI măsurabil: fiecare leu cheltuit are o explicație
+→ Expert local Sibiu + capacitate națională
+→ Partener pe termen lung, nu furnizor de servicii
 
-PILONI DE CONȚINUT:
-1. STUDII DE CAZ (35%) — Detaliate, cu cifre reale. Antrprenori de 35+ apreciează substanța.
-2. ȘTIRI MARKETING (25%) — Actualizări algoritm Google/Meta cu implicații practice
-3. OFERTE + CTA (25%) — Audit gratuit, consultanță, pachete servicii
-4. COMUNITATE (15%) — Întrebări, polls, invitații la discuție
+DIFERENȚIATORI VS. CONCURENȚĂ:
+✓ Rapoarte transparente lunar (concurența le evită)
+✓ Prețuri pachete clare pe site (raritate în piață)
+✓ Arătăm rezultatele reale ale clienților noștri
+✓ Răspuns în 24h, nu săptămâni
+✓ Nova Visio = agentie care face ADS + SITE + SEO sub același acoperiș
 
-FRECVENTA: 3-4 posturi/săptămână
-PAID: Boost posturi care depășesc organic reach normal
+FUNNEL PRINCIPAL:
+Organic Social (Awareness) → Conținut Educațional (Considerare) → Audit Gratuit (Lead) → Propunere Personalizată (Vânzare) → Client Recurent (Retenție)
 
-GRUPURI: Participare activă în grupuri de antreprenori și marketing din România`,
+CANALE ÎN ORDINE DE PRIORITATE:
+1. Facebook Ads — intent moderat, CPC mic, audienta antreprenori buna
+2. Google Search Ads — intent MAXIM ("creare site sibiu" = cineva vrea să cumpere ACUM)
+3. Instagram Organic — brand building, reach, credibilitate
+4. Facebook Organic — comunitate, studii de caz, engagement
+5. SEO propriu — durată lungă dar gratuit după implementare
+6. Google Business — trafic local gratuit (critică pentru Sibiu)`,
   },
   {
-    titlu: "💰 Buget Paid pentru Pagina Proprie",
-    continut: `TOTAL RECOMANDAT: 300-500 lei/lună pentru creșterea paginii proprii
+    label: "T",
+    titlu: "Tactics — Tactici detaliate per canal",
+    color: "bg-amber-50 border-amber-200 text-amber-700",
+    continut: `━━━ FACEBOOK ADS (start imediat) ━━━
+C1 — Lead Gen Servicii (MUST HAVE):
+• Obiectiv: Lead Generation cu formular Meta nativ
+• Buget: 300-400 lei/lună
+• Audiență: Antreprenori + proprietari de business 28-50 ani, România + focus Sibiu
+• Interese: antreprenoriat, marketing digital, business online, ecommerce, publicitate
+• Format: Video testimonial client real (30s) SAU carusel "Înainte/După" campanie
+• Titlu: "Câți clienți pierzi lunar pentru că nu ești online?"
+• CTA: "Cere audit gratuit" → Formular: Nume, telefon, tip business, buget lunar
 
-ALOCARE:
-• Facebook Ads (urmăritori + reach): 150 lei/lună
-• Instagram Ads (urmăritori + reel boost): 150 lei/lună
-• Boost posturi cu engagement ridicat: 100-200 lei/lună
+C2 — Retargeting vizitatori site:
+• Buget: 100 lei/lună
+• Audiență: Custom Audience — vizitatori novavisiotech.ro din ultimele 30 zile
+• Format: Post cu ofertă specifică + countdown
+• Mesaj: "Ai vizitat site-ul nostru. Hai să vorbim — audit gratuit, fără obligații."
 
-AUDIENTA CAMPANII PROPRII:
-• Antreprenori 28-50 ani, România
-• Interese: marketing digital, business online, publicitate, ecommerce
-• Lookalike din clienții existenți (1%)
-• Excluziuni: studenti, angajați fără funcție de decizie`,
+━━━ GOOGLE ADS (recomandat puternic!) ━━━
+DA, Google Ads e esențial pentru agenție — iată de ce:
+Cineva care caută "creare site sibiu" sau "agentie google ads sibiu" VREA SĂ CUMPERE ACUM.
+CPC estimat: 2-5 lei (competiție scăzută vs. beauty/medical)
+
+Campanie 1 — "Creare Site Web":
+• Cuvinte cheie: "creare site sibiu", "creare site wordpress sibiu", "web design sibiu",
+  "firma creare site sibiu", "site web profesional sibiu"
+• CPC țintă: <5 lei | Buget zilnic: 30 lei
+• Landing page: pagina Servicii Site-uri cu portofoliu + formular + WhatsApp
+
+Campanie 2 — "Ads + Marketing Digital":
+• Cuvinte cheie: "agentie google ads sibiu", "campanii facebook sibiu",
+  "agentie marketing digital sibiu", "seo sibiu", "agentie publicitate sibiu"
+• CPC țintă: <5 lei | Buget zilnic: 30 lei
+
+━━━ INSTAGRAM ORGANIC ━━━
+• Frecvență: 4-5 posturi/săpt + Story zilnic
+• Piloni: Educație 40%, Rezultate 30%, BTS 20%, Ofertă 10%
+• Formate prioritare: Reel educațional (30-60s) + Carusel tips
+
+━━━ FACEBOOK ORGANIC ━━━
+• Frecvență: 3-4 posturi/săpt
+• Focus: Studii de caz detaliate, știri marketing, oferte cu CTA clar
+• Grupuri: Participare activă în "Antreprenori Sibiu", "Marketing Digital România"`,
   },
   {
-    titlu: "📊 KPI Monitorizare Lunară",
-    continut: `INSTAGRAM:
-• Urmăritori noi: target +500/lună
-• Reach organic: minim 2.000 conturi/lună
-• Engagement rate: >5% per post
-• DM-uri primite: 10+/lună (intenție colaborare)
+    label: "A",
+    titlu: "Action — Plan de acțiune concret",
+    color: "bg-rose-50 border-rose-200 text-rose-700",
+    continut: `SĂPTĂMÂNA 1 — SETUP (fără buget, doar timp):
+□ Optimizare completă profil Instagram: Bio clar cu servicii, link în bio, highlight-uri (Servicii / Rezultate / Despre noi / Contact)
+□ Optimizare pagină Facebook: Cover profesional, buton "Contactați-ne", secțiunea Servicii completată, număr telefon și WhatsApp
+□ Google Business Profile: actualizat cu servicii, poze, orar, răspuns recenzii existente
+□ Instalare Meta Pixel pe novavisiotech.ro (5 minute cu plugin)
+□ Creare WhatsApp Business cu mesaj automat de bun venit
 
-FACEBOOK:
-• Urmăritori noi: target +200/lună
-• Reach organic: minim 1.500 conturi/lună
-• Click-uri spre site: minim 50/lună
+SĂPTĂMÂNA 2 — PRIMUL CONȚINUT:
+□ Reel #1: "Ce face o agenție de marketing digital în 60 de secunde" — intro autentic
+□ Post Carusel: "5 semne că ai nevoie de o agenție de marketing" (educațional, fără pitch)
+□ Story zilnic: poll "Tu cum îți găsești clienți acum?" (date pentru targeting)
+□ Post Facebook: Studiu de caz client (anonimizat sau cu acordul lor): buget X → Y leads
 
-PAID:
-• Cost per urmăritor nou: <2 lei
-• Reach plătit/lei: minim 500 oameni/100 lei
-• Lead-uri din paid: 3-5/lună`,
+SĂPTĂMÂNA 3 — CAMPANII PAID:
+□ Activare Facebook Ads C1 Lead Gen (300 lei/lună → ~75 lei/săpt să testezi)
+□ Formular Meta completat: Nume, Telefon, Tip business, "Ce serviciu te interesează?"
+□ Activare Google Ads Campanie 1 "Creare Site" (30 lei/zi să testezi)
+□ Setare Google Ads Campanie 2 "Marketing Digital" (30 lei/zi)
+
+LUNA 2 — OPTIMIZARE:
+□ Analiză primelor campanii: care ad a costat mai puțin pe lead?
+□ A/B test 2 creative Facebook (video vs. imagine statică)
+□ Activare retargeting vizitatori site (C2 — 100 lei/lună)
+□ Cerere recenzii Google de la clienții existenți (email/WhatsApp personalizat)
+□ Boost posturile organice cu reach >500 (50 lei/post/7 zile)
+
+LUNA 3-6 — SCALARE:
+□ Creștere buget campaniilor cu ROI pozitiv
+□ Campanie Lookalike audience (1% similar cu clienții existenți)
+□ Blog posts SEO propriu: "Cum aleg o agenție de marketing în Sibiu", "Cât costă Google Ads"
+□ Testimoniale video de la 2-3 clienți mulțumiți (cel mai puternic material)`,
+  },
+  {
+    label: "C",
+    titlu: "Control — KPI și monitorizare",
+    color: "bg-slate-50 border-slate-200 text-slate-700",
+    continut: `RAPORT SĂPTĂMÂNAL (15 minute):
+• Leads noi din Facebook Ads (formular completat)
+• Click-uri și cost Google Ads
+• Urmăritori noi Instagram + Facebook
+• Mesaje/DM-uri primite cu intenție
+• Postul cu cel mai mare reach din săptămână
+
+RAPORT LUNAR (complet):
+• Total leads vs. target (5-10)
+• Cost per lead pe platformă (Facebook vs. Google)
+• Conversie lead → apel → client
+• ROI: venit din clienți noi / buget marketing cheltuit
+• Top 3 posturi organice (reach + engagement)
+• Urmăritori noi vs. pierduți
+
+DECIZII PE BAZA DATELOR:
+• CTR Facebook Ads <1% → schimbă imaginea/video-ul (nu textul)
+• CTR Facebook Ads >3%, leads puține → problema e la formular sau follow-up
+• Cost/lead Facebook >300 lei → redu audiența, specifică mai mult interesele
+• Google Ads CTR <3% → rescrie titlurile anunțurilor
+• Google Ads CTR >5%, conversii puține → problema e landing page-ul
+• Post organic cu reach >1.000 → boostează imediat cu 50-100 lei
+
+INSTRUMENTE (toate gratuite sau incluse):
+• Meta Ads Manager — campanii Facebook/Instagram
+• Google Ads Dashboard — campanii search
+• Google Analytics 4 — trafic site
+• Google Business Profile — recenzii + prezență locală
+• Meta Business Suite — programare posturi + statistici
+• Acest CRM — tracking leads și follow-up`,
   },
 ];
 
@@ -221,8 +346,9 @@ export default function NovaVisioPage() {
   const [tab, setTab] = useState<TabNV>("overview");
   const [campanii, setCampanii] = useState<CampaniaAgentie[]>(campanii0);
   const [posturi, setPosturi] = useState<PostAgentie[]>(posturi0);
-  const [buget, setBuget] = useState({ fb: "150", ig: "150", boost: "100" });
-  const [stratOpen, setStratOpen] = useState<number | null>(0);
+  const [buget, setBuget] = useState({ fb: "150", ig: "150", boost: "100", google: "180" });
+  const [sostacOpen, setSostacOpen] = useState<number | null>(0);
+  const [sostac, setSostac] = useState<SostacItem[]>(SOSTAC_NV);
 
   useEffect(() => {
     const saved = localStorage.getItem("novavisio_data");
@@ -232,12 +358,13 @@ export default function NovaVisioPage() {
         if (d.campanii) setCampanii(d.campanii);
         if (d.posturi) setPosturi(d.posturi);
         if (d.buget) setBuget(d.buget);
+        if (d.sostac) setSostac(d.sostac);
       } catch {}
     }
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("novavisio_data", JSON.stringify({ campanii, posturi, buget }));
+    localStorage.setItem("novavisio_data", JSON.stringify({ campanii, posturi, buget, sostac }));
   }, [campanii, posturi, buget]);
 
   function updateCampanie(id: string, patch: Partial<CampaniaAgentie>) {
@@ -265,11 +392,12 @@ export default function NovaVisioPage() {
     }]);
   }
 
-  const totalBuget = (Number(buget.fb) || 0) + (Number(buget.ig) || 0) + (Number(buget.boost) || 0);
+  const totalBugetPaid = (Number(buget.fb) || 0) + (Number(buget.ig) || 0) + (Number(buget.boost) || 0) + (Number(buget.google) || 0);
+  const totalBuget = totalBugetPaid;
 
   const TABS = [
     { id: "overview" as TabNV, label: "📊 Overview" },
-    { id: "strategie" as TabNV, label: "🎯 Strategie" },
+    { id: "strategie" as TabNV, label: "🎯 SOSTAC + SMM" },
     { id: "campanii" as TabNV, label: "🚀 Campanii Paid" },
     { id: "posturi" as TabNV, label: "📝 Posturi & Conținut" },
   ];
@@ -325,29 +453,37 @@ export default function NovaVisioPage() {
 
           {/* Buget paid */}
           <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-            <h2 className="font-bold text-slate-800 mb-4 flex items-center gap-2">
-              <TrendingUp className="w-4 h-4 text-blue-500" /> Buget Paid Lunar — Pagina Proprie
+            <h2 className="font-bold text-slate-800 mb-1 flex items-center gap-2">
+              <TrendingUp className="w-4 h-4 text-blue-500" /> Buget Paid Lunar — Nova Visio
             </h2>
-            <div className="grid md:grid-cols-3 gap-4 mb-4">
+            <p className="text-xs text-slate-400 mb-4">Ajustează bugetul per canal — totalul se calculează automat.</p>
+            <div className="grid md:grid-cols-2 gap-3 mb-4">
               {[
-                { label: "Facebook Ads (urmăritori + reach)", key: "fb" as const },
-                { label: "Instagram Ads (urmăritori + reel boost)", key: "ig" as const },
-                { label: "Boost posturi performante", key: "boost" as const },
-              ].map(({ label, key }) => (
-                <div key={key}>
-                  <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wide mb-1">{label}</label>
-                  <div className="flex items-center gap-1">
+                { label: "🔵 Facebook Ads (Lead Gen + Urmăritori)", key: "fb" as const, color: "border-blue-300 bg-blue-50" },
+                { label: "📷 Instagram Ads (Urmăritori + Reel boost)", key: "ig" as const, color: "border-pink-300 bg-pink-50" },
+                { label: "🔍 Google Ads (Creare site + Marketing digital)", key: "google" as const, color: "border-emerald-300 bg-emerald-50" },
+                { label: "⚡ Boost posturi organice performante", key: "boost" as const, color: "border-amber-300 bg-amber-50" },
+              ].map(({ label, key, color }) => (
+                <div key={key} className={`rounded-xl border p-3 ${color}`}>
+                  <label className="block text-xs font-semibold text-slate-500 mb-1">{label}</label>
+                  <div className="flex items-center gap-1.5">
                     <input type="number" value={buget[key]}
                       onChange={(e) => setBuget({ ...buget, [key]: e.target.value })}
-                      className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                    <span className="text-xs text-slate-400 shrink-0">lei</span>
+                      className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-lg font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    <span className="text-sm text-slate-500 shrink-0">lei/lună</span>
                   </div>
                 </div>
               ))}
             </div>
-            <div className="flex justify-between items-center p-3 bg-slate-50 rounded-xl border border-slate-200">
-              <span className="text-sm font-semibold text-slate-700">Total buget paid / lună</span>
-              <span className="text-xl font-bold text-blue-600">{totalBuget} lei</span>
+            <div className="flex justify-between items-center p-4 bg-slate-900 rounded-xl">
+              <div>
+                <p className="text-slate-400 text-xs">Total buget paid / lună</p>
+                <p className="text-white font-bold text-2xl">{totalBuget} lei</p>
+              </div>
+              <div className="text-right">
+                <p className="text-slate-400 text-xs">Estimat / săptămână</p>
+                <p className="text-white font-semibold text-lg">{Math.round(totalBuget / 4.3)} lei</p>
+              </div>
             </div>
           </div>
 
@@ -401,27 +537,171 @@ export default function NovaVisioPage() {
         </div>
       )}
 
-      {/* ── STRATEGIE ──────────────────────────────────────────────────────── */}
+      {/* ── STRATEGIE SOSTAC ──────────────────────────────────────────────── */}
       {tab === "strategie" && (
-        <div className="space-y-4">
-          <div className="bg-gradient-to-r from-blue-600 to-violet-600 rounded-2xl p-5 text-white mb-2">
-            <h2 className="text-lg font-bold">Strategie Creștere Social Media — Nova Visio Tech</h2>
-            <p className="text-blue-100 text-sm mt-0.5">Obiectiv: creștere organică + paid Facebook & Instagram pentru agenție. Poziționare ca expert în marketing digital Sibiu.</p>
-          </div>
-          {STRATEGIE_NV.map((s, i) => (
-            <div key={i} className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
-              <button onClick={() => setStratOpen(stratOpen === i ? null : i)}
-                className="w-full flex items-center justify-between px-6 py-4 hover:bg-slate-50 transition-colors text-left">
-                <span className="font-semibold text-slate-800">{s.titlu}</span>
-                <span className="text-slate-400">{stratOpen === i ? "▲" : "▼"}</span>
-              </button>
-              {stratOpen === i && (
-                <div className="px-6 pb-5">
-                  <pre className="whitespace-pre-wrap text-sm text-slate-700 font-sans bg-slate-50 rounded-xl p-4 border border-slate-100 leading-relaxed">{s.continut}</pre>
-                </div>
-              )}
+        <div className="space-y-5">
+
+          {/* Header */}
+          <div className="bg-gradient-to-r from-blue-700 to-violet-700 rounded-2xl p-6 text-white">
+            <div className="flex items-start justify-between">
+              <div>
+                <h2 className="text-xl font-bold">SOSTAC + Strategie SMM — Nova Visio Tech</h2>
+                <p className="text-blue-100 text-sm mt-1">Agenție marketing digital Sibiu · Site-uri · Google Ads · Meta Ads · SEO · Mentenanță</p>
+              </div>
+              <div className="text-right shrink-0">
+                <p className="text-blue-200 text-xs">Buget total paid</p>
+                <p className="text-white font-bold text-xl">{totalBuget} lei/lună</p>
+              </div>
             </div>
-          ))}
+            <div className="flex flex-wrap gap-2 mt-3">
+              {["Facebook Ads", "Google Search Ads", "Instagram Organic", "Lead Generation", "Brand Awareness Sibiu"].map((t) => (
+                <span key={t} className="text-xs bg-white/20 rounded-full px-3 py-1">{t}</span>
+              ))}
+            </div>
+          </div>
+
+          {/* Recomandare imediată */}
+          <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-5">
+            <h3 className="font-bold text-emerald-800 mb-3 flex items-center gap-2">
+              <Zap className="w-4 h-4" /> Recomandare imediată — Unde să începi
+            </h3>
+            <div className="grid md:grid-cols-3 gap-3">
+              {[
+                { nr: "1", canal: "Facebook Ads — Lead Gen", desc: "Cel mai rapid ROI. Formular Meta + WhatsApp. Antreprenori care vor site/ads. Buget minim 300 lei/lună.", badge: "START ACUM", badgeColor: "bg-red-100 text-red-700" },
+                { nr: "2", canal: "Google Search Ads", desc: '"Creare site sibiu" + "agentie google ads sibiu" = oameni care vor să cumpere ADA. CPC mic (2-5 lei). ROI rapid.', badge: "RECOMANDAT PUTERNIC", badgeColor: "bg-amber-100 text-amber-700" },
+                { nr: "3", canal: "Instagram Organic", desc: "Gratuit. 4-5 posturi/săptămână educaționale. Construiești credibilitate și te găsesc viitorii clienți.", badge: "PARALEL", badgeColor: "bg-blue-100 text-blue-700" },
+              ].map(({ nr, canal, desc, badge, badgeColor }) => (
+                <div key={nr} className="bg-white rounded-xl p-4 border border-emerald-100">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="w-6 h-6 rounded-full bg-emerald-600 text-white text-xs font-bold flex items-center justify-center">{nr}</span>
+                    <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${badgeColor}`}>{badge}</span>
+                  </div>
+                  <p className="font-bold text-slate-800 text-sm mb-1">{canal}</p>
+                  <p className="text-xs text-slate-600">{desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* SOSTAC accordion */}
+          <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+            <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+              <div>
+                <h3 className="font-bold text-slate-800">Framework SOSTAC</h3>
+                <p className="text-xs text-slate-400">Analiză completă + plan de execuție. Click pentru a deschide și edita.</p>
+              </div>
+            </div>
+            {sostac.map((s, i) => {
+              const isOpen = sostacOpen === i;
+              return (
+                <div key={i} className="border-b border-slate-100 last:border-0">
+                  <button onClick={() => setSostacOpen(isOpen ? null : i)}
+                    className="w-full flex items-center justify-between px-6 py-4 hover:bg-slate-50 transition-colors text-left">
+                    <div className="flex items-center gap-3">
+                      <span className={`text-xs font-bold w-7 h-7 rounded-lg border flex items-center justify-center shrink-0 ${s.color}`}>{s.label}</span>
+                      <span className="font-semibold text-slate-800 text-sm">{s.titlu.split("—")[1]?.trim() ?? s.titlu}</span>
+                    </div>
+                    <span className="text-slate-400 text-sm shrink-0 ml-2">{isOpen ? "▲" : "▼"}</span>
+                  </button>
+                  {isOpen && (
+                    <div className="px-6 pb-5">
+                      <textarea
+                        value={s.continut}
+                        onChange={(e) => {
+                          const next = [...sostac];
+                          next[i] = { ...next[i], continut: e.target.value };
+                          setSostac(next);
+                        }}
+                        rows={14}
+                        className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm font-mono text-slate-700 focus:outline-none focus:ring-2 focus:ring-violet-400 resize-none bg-slate-50 leading-relaxed"
+                      />
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Piloni conținut SMM */}
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+            <h3 className="font-bold text-slate-800 mb-4">📱 Piloni Conținut Social Media</h3>
+            <div className="grid md:grid-cols-2 gap-4">
+              {[
+                {
+                  platforma: "Instagram", pct: "4-5 posturi/săpt + Story zilnic",
+                  icon: "📷", color: "from-pink-500 to-violet-500",
+                  piloni: [
+                    { p: "EDUCAȚIE", proc: 40, desc: "Tips Google Ads, Meta, SEO, UX — valoare pură, fără pitch", color: "bg-blue-500" },
+                    { p: "REZULTATE", proc: 30, desc: "Cazuri reale (cifre, înainte/după, % creștere)", color: "bg-emerald-500" },
+                    { p: "BEHIND THE SCENES", proc: 20, desc: "Procesul, echipa, cultura agenției — umanizare brand", color: "bg-amber-500" },
+                    { p: "OFERTĂ", proc: 10, desc: "Audit gratuit, servicii — max 1 din 10 posturi", color: "bg-rose-500" },
+                  ],
+                },
+                {
+                  platforma: "Facebook", pct: "3-4 posturi/săpt + Grupuri",
+                  icon: "f", color: "from-blue-500 to-blue-700",
+                  piloni: [
+                    { p: "STUDII DE CAZ", proc: 35, desc: "Detaliate, cu cifre reale — antreprenorii de 35+ apreciază substanța", color: "bg-blue-500" },
+                    { p: "ȘTIRI MARKETING", proc: 25, desc: "Actualizări algoritm Google/Meta cu implicații practice", color: "bg-violet-500" },
+                    { p: "OFERTE + CTA", proc: 25, desc: "Audit gratuit, pachete, consultanță — cu CTA clar", color: "bg-emerald-500" },
+                    { p: "COMUNITATE", proc: 15, desc: "Poll-uri, întrebări, participare grupuri antreprenori Sibiu/RO", color: "bg-amber-500" },
+                  ],
+                },
+              ].map(({ platforma, pct, icon, color, piloni }) => (
+                <div key={platforma} className="rounded-xl border border-slate-200 overflow-hidden">
+                  <div className={`bg-gradient-to-r ${color} px-4 py-3 flex items-center gap-2`}>
+                    <div className="w-7 h-7 bg-white/20 rounded-lg flex items-center justify-center text-white font-bold text-sm">{icon}</div>
+                    <div>
+                      <p className="text-white font-bold text-sm">{platforma}</p>
+                      <p className="text-white/70 text-xs">{pct}</p>
+                    </div>
+                  </div>
+                  <div className="p-4 space-y-2">
+                    {piloni.map(({ p, proc, desc, color: c }) => (
+                      <div key={p}>
+                        <div className="flex justify-between text-xs mb-0.5">
+                          <span className="font-semibold text-slate-700">{p}</span>
+                          <span className="text-slate-400">{proc}%</span>
+                        </div>
+                        <div className="h-1.5 bg-slate-100 rounded-full mb-0.5">
+                          <div className={`h-full rounded-full ${c}`} style={{ width: `${proc}%` }} />
+                        </div>
+                        <p className="text-xs text-slate-500">{desc}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Budget split recomandat */}
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+            <h3 className="font-bold text-slate-800 mb-4">💰 Buget Paid Recomandat — {totalBuget} lei/lună</h3>
+            <div className="space-y-3">
+              {[
+                { canal: "Facebook Ads Lead Gen", val: Number(buget.fb), color: "bg-blue-500", nota: "Formular Meta + WhatsApp → antreprenori cu business" },
+                { canal: "Google Search Ads", val: Number(buget.google), color: "bg-emerald-500", nota: "Creare site + Marketing digital + SEO sibiu" },
+                { canal: "Instagram Ads", val: Number(buget.ig), color: "bg-pink-500", nota: "Urmăritori + boost Reels educaționale" },
+                { canal: "Boost posturi organice", val: Number(buget.boost), color: "bg-amber-500", nota: "Amplifică posturile cu reach organic >500" },
+              ].map(({ canal, val, color, nota }) => {
+                const proc = totalBuget > 0 ? Math.round(val / totalBuget * 100) : 0;
+                return (
+                  <div key={canal}>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span className="text-slate-700 font-medium">{canal}</span>
+                      <span className="font-bold text-slate-800">{val} lei ({proc}%)</span>
+                    </div>
+                    <div className="h-2 bg-slate-100 rounded-full mb-0.5">
+                      <div className={`h-full rounded-full ${color} transition-all`} style={{ width: `${proc}%` }} />
+                    </div>
+                    <p className="text-xs text-slate-400">{nota}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
         </div>
       )}
 
