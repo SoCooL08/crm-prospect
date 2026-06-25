@@ -4,7 +4,7 @@ import { supabaseAdmin } from "@/lib/supabase";
 export async function GET() {
   const { data: leads, error } = await supabaseAdmin
     .from("leads")
-    .select("nisa, status, rating, oras, motiv_pierdere, valoare_estimata, scor, created_at");
+    .select("*");
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   if (!leads?.length) return NextResponse.json({ nise: [], totale: {} });

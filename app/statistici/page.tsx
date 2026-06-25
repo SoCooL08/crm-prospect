@@ -70,6 +70,7 @@ export default function StatisticiPage() {
   const [nise, setNise] = useState<NisaStat[]>([]);
   const [totale, setTotale] = useState<Totale | null>(null);
   const [loading, setLoading] = useState(true);
+  const [eroare, setEroare] = useState("");
   const [sortBy, setSortBy] = useState<"total" | "conversie" | "clienti">("total");
   const [search, setSearch] = useState("");
 
@@ -77,9 +78,11 @@ export default function StatisticiPage() {
     fetch("/api/statistici")
       .then((r) => r.json())
       .then((d) => {
+        if (d.error) { setEroare(d.error); return; }
         if (d.nise) setNise(d.nise);
         if (d.totale) setTotale(d.totale);
       })
+      .catch((e) => setEroare(e.message))
       .finally(() => setLoading(false));
   }, []);
 
@@ -117,6 +120,13 @@ export default function StatisticiPage() {
     return (
       <div className="p-8 flex items-center gap-2 text-slate-500">
         <Loader2 className="w-5 h-5 animate-spin" /> Se incarca statisticile...
+      </div>
+    );
+
+  if (eroare)
+    return (
+      <div className="p-8">
+        <p className="text-red-600 text-sm bg-red-50 border border-red-200 rounded-xl p-4">{eroare}</p>
       </div>
     );
 
