@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Search, LayoutDashboard, Users, LogOut, Flame, CalendarClock, Target, Kanban } from "lucide-react";
+import { Search, LayoutDashboard, Users, LogOut, Flame, CalendarClock, Target, Kanban, LayoutTemplate } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const nav = [
@@ -13,6 +13,7 @@ const nav = [
   { href: "/azi", label: "Urmariri", icon: CalendarClock, accent: "amber" },
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/sostac", label: "SOSTAC + Ads", icon: Target, accent: "violet" },
+  { href: "/strategie", label: "Strategie SMM", icon: LayoutTemplate, accent: "violet" },
 ];
 
 export default function Shell({ children }: { children: React.ReactNode }) {

@@ -6,7 +6,7 @@ import Link from "next/link";
 import {
   Phone, Globe, Globe2, Star, MapPin, Gauge,
   Loader2, Plus, ArrowLeft, ExternalLink, MessageSquare,
-  Link2, CheckCheck, AlertTriangle,
+  Link2, CheckCheck, AlertTriangle, LayoutTemplate,
 } from "lucide-react";
 import { etichetaScor, genereazaBrief } from "@/lib/scoring";
 import ServiciiBreakdown from "@/components/ServiciiBreakdown";
@@ -228,6 +228,12 @@ export default function FisaLead() {
             </p>
           </div>
           <div className="flex items-center gap-2 flex-wrap">
+            <Link
+              href={`/strategie/${id}`}
+              className="flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg bg-violet-50 text-violet-700 border border-violet-200 hover:bg-violet-100 transition-colors"
+            >
+              <LayoutTemplate className="w-3.5 h-3.5" /> Strategie
+            </Link>
             <span className={`text-xs px-2.5 py-1 rounded-md font-medium ${scorBadge(et)}`}>
               {et} · {lead.scor}
             </span>
