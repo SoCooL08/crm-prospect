@@ -33,7 +33,7 @@ type PostAgentie = {
   data: string;
 };
 
-type TabNV = "overview" | "strategie" | "campanii" | "posturi";
+type TabNV = "overview" | "setup" | "strategie" | "campanii" | "posturi";
 
 type SostacItem = { titlu: string; label: string; color: string; continut: string };
 
@@ -349,6 +349,7 @@ export default function NovaVisioPage() {
   const [buget, setBuget] = useState({ fb: "150", ig: "150", boost: "100", google: "180" });
   const [sostacOpen, setSostacOpen] = useState<number | null>(0);
   const [sostac, setSostac] = useState<SostacItem[]>(SOSTAC_NV);
+  const [checks, setChecks] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     const saved = localStorage.getItem("novavisio_data");
@@ -359,12 +360,13 @@ export default function NovaVisioPage() {
         if (d.posturi) setPosturi(d.posturi);
         if (d.buget) setBuget(d.buget);
         if (d.sostac) setSostac(d.sostac);
+        if (d.checks) setChecks(d.checks);
       } catch {}
     }
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("novavisio_data", JSON.stringify({ campanii, posturi, buget, sostac }));
+    localStorage.setItem("novavisio_data", JSON.stringify({ campanii, posturi, buget, sostac, checks }));
   }, [campanii, posturi, buget]);
 
   function updateCampanie(id: string, patch: Partial<CampaniaAgentie>) {
@@ -395,8 +397,12 @@ export default function NovaVisioPage() {
   const totalBugetPaid = (Number(buget.fb) || 0) + (Number(buget.ig) || 0) + (Number(buget.boost) || 0) + (Number(buget.google) || 0);
   const totalBuget = totalBugetPaid;
 
+  const toggle = (id: string) => setChecks((prev) => ({ ...prev, [id]: !prev[id] }));
+  const doneCount = (ids: string[]) => ids.filter((id) => checks[id]).length;
+
   const TABS = [
     { id: "overview" as TabNV, label: "📊 Overview" },
+    { id: "setup" as TabNV, label: "⚙️ Setup Profiluri" },
     { id: "strategie" as TabNV, label: "🎯 SOSTAC + SMM" },
     { id: "campanii" as TabNV, label: "🚀 Campanii Paid" },
     { id: "posturi" as TabNV, label: "📝 Posturi & Conținut" },
@@ -536,6 +542,248 @@ export default function NovaVisioPage() {
           </div>
         </div>
       )}
+
+      {/* ── SETUP PROFILURI ───────────────────────────────────────────────── */}
+      {tab === "setup" && (() => {
+        type Step = { id: string; text: string; tip?: string };
+        type Section = { titlu: string; icon: string; color: string; steps: Step[] };
+
+        const fb: Section = {
+          titlu: "Facebook", icon: "f", color: "bg-blue-600",
+          steps: [
+            { id: "fb1", text: "Poză de profil: logo-ul Nova Visio, pătrat 1:1, minim 170×170px, fundal alb sau transparent", tip: "Canva → logo pe fundal alb, export PNG" },
+            { id: "fb2", text: "Poză de copertă (cover): 820×312px — logo + tagline + servicii (ex: 'Site-uri · Google Ads · Meta Ads · SEO')", tip: "Canva template 'Facebook Cover' — simplu, profesional, brand colors" },
+            { id: "fb3", text: "Username / URL personalizat: facebook.com/novavisiotech (Settings → Page Info → Username)", tip: "Verifică să fie disponibil și simplu de reținut" },
+            { id: "fb4", text: "Categorie pagină: 'Marketing digital' sau 'Agenție de publicitate'", tip: "Settings → Page Info → Category" },
+            { id: "fb5", text: "Secțiunea 'Despre': descriere scurtă (max 255 char) + descriere lungă cu servicii + an înființare + website", tip: "Ex scurt: 'Agenție marketing digital Sibiu. Site-uri, Google Ads, Meta Ads, SEO. Transformăm bugetul în clienți reali.'" },
+            { id: "fb6", text: "Date contact complet: telefon, email, website novavisiotech.ro, adresă Sibiu", tip: "Fără date de contact → clienții nu te pot găsi" },
+            { id: "fb7", text: "Buton CTA pe pagină: setează 'Contactați-ne' → WhatsApp sau formular de contact", tip: "Settings → Add a button → cea mai importantă acțiune" },
+            { id: "fb8", text: "Secțiunea Servicii: adaugă serviciile (Creare site, Google Ads, Meta Ads, SEO, Mentenanță) cu descriere și preț (sau 'La cerere')", tip: "More → Services — clienții văd direct ce oferi" },
+            { id: "fb9", text: "Publică minim 5 posturi ÎNAINTE de a da drumul la reclame (algoritmul verifică pagina)", tip: "Fără conținut = scor de calitate scăzut = reclame mai scumpe" },
+            { id: "fb10", text: "Activează mesageria (Inbox) + răspuns automat de bun venit pe Messenger", tip: "Settings → Messaging → Instant Reply" },
+          ],
+        };
+
+        const ig: Section = {
+          titlu: "Instagram", icon: "ig", color: "bg-gradient-to-br from-pink-500 to-violet-600",
+          steps: [
+            { id: "ig1", text: "Convertește la cont Business: Setări → Cont → Comutați la cont profesional → Business", tip: "Fără cont Business nu poți rula reclame" },
+            { id: "ig2", text: "Conectează pagina Facebook la contul Instagram Business", tip: "Setări → Cont → Partajare pe alte aplicații → Facebook — obligatoriu pentru Meta Ads" },
+            { id: "ig3", text: "Poză de profil: același logo ca pe Facebook, circular (se taie colțurile), minim 110×110px", tip: "Consistency vizuală pe toate platformele = brand recognition" },
+            { id: "ig4", text: "Nume display: 'Nova Visio Tech' (exact, clar, fără simboluri inutile)", tip: "Numele apare în search — pune-l simplu" },
+            { id: "ig5", text: "Username: @novavisiotech (sau varianta disponibilă, scurtă, fără cifre random)", tip: "Verifică disponibilitatea și încearcă să fie identic cu Facebook" },
+            { id: "ig6", text: "Bio (150 caractere): Linie 1: ce faci. Linie 2: pentru cine. Linie 3: diferențiator. Linie 4: CTA + emoji", tip: "Ex: 'Agenție marketing digital 📊\\nSite-uri · Google Ads · Meta Ads · SEO\\nRezultate măsurabile, rapoarte transparente\\n👇 Audit gratuit ↓'" },
+            { id: "ig7", text: "Link în bio: pune novavisiotech.ro sau creează un Linktree cu: Site, WhatsApp, Servicii, Audit gratuit", tip: "Linktree.com — gratuit, 5 linkuri, mult mai eficient decât un singur link" },
+            { id: "ig8", text: "Publică minim 9 posturi pe grid ÎNAINTE de reclame (prima impresie pe profil = decisive)", tip: "3 rânduri × 3 coloane = grid complet. Vizual consistent = credibilitate" },
+            { id: "ig9", text: "Crează Highlight-uri: 📁 Servicii / 📊 Rezultate / 👥 Despre noi / 📞 Contact", tip: "Highlight cover-uri: pătrate simple cu icon alb pe fundal brand color (Canva)" },
+            { id: "ig10", text: "Activează răspuns automat la DM-uri (Meta Business Suite → Mesagerie automată)", tip: "Mesaj auto: 'Bună! 👋 Suntem Nova Visio. Revenim în max 2h în program L-V 9-18.'" },
+          ],
+        };
+
+        const li: Section = {
+          titlu: "LinkedIn Company", icon: "in", color: "bg-blue-700",
+          steps: [
+            { id: "li1", text: "Crează pagina de companie: linkedin.com/company/novavisiotech (dacă nu există)", tip: "LinkedIn → Work → Create a Company Page → atenție: e pagina firmei, nu profilul personal" },
+            { id: "li2", text: "Logo companie: 300×300px, fundal alb, format PNG", tip: "Același logo ca pe toate platformele — consistency" },
+            { id: "li3", text: "Cover image: 1128×191px — cover profesional cu servicii + tagline", tip: "Mai ingust decât Facebook, adaptează design-ul din Canva" },
+            { id: "li4", text: "Tagline (120 char): 'Agenție marketing digital Sibiu · Site-uri, Google Ads, Meta Ads, SEO'", tip: "Apare sub numele companiei în căutări LinkedIn" },
+            { id: "li5", text: "About (2000 char): descriere detaliată a serviciilor, cum ajuți clienții, ce te diferențiază, call to action", tip: "Include keywords: marketing digital, Google Ads, Facebook Ads, SEO, Sibiu, România" },
+            { id: "li6", text: "Specialties (keywords): Marketing Digital, Google Ads, Facebook Ads, SEO, Web Design, WordPress, Social Media Management", tip: "Ajută la apariția în căutările LinkedIn — max 20 keywords" },
+            { id: "li7", text: "Website, locație (Sibiu, România), dimensiune companie, an înființare", tip: "Date complete = pagina apare mai sus în căutări" },
+            { id: "li8", text: "Invită angajații să adauge Nova Visio ca loc de muncă (chiar dacă ești solo → crești autoritatea paginii)", tip: "O pagină cu angajați are reach organic de 3× mai mare" },
+            { id: "li9", text: "Publică 3-5 posturi pe pagina de companie înainte de a invita conexiunile să urmărească", tip: "Postări bune pe LinkedIn: articole insight, rezultate cifre, tips B2B, behind the scenes" },
+            { id: "li10", text: "Invită conexiunile personale să urmărească pagina companiei (buton 'Invite connections' pe pagină)", tip: "Primele 100-200 urmăritori sunt critici pentru credibilitate — LinkedIn îi amplifică" },
+          ],
+        };
+
+        const creativeSteps: Step[] = [
+          { id: "cr1", text: "Creativ #1 — Identitate vizuală: poze profil + cover-uri pentru FB, IG, LinkedIn (set complet, consistent)", tip: "Canva Business: template-uri gata, redimensionare automată pe toate formatele" },
+          { id: "cr2", text: "Creativ #2 — Reel intro: 'Cine suntem la Nova Visio în 60 de secunde' — filmat autentic, fără studio", tip: "Telefon + lumină naturală e de ajuns. Autenticul bate productia scumpa pe social." },
+          { id: "cr3", text: "Creativ #3 — Carusel educațional: '5 semne că ai nevoie de o agenție de marketing' (slide-uri simple în Canva)", tip: "Slide 1: hook puternic. Slide 2-6: un semn per slide. Slide 7: CTA. Format: 1080×1080px" },
+          { id: "cr4", text: "Creativ #4 — Studiu de caz vizual: un client real, cifre reale (înainte/după), design simplu carusel sau imagine", tip: "Chiar și un singur client cu rezultate concrete = cel mai puternic creativ" },
+          { id: "cr5", text: "Creativ #5 — Video testimonial: un client filmat 30-60s, spune cu cuvintele lui ce problemă a rezolvat Nova Visio", tip: "Cel mai puternic asset de conversie. Merită să ceri favoarea oricărui client mulțumit." },
+          { id: "cr6", text: "Creativ #6 — Imagine statică ad: 1080×1080px sau 1080×1920px (story) — titlu provocator + CTA audit gratuit", tip: "Pentru Facebook Ads — testezi asta prima dată, e cel mai simplu de produs" },
+        ];
+
+        const sections = [fb, ig, li];
+        const allFbIds = fb.steps.map(s => s.id);
+        const allIgIds = ig.steps.map(s => s.id);
+        const allLiIds = li.steps.map(s => s.id);
+        const allCrIds = creativeSteps.map(s => s.id);
+        const totalSteps = allFbIds.length + allIgIds.length + allLiIds.length + allCrIds.length;
+        const totalDone = [...allFbIds, ...allIgIds, ...allLiIds, ...allCrIds].filter(id => checks[id]).length;
+
+        return (
+          <div className="space-y-6">
+
+            {/* Progress global */}
+            <div className="bg-gradient-to-r from-slate-800 to-slate-900 rounded-2xl p-5 text-white">
+              <div className="flex items-center justify-between mb-3">
+                <div>
+                  <h2 className="text-lg font-bold">Setup Profiluri — Ready to launch</h2>
+                  <p className="text-slate-400 text-sm">Bifează fiecare pas. Salvat automat în browser.</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-3xl font-bold">{totalDone}<span className="text-slate-400 text-lg">/{totalSteps}</span></p>
+                  <p className="text-slate-400 text-xs">pași completați</p>
+                </div>
+              </div>
+              <div className="h-2.5 bg-slate-700 rounded-full overflow-hidden">
+                <div className="h-full bg-emerald-500 rounded-full transition-all duration-300"
+                  style={{ width: `${totalSteps > 0 ? Math.round(totalDone / totalSteps * 100) : 0}%` }} />
+              </div>
+              <div className="flex gap-4 mt-3 text-xs text-slate-400">
+                <span>FB: {doneCount(allFbIds)}/{allFbIds.length}</span>
+                <span>IG: {doneCount(allIgIds)}/{allIgIds.length}</span>
+                <span>LinkedIn: {doneCount(allLiIds)}/{allLiIds.length}</span>
+                <span>Creative: {doneCount(allCrIds)}/{allCrIds.length}</span>
+              </div>
+            </div>
+
+            {/* Recomandare: trafic pe site vs social */}
+            <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5">
+              <h3 className="font-bold text-amber-800 mb-3 text-sm">⚡ Răspuns la întrebarea ta: Trafic pe site sau pe Facebook/Instagram?</h3>
+              <div className="grid md:grid-cols-2 gap-3">
+                <div className="bg-emerald-50 border-2 border-emerald-400 rounded-xl p-4">
+                  <p className="font-bold text-emerald-800 text-sm mb-1">✅ RECOMANDAT — Start cu Facebook/Instagram</p>
+                  <ul className="text-xs text-emerald-700 space-y-1">
+                    <li>• Formularul de lead rămâne <strong>pe Facebook</strong> — fricțiune minimă</li>
+                    <li>• Nu pleacă din aplicație → conversie mai mare</li>
+                    <li>• Pixelul se încălzește cu date → retargeting mai ieftin ulterior</li>
+                    <li>• Construiești audiențe Custom pentru mai târziu</li>
+                    <li>• Nu ai nevoie de landing page optimizat acum</li>
+                    <li>• <strong>Cost per lead mai mic</strong> față de trafic pe site</li>
+                  </ul>
+                </div>
+                <div className="bg-red-50 border border-red-200 rounded-xl p-4">
+                  <p className="font-bold text-red-700 text-sm mb-1">❌ NU start cu trafic pe site (deocamdată)</p>
+                  <ul className="text-xs text-red-600 space-y-1">
+                    <li>• Dacă site-ul nu e optimizat pentru conversii → pierzi banii</li>
+                    <li>• Fără Pixel încălzit → cost/conversie ridicat</li>
+                    <li>• Fără social proof pe pagini → vizitatorii nu te cunosc</li>
+                    <li>• <strong>Când începi trafic pe site:</strong> luna 2-3, după ce ai Pixel cu date, landing page clar și dovezi sociale</li>
+                  </ul>
+                </div>
+              </div>
+              <p className="text-xs text-amber-700 mt-3 font-medium">
+                🎯 Ordinea corectă: <strong>1. Setup profiluri</strong> → <strong>2. Primele posturi (9 pe IG, 5 pe FB)</strong> → <strong>3. Facebook Lead Gen Ads</strong> → <strong>4. Google Search Ads</strong> → <strong>5. Trafic pe site</strong> (luna 2-3)
+              </p>
+            </div>
+
+            {/* Checklist per platformă */}
+            {sections.map(({ titlu, icon, color, steps }) => {
+              const ids = steps.map(s => s.id);
+              const done = doneCount(ids);
+              return (
+                <div key={titlu} className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+                  <div className={`px-5 py-4 flex items-center justify-between ${color}`}>
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 bg-white/20 rounded-xl flex items-center justify-center font-bold text-white text-sm">{icon}</div>
+                      <div>
+                        <p className="text-white font-bold">{titlu} — Optimizare Profil</p>
+                        <p className="text-white/70 text-xs">{done}/{steps.length} pași completați</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-white font-bold text-lg">{Math.round(done / steps.length * 100)}%</div>
+                      <div className="w-20 h-1.5 bg-white/20 rounded-full mt-1">
+                        <div className="h-full bg-white rounded-full transition-all" style={{ width: `${Math.round(done / steps.length * 100)}%` }} />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="divide-y divide-slate-50">
+                    {steps.map(({ id, text, tip }) => (
+                      <div key={id}
+                        className={`flex items-start gap-3 px-5 py-3.5 cursor-pointer hover:bg-slate-50 transition-colors ${checks[id] ? "bg-emerald-50/40" : ""}`}
+                        onClick={() => toggle(id)}>
+                        <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 mt-0.5 transition-all ${
+                          checks[id] ? "bg-emerald-500 border-emerald-500" : "border-slate-300"
+                        }`}>
+                          {checks[id] && <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>}
+                        </div>
+                        <div className="flex-1">
+                          <p className={`text-sm leading-snug ${checks[id] ? "text-slate-400 line-through" : "text-slate-800"}`}>{text}</p>
+                          {tip && <p className={`text-xs mt-0.5 italic ${checks[id] ? "text-slate-300" : "text-slate-400"}`}>💡 {tip}</p>}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+
+            {/* Creative-uri */}
+            <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+              <div className="bg-pink-600 px-5 py-4 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-white/20 rounded-xl flex items-center justify-center text-white text-sm">🎬</div>
+                  <div>
+                    <p className="text-white font-bold">Creative-uri de produs ÎNAINTE de reclame</p>
+                    <p className="text-white/70 text-xs">{doneCount(allCrIds)}/{creativeSteps.length} gata</p>
+                  </div>
+                </div>
+                <div className="text-white font-bold text-lg">{Math.round(doneCount(allCrIds) / creativeSteps.length * 100)}%</div>
+              </div>
+              <div className="p-4 mb-2 bg-pink-50 border-b border-pink-100 text-xs text-pink-700">
+                <strong>Ordinea de prioritate:</strong> mai întâi #1 (identitate vizuală) + #3 (carusel edu) + #6 (imagine statică ad) → suficient să lansezi prima campanie Facebook.
+                Restul le produci în paralel sau în luna 1.
+              </div>
+              <div className="divide-y divide-slate-50">
+                {creativeSteps.map(({ id, text, tip }) => (
+                  <div key={id}
+                    className={`flex items-start gap-3 px-5 py-3.5 cursor-pointer hover:bg-slate-50 transition-colors ${checks[id] ? "bg-emerald-50/40" : ""}`}
+                    onClick={() => toggle(id)}>
+                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 mt-0.5 transition-all ${
+                      checks[id] ? "bg-emerald-500 border-emerald-500" : "border-slate-300"
+                    }`}>
+                      {checks[id] && <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>}
+                    </div>
+                    <div className="flex-1">
+                      <p className={`text-sm leading-snug ${checks[id] ? "text-slate-400 line-through" : "text-slate-800"}`}>{text}</p>
+                      {tip && <p className={`text-xs mt-0.5 italic ${checks[id] ? "text-slate-300" : "text-slate-400"}`}>💡 {tip}</p>}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Checklist lansare */}
+            <div className="bg-slate-900 rounded-2xl p-5 text-white">
+              <h3 className="font-bold mb-3">🚀 Checklist lansare campanie — Minim necesar</h3>
+              <p className="text-slate-400 text-xs mb-4">Acestea trebuie bifate ÎNAINTE de a activa prima reclamă pe Facebook:</p>
+              <div className="space-y-2">
+                {[
+                  { id: "launch1", text: "Pagina Facebook: poză profil + cover + about + buton CTA setate" },
+                  { id: "launch2", text: "Pagina Instagram: business account + bio + link + minim 9 posturi pe grid" },
+                  { id: "launch3", text: "Meta Pixel instalat pe novavisiotech.ro (verificat în Pixel Helper)" },
+                  { id: "launch4", text: "Meta Business Manager creat și pagina FB conectată la Ad Account" },
+                  { id: "launch5", text: "Metodă de plată adăugată în Meta Business (card sau PayPal)" },
+                  { id: "launch6", text: "Minim 1 creativ gata (imagine statică 1080×1080px sau Reel)" },
+                  { id: "launch7", text: "Formularul de Lead Form creat în Meta Ads Manager (întrebări: Nume, Telefon, Serviciu dorit)" },
+                  { id: "launch8", text: "WhatsApp Business activ — pentru că formularul trimite spre WhatsApp" },
+                ].map(({ id, text }) => (
+                  <div key={id} onClick={() => toggle(id)}
+                    className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-colors ${checks[id] ? "bg-emerald-900/40" : "bg-slate-800 hover:bg-slate-700"}`}>
+                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${
+                      checks[id] ? "bg-emerald-500 border-emerald-500" : "border-slate-500"
+                    }`}>
+                      {checks[id] && <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>}
+                    </div>
+                    <p className={`text-sm ${checks[id] ? "text-slate-500 line-through" : "text-slate-200"}`}>{text}</p>
+                  </div>
+                ))}
+              </div>
+              {["launch1","launch2","launch3","launch4","launch5","launch6","launch7","launch8"].every(id => checks[id]) && (
+                <div className="mt-4 p-4 bg-emerald-600 rounded-xl text-center">
+                  <p className="font-bold text-white text-lg">🎉 Gata de lansare!</p>
+                  <p className="text-emerald-100 text-sm">Tot ce e necesar e bifat. Poți activa prima campanie Facebook Ads.</p>
+                </div>
+              )}
+            </div>
+
+          </div>
+        );
+      })()}
 
       {/* ── STRATEGIE SOSTAC ──────────────────────────────────────────────── */}
       {tab === "strategie" && (
