@@ -209,7 +209,169 @@ function TagsField({ label, tags, onChange }: { label: string; tags: string[]; o
 
 // ── Main page ──────────────────────────────────────────────────────────────
 
-type Tab = "overview" | "google" | "meta1" | "meta2" | "calendar" | "materiale" | "concurenti";
+// ── SOSTAC + SMM data ─────────────────────────────────────────────────────
+
+type SostacField = { titlu: string; continut: string };
+type SMMPlatforma = { platforma: string; frecventa: string; formate: string[]; teme: string[]; note: string };
+
+const sostacDefault: SostacField[] = [
+  {
+    titlu: "S — Situation (Situație actuală)",
+    continut: `Episculp Beauty este o clinică de estetică non-invazivă în Șelimbăr, Sibiu (Str. Doamna Stanca 5F). Fondator: Loredana Voinea, cosmetician CIDESCO.
+
+PIAȚA: Segmentul de estetică non-invazivă în Sibiu este în creștere. Cerere ridicată pentru epilare definitivă și tratamente corporale premium.
+
+COMPETIȚIE: Shyning Body, Mikadis și saloane estetice generice din Sibiu. Episculp se diferențiază prin tehnologie superioară (Primelase HR, Hydrafacial Syndeo — unica în Sibiu) și abordare clinică.
+
+DIGITAL ACTUAL: Prezență pe Instagram, Facebook, TikTok, YouTube. Site episculpt-beauty.ro funcțional cu prețuri și servicii. Fără campanii paid active (sau buget mic).
+
+OPORTUNITATE: Puțini concurenți locali cu Hydrafacial Syndeo + campanii Google Search active → cost de achiziție lead potențial sub media națională.`,
+  },
+  {
+    titlu: "O — Objectives (Obiective)",
+    continut: `OBIECTIV PRINCIPAL (6 luni):
+→ 80-90 leads/lună calificați pentru epilare definitivă
+→ Rată conversie lead → client: >30%
+→ Cost per lead țintă: <100 lei
+
+OBIECTIVE SECUNDARE:
+→ Brand awareness în Sibiu: top 3 rezultate Google pe "epilare definitiva sibiu"
+→ Instagram: +500 urmăritori/lună organici
+→ Fidelizare: 60% din clienți revin pentru al 2-lea serviciu (remodelare sau facial)
+→ Recenzii Google: de la 4.x la 4.8+ stele
+
+KPI LUNARI:
+• Leads generate: 80-90
+• CTR Google Ads: >5%
+• Cost/click Google: ≤10 lei
+• Engagement rate Instagram: >4%
+• WhatsApp conversații: 30+ pe lună`,
+  },
+  {
+    titlu: "S — Strategy (Strategie)",
+    continut: `POZIȚIONARE: Clinică de estetică premium non-invazivă — nu un simplu salon. Mesaj: "Rezultate vizibile, progresive, fără promisiuni exagerate."
+
+PILONI DE COMUNICARE:
+1. EDUCAȚIE — Explică tehnologia (Primelase, Cooltech, Hydrafacial) — de ce e mai bună vs. concurență
+2. SOCIAL PROOF — Rezultate reale (înainte/după), testimoniale video, recenzii
+3. OFERTĂ — Reduceri sezoniere clare (30-40%), pachete, promoții limitate
+4. DIFERENȚIERE — "Singurul Hydrafacial Syndeo din Sibiu" — repetat constant
+
+FUNNEL:
+Awareness (Meta Reach/IG organic) → Considerare (Retargeting ofertă) → Conversie (Google Search + WhatsApp Lead Form) → Fidelizare (Email/WhatsApp follow-up)
+
+PLATFORME PRINCIPALE: Instagram (primar) + Facebook (lead gen) + Google Search (intent ridicat) + TikTok (awareness tineret)`,
+  },
+  {
+    titlu: "T — Tactics (Tactici)",
+    continut: `GOOGLE ADS:
+• 1 campanie Search — "epilare definitiva sibiu" + variante
+• CPC țintă: ≤10 lei | Buget zilnic: 50 lei
+• Extensii: apel, locație, prețuri
+• Landing page dedicat epilare definitivă cu formular + WhatsApp
+
+META ADS:
+• C1 Lead Gen — 250 lei/7 zile, formulare Meta + Typeform, buton WhatsApp
+• C2 Brand Awareness — 150 lei/7 zile, boost posturi organice performante
+• Retargeting vizitatori site la 0.3 lei per interacțiune (ofertă + follow-up)
+
+ORGANIC SOCIAL:
+• 3 materiale noi/lună (Reel, Story, Post Carusel)
+• Posting: Instagram 4-5x/săptămână (Story zilnic)
+• TikTok: 2x/săptămână educațional
+• Răspuns DM în <2h (program L-V)
+
+EMAIL/WHATSAPP:
+• Secvență follow-up lead: mesaj zi 1, zi 3, zi 7
+• Newsletter lunar clienți existenți cu oferta lunii
+• Reminder ședință (cu 24h înainte)`,
+  },
+  {
+    titlu: "A — Action (Plan de acțiune)",
+    continut: `LUNA 1 (Iulie 2025) — SETUP:
+□ Setare campanie Google Search (cuvinte cheie + anunțuri)
+□ Creare Meta Business Manager + Pixel pe site
+□ Setare campanie C1 Lead Gen Meta
+□ Creare landing page epilare definitivă cu formular
+□ Integrare WhatsApp Business API pe site
+□ Producere 3 materiale: Reel epilare, Video Cooltech, Carusel Hydrafacial
+
+LUNA 2-3 — OPTIMIZARE:
+□ Analiză săptămânală CPC, CTR, cost/lead
+□ A/B test texte anunțuri Google (minim 3 variante)
+□ A/B test creative Meta (imagine vs. video)
+□ Ajustare audience Meta pe baza datelor reale
+□ Activare retargeting (vizitatori site + cei care au deschis formularul)
+
+LUNA 4-6 — SCALARE:
+□ Creștere buget campaniile cu ROI pozitiv
+□ Adăugare campanie sezonală (toamnă — remodelare corporală)
+□ Lansare program fidelizare (voucher la al 3-lea serviciu)
+□ Campanie recenzii Google (email post-ședință)`,
+  },
+  {
+    titlu: "C — Control (Monitorizare & KPI)",
+    continut: `RAPORT SĂPTĂMÂNAL (în CRM):
+• Leads generate (Google + Meta)
+• Cost per lead pe platformă
+• CTR și CPC Google Ads
+• Reach + Engagement Meta
+• Mesaje WhatsApp primite
+
+RAPORT LUNAR:
+• Total leads vs. target (80-90)
+• Conversie lead → client vs. target (>30%)
+• ROI campanii: venit generat / buget cheltuit
+• Top performing creative (materialul cu cel mai mult engagement)
+• Cuvinte cheie Google cu cel mai mic CPC
+
+INSTRUMENTE:
+• Google Ads Dashboard (zilnic)
+• Meta Ads Manager (zilnic)
+• Google Analytics 4 pe site (trafic + conversii)
+• WhatsApp Business (mesaje + statistici)
+• CRM Nova Visio (acest sistem — tracking leaduri)
+
+DECIZIE OPTIMIZARE:
+• CTR <2% Google → rescrie titlurile anunțurilor
+• CPC >15 lei → redu licitația sau adaugă negative keywords
+• Cost/lead >150 lei → testează alt format creativ Meta
+• Conv. rate <20% → îmbunătățește landing page-ul`,
+  },
+];
+
+const smmPlatforme: SMMPlatforma[] = [
+  {
+    platforma: "Instagram",
+    frecventa: "4-5 posturi/săptămână + Story zilnic",
+    formate: ["Reel 9:16 (rezultate înainte/după)", "Carusel educațional (tehnologii)", "Story cu poll/quiz", "Video testimonial clientă", "Story ofertă cu countdown"],
+    teme: ["Epilare definitivă — journey 12 luni", "Hydrafacial Syndeo — 'Unica în Sibiu'", "Criolipolizã — cum funcționează Cooltech", "Rutina de skin care post-procedură", "Behind the scenes salon"],
+    note: "Platforma principală. Focus pe Reels pentru reach organic. Story zilnic pentru engagement. Răspuns DM în max 2h.",
+  },
+  {
+    platforma: "Facebook",
+    frecventa: "3 posturi/săptămână + campanii paid",
+    formate: ["Post cu link spre landing page", "Album foto rezultate", "Event promoții sezoniere", "Reel cross-postat din Instagram"],
+    teme: ["Oferte și reduceri (30-40% la pachete)", "Testimoniale scrise + poze", "Programări rapide via Messenger", "Pachete cadou pentru sărbători"],
+    note: "Primară pentru Lead Gen ads (Meta Ads Manager). Audiență 30-55 ani. Formular de rezervare direct pe Facebook.",
+  },
+  {
+    platforma: "TikTok",
+    frecventa: "2 videouri/săptămână",
+    formate: ["Video educațional scurt 30-60s", "Transformare time-lapse", "FAQ epilare definitivă", "Day in the life salon"],
+    teme: ["'Ce se întâmplă la epilare laser?' — demistificat", "'3 motive să alegi Primelase vs IPL'", "Procesul complet Hydrafacial", "Rezultate criolipolizã la 4 săptămâni"],
+    note: "Awareness tineret 18-35 ani. Nu pentru lead gen direct — pentru vizibilitate și redirecționare spre Instagram/site.",
+  },
+  {
+    platforma: "Google Business",
+    frecventa: "1-2 posturi/săptămână + recenzii",
+    formate: ["Post ofertă lunară", "Post serviciu nou / actualizare", "Răspuns recenzii clienți"],
+    teme: ["Oferta lunii (reducere actuală)", "Serviciu highlight (unul pe lună)", "Invitație recenzie post-ședință"],
+    note: "CRITIC pentru SEO local. Răspunde la TOATE recenziile. Target: 4.8+ stele. Trimite link recenzie după fiecare ședință.",
+  },
+];
+
+type Tab = "overview" | "google" | "meta1" | "meta2" | "calendar" | "materiale" | "concurenti" | "strategie";
 
 export default function EpisculpPage() {
   const [tab, setTab] = useState<Tab>("overview");
@@ -221,6 +383,8 @@ export default function EpisculpPage() {
     { id: "3", luna: "Iulie 2025", tip: "Post carusel", serviciu: "Hydrafacial", descriere: "Slide 1: Ce e Hydrafacial Syndeo. Slide 2-4: Pașii procedurii. Slide 5: Rezultat. 'Unica în Sibiu'", status: "idee" },
   ]);
   const [leaduri, setLeaduri] = useState({ total_luna: "", cost_per_lead: "", conversie: ">30", buget_cheltuit: "" });
+  const [sostac, setSostac] = useState<SostacField[]>(sostacDefault);
+  const [sostacOpen, setSostacOpen] = useState<number | null>(0);
 
   useEffect(() => {
     const saved = localStorage.getItem("episculp_data_v2");
@@ -251,6 +415,7 @@ export default function EpisculpPage() {
 
   const TABS: { id: Tab; label: string }[] = [
     { id: "overview", label: "📊 Overview" },
+    { id: "strategie", label: "🎯 Strategie SMM" },
     { id: "google", label: "🔵 Google Ads" },
     { id: "meta1", label: "📘 Meta C1 — Lead Gen" },
     { id: "meta2", label: "📗 Meta C2 — Boost" },
@@ -432,6 +597,218 @@ export default function EpisculpPage() {
               </div>
             )}
           </div>
+        </div>
+      )}
+
+      {/* ── STRATEGIE SMM + SOSTAC ──────────────────────────────────────── */}
+      {tab === "strategie" && (
+        <div className="space-y-6">
+
+          {/* Header strategie */}
+          <div className="bg-gradient-to-r from-violet-600 to-pink-600 rounded-2xl p-6 text-white">
+            <h2 className="text-xl font-bold mb-1">Strategie SMM + SOSTAC — Episculp Beauty</h2>
+            <p className="text-violet-100 text-sm">Analiză completă a pieței, obiective, tactici și plan de acțiune pentru campanii Google + Meta + Organic.</p>
+            <div className="flex flex-wrap gap-2 mt-3">
+              {["Epilare Definitivă", "Remodelare Corporală", "Hydrafacial Syndeo", "Lead Gen", "Brand Awareness"].map((tag) => (
+                <span key={tag} className="text-xs bg-white/20 rounded-full px-3 py-1">{tag}</span>
+              ))}
+            </div>
+          </div>
+
+          {/* SOSTAC accordion */}
+          <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+            <div className="px-6 py-4 border-b border-slate-100">
+              <h3 className="font-bold text-slate-800">Framework SOSTAC</h3>
+              <p className="text-xs text-slate-400 mt-0.5">Click pe fiecare secțiune pentru a o deschide și edita</p>
+            </div>
+            {sostac.map((s, i) => {
+              const colors = [
+                "bg-blue-50 border-blue-200 text-blue-700",
+                "bg-emerald-50 border-emerald-200 text-emerald-700",
+                "bg-violet-50 border-violet-200 text-violet-700",
+                "bg-amber-50 border-amber-200 text-amber-700",
+                "bg-rose-50 border-rose-200 text-rose-700",
+                "bg-slate-50 border-slate-200 text-slate-700",
+              ];
+              const isOpen = sostacOpen === i;
+              return (
+                <div key={i} className="border-b border-slate-100 last:border-0">
+                  <button
+                    onClick={() => setSostacOpen(isOpen ? null : i)}
+                    className="w-full flex items-center justify-between px-6 py-4 hover:bg-slate-50 transition-colors text-left"
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className={`text-xs font-bold px-2.5 py-1 rounded-lg border ${colors[i]}`}>
+                        {s.titlu.split(" ")[0]}
+                      </span>
+                      <span className="font-semibold text-slate-800 text-sm">{s.titlu.split("(")[1]?.replace(")", "") ?? s.titlu.slice(4)}</span>
+                    </div>
+                    <span className="text-slate-400 text-sm">{isOpen ? "▲" : "▼"}</span>
+                  </button>
+                  {isOpen && (
+                    <div className="px-6 pb-5">
+                      <textarea
+                        value={s.continut}
+                        onChange={(e) => {
+                          const next = [...sostac];
+                          next[i] = { ...next[i], continut: e.target.value };
+                          setSostac(next);
+                        }}
+                        rows={12}
+                        className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm font-mono text-slate-700 focus:outline-none focus:ring-2 focus:ring-violet-400 resize-none bg-slate-50"
+                      />
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Campanii recomandate */}
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+            <h3 className="font-bold text-slate-800 mb-4">🏆 Campanii Recomandate — Prioritizate</h3>
+            <div className="space-y-3">
+              {[
+                {
+                  nr: "1", prio: "MUST HAVE", color: "bg-red-50 border-red-200",
+                  titlu: "Google Search — Epilare Definitivă Sibiu",
+                  buget: "350 lei/săpt.", platform: "Google Ads",
+                  desc: "Intent ridicat — oamenii caută deja. CPC ~10 lei. ROI imediat. Prioritatea #1 pentru lead gen.",
+                  actiuni: ["Activare cont Google Ads", "Creare campanie Search cu cuvinte cheie de mai sus", "Landing page dedicat cu formular + WhatsApp", "Extensii apel și locație"],
+                },
+                {
+                  nr: "2", prio: "MUST HAVE", color: "bg-red-50 border-red-200",
+                  titlu: "Meta Lead Gen — Epilare Definitivă (Formulare)",
+                  buget: "250 lei/săpt.", platform: "Facebook + Instagram",
+                  desc: "Lead form nativ Meta — fricțiune minimă, conversie maximă. WhatsApp Direct ca alternativă. Audience doamne 22-45 ani Sibiu.",
+                  actiuni: ["Setare Meta Business Suite + Pixel", "Creare Lead Form nativ (nume, telefon, serviciu dorit)", "Reel 'înainte/după' ca creativ principal", "Integrare WhatsApp Business"],
+                },
+                {
+                  nr: "3", prio: "RECOMANDAT", color: "bg-amber-50 border-amber-200",
+                  titlu: "Meta Retargeting — Ofertă Specială",
+                  buget: "100 lei/săpt.", platform: "Facebook + Instagram",
+                  desc: "Vizitatori site care nu au completat formularul. Cost mic (0.3-0.5 lei/interacțiune). Ofertă clară: 'Rezervă azi — -30%'.",
+                  actiuni: ["Activare Pixel pe site episculpt-beauty.ro", "Audiență Custom Audience vizitatori site", "Creativ: ofertă cu countdown (oferta expiră!)", "CTA: Mesaj WhatsApp direct"],
+                },
+                {
+                  nr: "4", prio: "RECOMANDAT", color: "bg-amber-50 border-amber-200",
+                  titlu: "Instagram Organic — 3 Materiale/Lună",
+                  buget: "0 lei (timp)", platform: "Instagram + TikTok",
+                  desc: "Construire audiență organică pe termen lung. Reach gratuit prin Reels. Social proof continuu.",
+                  actiuni: ["Reel lunar epilare definitivă (înainte/după)", "Post educațional Hydrafacial Syndeo ('Singurul în Sibiu')", "Story zilnic pentru engagement + DM-uri", "Boost posturile cu >500 reach organic"],
+                },
+                {
+                  nr: "5", prio: "OPTIONAL", color: "bg-blue-50 border-blue-200",
+                  titlu: "Meta Brand Awareness — Boost Organic Performant",
+                  buget: "150 lei/săpt.", platform: "Facebook + Instagram",
+                  desc: "Amplifică posturile organice care merg bine. Lookalike audience din clienți existenți. Brand building pe termen lung.",
+                  actiuni: ["Identificare post organic cu cel mai mult engagement", "Boost cu 100-150 lei pe 7 zile", "Audiență: Lookalike 1% clienți existenți Sibiu", "KPI: reach, engagement, urmăritori noi"],
+                },
+              ].map(({ nr, prio, color, titlu, buget, platform, desc, actiuni }) => (
+                <div key={nr} className={`border rounded-xl p-5 ${color}`}>
+                  <div className="flex items-start justify-between mb-2">
+                    <div className="flex items-center gap-3">
+                      <span className="w-7 h-7 rounded-full bg-white font-bold text-sm flex items-center justify-center text-slate-700 shrink-0 shadow-sm">{nr}</span>
+                      <div>
+                        <p className="font-bold text-slate-800 text-sm">{titlu}</p>
+                        <p className="text-xs text-slate-500">{platform}</p>
+                      </div>
+                    </div>
+                    <div className="text-right shrink-0 ml-3">
+                      <p className="text-xs font-bold text-slate-700">{buget}</p>
+                      <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
+                        prio === "MUST HAVE" ? "bg-red-100 text-red-700" :
+                        prio === "RECOMANDAT" ? "bg-amber-100 text-amber-700" :
+                        "bg-blue-100 text-blue-700"
+                      }`}>{prio}</span>
+                    </div>
+                  </div>
+                  <p className="text-xs text-slate-600 mb-3">{desc}</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {actiuni.map((a, ai) => (
+                      <span key={ai} className="text-xs bg-white/70 text-slate-600 border border-white rounded-lg px-2 py-0.5">✓ {a}</span>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* SMM Platforme */}
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+            <h3 className="font-bold text-slate-800 mb-4">📱 Plan Social Media per Platformă</h3>
+            <div className="space-y-4">
+              {smmPlatforme.map(({ platforma, frecventa, formate, teme, note }) => {
+                const colors: Record<string, string> = {
+                  Instagram: "border-pink-200 bg-pink-50",
+                  Facebook: "border-blue-200 bg-blue-50",
+                  TikTok: "border-slate-200 bg-slate-50",
+                  "Google Business": "border-emerald-200 bg-emerald-50",
+                };
+                const tc: Record<string, string> = {
+                  Instagram: "text-pink-700", Facebook: "text-blue-700",
+                  TikTok: "text-slate-700", "Google Business": "text-emerald-700",
+                };
+                return (
+                  <div key={platforma} className={`border rounded-xl p-4 ${colors[platforma] ?? "border-slate-200 bg-slate-50"}`}>
+                    <div className="flex items-center justify-between mb-3">
+                      <p className={`font-bold text-sm ${tc[platforma]}`}>{platforma}</p>
+                      <span className="text-xs text-slate-500 font-medium">{frecventa}</span>
+                    </div>
+                    <div className="grid md:grid-cols-2 gap-3">
+                      <div>
+                        <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">Formate</p>
+                        <ul className="space-y-0.5">
+                          {formate.map((f) => <li key={f} className="text-xs text-slate-600">• {f}</li>)}
+                        </ul>
+                      </div>
+                      <div>
+                        <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">Teme de conținut</p>
+                        <ul className="space-y-0.5">
+                          {teme.map((t) => <li key={t} className="text-xs text-slate-600">• {t}</li>)}
+                        </ul>
+                      </div>
+                    </div>
+                    <p className="text-xs text-slate-500 mt-3 italic border-t border-white/60 pt-2">💡 {note}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Buget total recomandat */}
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+            <h3 className="font-bold text-slate-800 mb-4">💰 Alocare Buget Lunară Recomandată</h3>
+            <div className="space-y-2">
+              {[
+                { canal: "Google Search Ads", buget: "1.400 lei/lună", proc: "15%", color: "bg-blue-500" },
+                { canal: "Meta Lead Gen C1 (Epilare)", buget: "1.000 lei/lună", proc: "11%", color: "bg-indigo-500" },
+                { canal: "Meta Retargeting", buget: "400 lei/lună", proc: "4%", color: "bg-violet-500" },
+                { canal: "Meta Brand Awareness C2", buget: "600 lei/lună", proc: "7%", color: "bg-purple-500" },
+                { canal: "Producție materiale (3/lună)", buget: "1.500 lei/lună", proc: "17%", color: "bg-pink-500" },
+                { canal: "Management campanii + raportare", buget: "4.100 lei/lună", proc: "46%", color: "bg-slate-400" },
+              ].map(({ canal, buget, proc, color }) => (
+                <div key={canal} className="flex items-center gap-3">
+                  <div className={`w-2.5 h-2.5 rounded-full ${color} shrink-0`} />
+                  <div className="flex-1">
+                    <div className="flex justify-between text-sm mb-0.5">
+                      <span className="text-slate-700">{canal}</span>
+                      <span className="font-semibold text-slate-800">{buget}</span>
+                    </div>
+                    <div className="h-1.5 bg-slate-100 rounded-full">
+                      <div className={`h-full rounded-full ${color}`} style={{ width: proc }} />
+                    </div>
+                  </div>
+                  <span className="text-xs text-slate-400 w-8 text-right">{proc}</span>
+                </div>
+              ))}
+              <div className="mt-3 pt-3 border-t border-slate-100 flex justify-between">
+                <span className="font-bold text-slate-800">TOTAL</span>
+                <span className="font-bold text-slate-800">9.000 lei/lună</span>
+              </div>
+            </div>
+          </div>
+
         </div>
       )}
 
