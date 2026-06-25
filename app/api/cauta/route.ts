@@ -61,7 +61,6 @@ export async function POST(req: NextRequest) {
       };
     });
 
-    // Salvam in DB (upsert ca sa nu duplicam)
     const { data: saved, error } = await supabaseAdmin
       .from("leads")
       .upsert(leads, { onConflict: "google_place_id", ignoreDuplicates: true })
@@ -71,9 +70,26 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    // Returnam leadurile gasite (sortate dupa scor), chiar daca unele existau deja
-    leads.sort((a: any, b: any) => b.scor - a.scor);
-    return NextResponse.json({ leads, salvate: saved?.length || 0 });
+    // Fetch DB ids for all returned leads (new + existing)
+    const placeIds = leads.map((l: any) => l.google_place_id);
+    const { data: dbLeads } = await supabaseAdmin
+      .from("leads")
+      .select("id, google_place_id, scor_viteza")
+      .in("google_place_id", placeIds);
+
+    const idMap: Record<string, { id: string; scor_viteza: number | null }> = {};
+    (dbLeads || []).forEach((r: any) => {
+      idMap[r.google_place_id] = { id: r.id, scor_viteza: r.scor_viteza };
+    });
+
+    const leadsWithIds = leads.map((l: any) => ({
+      ...l,
+      id: idMap[l.google_place_id]?.id || null,
+      scor_viteza: idMap[l.google_place_id]?.scor_viteza ?? null,
+    }));
+
+    leadsWithIds.sort((a: any, b: any) => b.scor - a.scor);
+    return NextResponse.json({ leads: leadsWithIds, salvate: saved?.length || 0 });
   } catch (e: any) {
     return NextResponse.json({ error: e.message }, { status: 500 });
   }

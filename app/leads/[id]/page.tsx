@@ -6,15 +6,23 @@ import Link from "next/link";
 import {
   Phone, Globe, Globe2, Star, MapPin, Gauge,
   Loader2, Plus, ArrowLeft, ExternalLink, MessageSquare,
-  Link2, CheckCheck,
+  Link2, CheckCheck, AlertTriangle,
 } from "lucide-react";
 import { etichetaScor, genereazaBrief } from "@/lib/scoring";
 import ServiciiBreakdown from "@/components/ServiciiBreakdown";
 import ObiectiiPanel from "@/components/ObiectiiPanel";
 import GeneratorOferta from "@/components/GeneratorOferta";
+import GeneratorEmail from "@/components/GeneratorEmail";
 
 const STATUSURI = ["Nou", "Contactat", "Interesat", "Oferta", "Client", "Pierdut"];
 const TIPURI = ["apel", "email", "intalnire", "nota"];
+const MOTIVE_PIERDERE = [
+  "Pret prea mare",
+  "Nu era momentul",
+  "A ales concurenta",
+  "Nu raspunde",
+  "Alt motiv",
+];
 
 const statusColor = (s: string) =>
   ({
@@ -57,6 +65,10 @@ export default function FisaLead() {
   const [valoare, setValoare] = useState<string>("");
   const [salvandValoare, setSalvandValoare] = useState(false);
 
+  // Motiv pierdere
+  const [motivModal, setMotivModal] = useState(false);
+  const [motivSelectat, setMotivSelectat] = useState(MOTIVE_PIERDERE[0]);
+
   async function incarca() {
     const [resLead, resAct] = await Promise.all([
       fetch(`/api/leads/${id}`),
@@ -93,11 +105,25 @@ export default function FisaLead() {
   }
 
   async function schimbaStatus(status: string) {
+    if (status === "Pierdut") {
+      setMotivModal(true);
+      return;
+    }
     await fetch(`/api/leads/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ status }),
     });
+    incarca();
+  }
+
+  async function confirmaPierdut() {
+    await fetch(`/api/leads/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status: "Pierdut", motiv_pierdere: motivSelectat }),
+    });
+    setMotivModal(false);
     incarca();
   }
 
@@ -148,6 +174,50 @@ export default function FisaLead() {
         <ArrowLeft className="w-4 h-4" /> Toate leadurile
       </Link>
 
+      {/* Modal motiv pierdere */}
+      {motivModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-sm mx-4">
+            <div className="flex items-center gap-2 mb-4">
+              <AlertTriangle className="w-5 h-5 text-red-500" />
+              <h3 className="font-semibold text-slate-900">De ce s-a pierdut?</h3>
+            </div>
+            <p className="text-sm text-slate-500 mb-4">
+              Selecteaza motivul pierderii acestui deal. Ajuta la identificarea pattern-urilor.
+            </p>
+            <div className="space-y-2 mb-5">
+              {MOTIVE_PIERDERE.map((m) => (
+                <button
+                  key={m}
+                  onClick={() => setMotivSelectat(m)}
+                  className={`w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium transition-colors border ${
+                    motivSelectat === m
+                      ? "bg-red-50 text-red-700 border-red-200"
+                      : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100"
+                  }`}
+                >
+                  {m}
+                </button>
+              ))}
+            </div>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setMotivModal(false)}
+                className="flex-1 px-4 py-2 rounded-lg text-sm font-medium bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors"
+              >
+                Anuleaza
+              </button>
+              <button
+                onClick={confirmaPierdut}
+                className="flex-1 px-4 py-2 rounded-lg text-sm font-medium bg-red-600 text-white hover:bg-red-700 transition-colors"
+              >
+                Marcheaza Pierdut
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Fisa */}
       <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm mb-4">
         <div className="flex justify-between items-start gap-4 flex-wrap mb-5">
@@ -170,6 +240,14 @@ export default function FisaLead() {
             </select>
           </div>
         </div>
+
+        {/* Motiv pierdere afisat */}
+        {lead.status === "Pierdut" && lead.motiv_pierdere && (
+          <div className="mb-4 px-4 py-2.5 bg-red-50 border border-red-100 rounded-xl text-sm text-red-700 flex items-center gap-2">
+            <AlertTriangle className="w-4 h-4 shrink-0" />
+            Motiv pierdere: <span className="font-semibold">{lead.motiv_pierdere}</span>
+          </div>
+        )}
 
         <div className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm border-t border-slate-100 pt-5">
           <div className="flex items-start gap-2 text-slate-600">
@@ -260,6 +338,12 @@ export default function FisaLead() {
         semnale={{ areWebsite: lead.are_website, rating: lead.rating, reviews: lead.nr_reviews, scorViteza: lead.scor_viteza, nisa: lead.nisa }}
         numeLead={lead.nume}
         telefon={lead.telefon}
+      />
+
+      {/* Generator email */}
+      <GeneratorEmail
+        semnale={{ areWebsite: lead.are_website, rating: lead.rating, reviews: lead.nr_reviews, scorViteza: lead.scor_viteza, nisa: lead.nisa }}
+        numeLead={lead.nume}
       />
 
       {/* Brief cold calling */}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Loader2, Clock, TrendingUp, Users, AlertCircle, Star, Euro } from "lucide-react";
+import { Loader2, Clock, TrendingUp, Users, AlertCircle, Star, Euro, XCircle } from "lucide-react";
 import Link from "next/link";
 
 const statusBarColor = (s: string) =>
@@ -63,6 +63,17 @@ export default function Dashboard() {
     .filter((s) => !["Pierdut", "Nou"].includes(s.status))
     .reduce((sum, s) => sum + s.valoare, 0);
 
+  // Motive pierdere
+  const pierdute = leads.filter((l) => l.status === "Pierdut" && l.motiv_pierdere);
+  const motivCount: Record<string, number> = {};
+  pierdute.forEach((l) => {
+    motivCount[l.motiv_pierdere] = (motivCount[l.motiv_pierdere] || 0) + 1;
+  });
+  const motive = Object.entries(motivCount)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5);
+  const totalPierdute = leads.filter((l) => l.status === "Pierdut").length;
+
   const stats = [
     { label: "Total leaduri", val: total, icon: Users, color: "text-blue-600", bg: "bg-blue-50" },
     { label: "Fara website", val: faraSite, icon: AlertCircle, color: "text-red-600", bg: "bg-red-50" },
@@ -89,7 +100,7 @@ export default function Dashboard() {
         ))}
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-6">
+      <div className="grid lg:grid-cols-2 gap-6 mb-6">
         <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
           <div className="flex items-start justify-between mb-5">
             <h2 className="font-semibold text-slate-900">Pipeline vanzari</h2>
@@ -150,6 +161,42 @@ export default function Dashboard() {
           )}
         </div>
       </div>
+
+      {/* Motive pierdere */}
+      {totalPierdute > 0 && (
+        <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+          <h2 className="font-semibold text-slate-900 mb-1 flex items-center gap-2">
+            <XCircle className="w-4 h-4 text-red-500" /> De ce pierdem dealuri
+          </h2>
+          <p className="text-xs text-slate-400 mb-5">
+            {totalPierdute} dealuri pierdute total
+            {pierdute.length > 0 && ` · ${pierdute.length} cu motiv inregistrat`}
+          </p>
+          {motive.length === 0 ? (
+            <p className="text-slate-400 text-sm">
+              Niciun motiv inregistrat inca. La urmatoarea pierdere, selecteaza motivul din fisa lead.
+            </p>
+          ) : (
+            <div className="space-y-3">
+              {motive.map(([motiv, count]) => (
+                <div key={motiv} className="flex items-center gap-3">
+                  <span className="text-sm text-slate-600 flex-1">{motiv}</span>
+                  <div className="w-32 bg-slate-100 rounded-full h-2 overflow-hidden">
+                    <div
+                      className="h-full bg-red-400 rounded-full"
+                      style={{ width: `${(count / (motive[0][1] || 1)) * 100}%` }}
+                    />
+                  </div>
+                  <span className="text-sm font-semibold text-slate-700 w-5 text-right">{count}</span>
+                  <span className="text-xs text-slate-400 w-10 text-right">
+                    {pierdute.length ? Math.round((count / pierdute.length) * 100) : 0}%
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

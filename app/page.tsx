@@ -1,7 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Search, MapPin, Star, Phone, Globe, Globe2, Loader2, MessageSquare, ChevronDown, ChevronUp } from "lucide-react";
+import {
+  Search, MapPin, Star, Phone, Globe, Globe2, Loader2,
+  MessageSquare, ChevronDown, ChevronUp, Plus, X, CheckCircle2,
+} from "lucide-react";
 import { etichetaScor, genereazaBrief } from "@/lib/scoring";
 import HartaLeads from "@/components/HartaLeads";
 import ServiciiBreakdown from "@/components/ServiciiBreakdown";
@@ -86,91 +89,219 @@ function BriefCard({ lead }: { lead: any }) {
   );
 }
 
+type SearchRow = {
+  id: number;
+  judet: string;
+  oras: string;
+  nisa: string;
+  status: "idle" | "loading" | "done" | "error";
+  count?: number;
+  eroare?: string;
+};
+
+let _nextId = 2;
+
 export default function Home() {
-  const [judet, setJudet] = useState("Sibiu");
-  const [oras, setOras] = useState("");
-  const [nisa, setNisa] = useState("");
+  const [rows, setRows] = useState<SearchRow[]>([
+    { id: 1, judet: "Sibiu", oras: "", nisa: "", status: "idle" },
+  ]);
   const [leads, setLeads] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [searching, setSearching] = useState(false);
   const [mesaj, setMesaj] = useState("");
 
-  async function cauta() {
-    if (!nisa.trim()) return;
-    setLoading(true);
+  function addRow() {
+    if (rows.length >= 10) return;
+    const prev = rows[rows.length - 1];
+    setRows((r) => [...r, { id: _nextId++, judet: prev.judet, oras: "", nisa: "", status: "idle" }]);
+  }
+
+  function removeRow(id: number) {
+    setRows((r) => r.filter((x) => x.id !== id));
+  }
+
+  function updateRow(id: number, field: keyof SearchRow, value: string) {
+    setRows((r) => r.map((x) => (x.id === id ? { ...x, [field]: value } : x)));
+  }
+
+  async function cautaTot() {
+    const valid = rows.filter((r) => r.nisa.trim());
+    if (valid.length === 0) return;
+
+    setSearching(true);
+    setLeads([]);
     setMesaj("");
-    try {
-      const res = await fetch("/api/cauta", {
+    setRows((r) =>
+      r.map((x) => (x.nisa.trim() ? { ...x, status: "loading" as const, count: undefined, eroare: undefined } : x))
+    );
+
+    const results = await Promise.allSettled(
+      valid.map(async (row) => {
+        try {
+          const res = await fetch("/api/cauta", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ judet: row.judet, oras: row.oras, nisa: row.nisa }),
+          });
+          const data = await res.json();
+          if (data.error) {
+            setRows((r) => r.map((x) => x.id === row.id ? { ...x, status: "error", eroare: data.error } : x));
+            throw new Error(data.error);
+          }
+          setRows((r) => r.map((x) => x.id === row.id ? { ...x, status: "done", count: data.leads?.length || 0 } : x));
+          return data.leads as any[];
+        } catch (e: any) {
+          setRows((r) => r.map((x) => x.id === row.id ? { ...x, status: "error", eroare: e.message } : x));
+          throw e;
+        }
+      })
+    );
+
+    // Merge si deduplicate
+    const seen = new Set<string>();
+    const allLeads: any[] = [];
+    for (const r of results) {
+      if (r.status === "fulfilled") {
+        for (const l of r.value) {
+          if (!seen.has(l.google_place_id)) {
+            seen.add(l.google_place_id);
+            allLeads.push(l);
+          }
+        }
+      }
+    }
+    allLeads.sort((a, b) => b.scor - a.scor);
+    setLeads(allLeads);
+
+    const reusita = results.filter((r) => r.status === "fulfilled").length;
+    setMesaj(
+      `${allLeads.length} rezultate unice · ${reusita}/${valid.length} cautari completate`
+    );
+
+    // PageSpeed automat in background pentru leadurile cu website fara scor
+    const cuSite = allLeads.filter((l) => l.are_website && l.website && l.id && l.scor_viteza == null);
+    cuSite.slice(0, 8).forEach((l) => {
+      fetch("/api/analiza", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ judet, oras, nisa }),
-      });
-      const data = await res.json();
-      if (data.error) {
-        setMesaj("Eroare: " + data.error);
-        setLeads([]);
-      } else {
-        setLeads(data.leads);
-        setMesaj(`${data.leads.length} rezultate · ${data.salvate} noi salvate in CRM`);
-      }
-    } catch (e: any) {
-      setMesaj("Eroare: " + e.message);
+        body: JSON.stringify({ leadId: l.id, website: l.website }),
+      }).catch(() => {});
+    });
+    if (cuSite.length > 0) {
+      setMesaj((m) => m + ` · Analizez viteza pentru ${Math.min(cuSite.length, 8)} site-uri...`);
     }
-    setLoading(false);
+
+    setSearching(false);
   }
+
+  const canSearch = rows.some((r) => r.nisa.trim()) && !searching;
 
   return (
     <div className="p-8 max-w-5xl">
       <div className="mb-8">
         <h1 className="text-2xl font-semibold text-slate-900">Cautare leaduri</h1>
         <p className="text-slate-500 text-sm mt-1">
-          Gaseste afaceri dupa judet si nisa, direct din Google Maps
+          Adauga mai multe cautari si lanseaza-le simultan — rezultatele se combina automat
         </p>
       </div>
 
       <div className="bg-white border border-slate-200 rounded-2xl p-5 mb-6 shadow-sm">
-        <div className="flex flex-wrap gap-4 items-end">
-          <div className="flex-1 min-w-[150px]">
-            <label className="text-xs font-medium text-slate-600 block mb-1.5">Judet</label>
-            <select
-              value={judet}
-              onChange={(e) => setJudet(e.target.value)}
-              className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              {JUDETE.map((j) => <option key={j}>{j}</option>)}
-            </select>
-          </div>
-          <div className="flex-1 min-w-[140px]">
-            <label className="text-xs font-medium text-slate-600 block mb-1.5">
-              Oras / Zona <span className="text-slate-400 font-normal">(optional)</span>
-            </label>
-            <input
-              value={oras}
-              onChange={(e) => setOras(e.target.value)}
-              placeholder="ex. Medias, Cisnadie..."
-              className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-          <div className="flex-1 min-w-[160px]">
-            <label className="text-xs font-medium text-slate-600 block mb-1.5">Nisa</label>
-            <input
-              list="nise-list"
-              value={nisa}
-              onChange={(e) => setNisa(e.target.value)}
-              placeholder="ex. Restaurante..."
-              className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <datalist id="nise-list">
-              {NISE.map((n) => <option key={n} value={n} />)}
-            </datalist>
-          </div>
+        <div className="space-y-3 mb-4">
+          {rows.map((row, i) => (
+            <div key={row.id} className="flex flex-wrap gap-3 items-center">
+              {/* Status indicator */}
+              <div className="w-5 shrink-0 flex items-center justify-center">
+                {row.status === "loading" && <Loader2 className="w-4 h-4 animate-spin text-blue-500" />}
+                {row.status === "done" && <CheckCircle2 className="w-4 h-4 text-emerald-500" />}
+                {row.status === "error" && <X className="w-4 h-4 text-red-500" />}
+                {row.status === "idle" && (
+                  <span className="w-4 h-4 rounded-full border-2 border-slate-200 flex items-center justify-center text-xs text-slate-400 font-bold">
+                    {i + 1}
+                  </span>
+                )}
+              </div>
+
+              <div className="flex-1 min-w-[130px]">
+                <select
+                  value={row.judet}
+                  onChange={(e) => updateRow(row.id, "judet", e.target.value)}
+                  disabled={searching}
+                  className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-60"
+                >
+                  {JUDETE.map((j) => <option key={j}>{j}</option>)}
+                </select>
+              </div>
+
+              <div className="flex-1 min-w-[120px]">
+                <input
+                  value={row.oras}
+                  onChange={(e) => updateRow(row.id, "oras", e.target.value)}
+                  disabled={searching}
+                  placeholder="Oras (optional)"
+                  className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-60"
+                />
+              </div>
+
+              <div className="flex-1 min-w-[140px]">
+                <input
+                  list={`nise-${row.id}`}
+                  value={row.nisa}
+                  onChange={(e) => updateRow(row.id, "nisa", e.target.value)}
+                  disabled={searching}
+                  placeholder="Nisa (ex. Restaurante)"
+                  className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-60"
+                />
+                <datalist id={`nise-${row.id}`}>
+                  {NISE.map((n) => <option key={n} value={n} />)}
+                </datalist>
+              </div>
+
+              {/* Count badge */}
+              {row.status === "done" && row.count != null && (
+                <span className="text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-1 rounded-md font-medium shrink-0">
+                  {row.count} gsit
+                </span>
+              )}
+              {row.status === "error" && (
+                <span className="text-xs text-red-600 shrink-0" title={row.eroare}>Eroare</span>
+              )}
+
+              {/* Remove row */}
+              {rows.length > 1 && (
+                <button
+                  onClick={() => removeRow(row.id)}
+                  disabled={searching}
+                  className="text-slate-400 hover:text-red-500 transition-colors disabled:opacity-40 shrink-0"
+                  title="Sterge rand"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              )}
+            </div>
+          ))}
+        </div>
+
+        <div className="flex items-center gap-3 pt-3 border-t border-slate-100">
           <button
-            onClick={cauta}
-            disabled={loading || !nisa.trim()}
-            className="bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-6 py-2.5 text-sm font-medium flex items-center gap-2 disabled:opacity-50 transition-colors shrink-0"
+            onClick={addRow}
+            disabled={rows.length >= 10 || searching}
+            className="flex items-center gap-1.5 text-sm text-slate-600 hover:text-blue-600 transition-colors disabled:opacity-40 font-medium"
           >
-            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
-            Cauta
+            <Plus className="w-4 h-4" /> Adauga cautare
           </button>
+          <span className="text-slate-200">|</span>
+          <span className="text-xs text-slate-400">{rows.length}/10 cautari</span>
+          <div className="ml-auto">
+            <button
+              onClick={cautaTot}
+              disabled={!canSearch}
+              className="bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-6 py-2.5 text-sm font-medium flex items-center gap-2 disabled:opacity-50 transition-colors"
+            >
+              {searching
+                ? <><Loader2 className="w-4 h-4 animate-spin" /> Se cauta...</>
+                : <><Search className="w-4 h-4" /> Cauta {rows.filter(r => r.nisa.trim()).length > 1 ? "toate" : ""}</>
+              }
+            </button>
+          </div>
         </div>
       </div>
 
@@ -195,6 +326,7 @@ export default function Home() {
               <div className="flex justify-between items-start gap-3">
                 <div className="min-w-0 flex-1">
                   <div className="font-semibold text-slate-900">{l.nume}</div>
+                  <div className="text-xs text-slate-400 mt-0.5">{l.nisa} · {l.judet}</div>
                   <div className="text-sm text-slate-500 mt-1.5 flex items-center gap-4 flex-wrap">
                     <span className="flex items-center gap-1">
                       <MapPin className="w-3.5 h-3.5 shrink-0" /> {l.adresa}
