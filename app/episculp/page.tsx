@@ -371,7 +371,7 @@ const smmPlatforme: SMMPlatforma[] = [
   },
 ];
 
-type Tab = "overview" | "google" | "meta1" | "meta2" | "calendar" | "materiale" | "concurenti" | "strategie";
+type Tab = "overview" | "google" | "meta1" | "meta2" | "calendar" | "materiale" | "concurenti" | "strategie" | "adlibrary";
 
 export default function EpisculpPage() {
   const [tab, setTab] = useState<Tab>("overview");
@@ -432,6 +432,7 @@ export default function EpisculpPage() {
     { id: "calendar", label: "📅 Calendar" },
     { id: "materiale", label: "🎬 Materiale" },
     { id: "concurenti", label: "⚔️ Concurenți" },
+    { id: "adlibrary", label: "📊 Ad Library" },
   ];
 
   return (
@@ -1084,6 +1085,308 @@ export default function EpisculpPage() {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* ── AD LIBRARY FACEBOOK ──────────────────────────────────────────── */}
+      {tab === "adlibrary" && (
+        <div className="space-y-5">
+
+          {/* Header */}
+          <div className="bg-gradient-to-r from-blue-700 to-indigo-700 rounded-2xl p-6 text-white">
+            <div className="flex items-start justify-between">
+              <div>
+                <h2 className="text-xl font-bold mb-1">Analiză Ad Library Facebook</h2>
+                <p className="text-blue-200 text-sm">Reclame active EpiSculpt Beauty Sibiu — date extrase din Meta Ad Library</p>
+                <p className="text-blue-300 text-xs mt-1">Actualizat: 25 iunie 2026 · Sortat după impresii totale</p>
+              </div>
+              <a
+                href="https://web.facebook.com/ads/library/?active_status=active&ad_type=all&country=RO&is_targeted_country=false&media_type=all&q=EpiSculpt%20Beauty%20Sibiu&search_type=keyword_unordered&sort_data[direction]=desc&sort_data[mode]=total_impressions"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs bg-white/20 hover:bg-white/30 text-white px-3 py-2 rounded-xl transition-colors shrink-0 ml-4"
+              >
+                🔗 Deschide Ad Library
+              </a>
+            </div>
+            <div className="grid grid-cols-4 gap-3 mt-4">
+              {[
+                { label: "Reclame active", value: "6+", color: "text-white" },
+                { label: "Format dominant", value: "Video 100%", color: "text-white" },
+                { label: "Campanii paid", value: "2", color: "text-amber-300" },
+                { label: "Boosted posts", value: "4+", color: "text-blue-200" },
+              ].map((k) => (
+                <div key={k.label} className="bg-white/10 rounded-xl p-3">
+                  <p className="text-blue-200 text-xs">{k.label}</p>
+                  <p className={`text-lg font-bold mt-0.5 ${k.color}`}>{k.value}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* ALERTA GAP MAJOR */}
+          <div className="bg-red-50 border-2 border-red-300 rounded-2xl p-5">
+            <div className="flex items-start gap-3">
+              <span className="text-2xl">🚨</span>
+              <div>
+                <p className="font-bold text-red-800 text-base">GAP MAJOR: Zero campanie paid pentru Epilare Definitivă</p>
+                <p className="text-red-700 text-sm mt-1">
+                  Serviciul <strong>prioritar #1</strong> (Epilare Definitivă cu Primelase HR, Full Body 910 lei) nu are nicio reclamă paid activă.
+                  Episculp promovează Remodelare Corporală și Analiza Facială Observ 320, dar lasă neacoperit cel mai căutat serviciu.
+                </p>
+                <p className="text-red-600 text-sm mt-2 font-semibold">
+                  → Oportunitate imediată: Lansăm campania Meta Lead Gen pentru epilare definitiv (Meta C1 din strategia noastră).
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Reclame active */}
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+            <h3 className="font-bold text-slate-800 mb-4">📋 Reclame Active — Detalii</h3>
+            <div className="space-y-4">
+
+              {/* Campanie 1 */}
+              <div className="border border-violet-200 bg-violet-50 rounded-xl p-4">
+                <div className="flex items-start justify-between mb-2">
+                  <div className="flex items-center gap-2">
+                    <span className="w-6 h-6 rounded-full bg-violet-600 text-white text-xs font-bold flex items-center justify-center shrink-0">1</span>
+                    <div>
+                      <p className="font-bold text-slate-800 text-sm">Remodelare Corporală — Reducere 40%</p>
+                      <p className="text-xs text-slate-500">Pornit: 20 mai 2026 · Multiple versiuni · FB + IG + Messenger</p>
+                    </div>
+                  </div>
+                  <div className="flex flex-col items-end gap-1 shrink-0 ml-3">
+                    <span className="text-xs font-bold bg-violet-100 text-violet-700 px-2 py-0.5 rounded-full">PAID</span>
+                    <span className="text-xs text-slate-500">Learn More</span>
+                  </div>
+                </div>
+                <div className="bg-white/70 rounded-lg p-3 text-xs text-slate-700 mb-2 italic">
+                  "Te chinui să obții corpul tonifiat pe care ți-l dorești? 🤔 Profită de reducerile de până la 40% și ajuță-ți corpul să fie în cea mai bună formă cu tratamentul de Remodelare corporală!"
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <span className="text-xs bg-violet-100 text-violet-700 px-2 py-0.5 rounded-md">✅ Non-invaziv și fără durere</span>
+                  <span className="text-xs bg-violet-100 text-violet-700 px-2 py-0.5 rounded-md">✅ Elimină grăsimea localizată</span>
+                  <span className="text-xs bg-violet-100 text-violet-700 px-2 py-0.5 rounded-md">✅ Reduce celulita</span>
+                  <span className="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-md">🎬 Video</span>
+                  <span className="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md">Label: Pana la 40% Reducere</span>
+                </div>
+              </div>
+
+              {/* Campanie 2 */}
+              <div className="border border-blue-200 bg-blue-50 rounded-xl p-4">
+                <div className="flex items-start justify-between mb-2">
+                  <div className="flex items-center gap-2">
+                    <span className="w-6 h-6 rounded-full bg-blue-600 text-white text-xs font-bold flex items-center justify-center shrink-0">2</span>
+                    <div>
+                      <p className="font-bold text-slate-800 text-sm">Analiză Facială Observ 320 — 149 lei</p>
+                      <p className="text-xs text-slate-500">Pornit: 27 mai 2026 · 3 variante creative · FB + IG + Messenger</p>
+                    </div>
+                  </div>
+                  <div className="flex flex-col items-end gap-1 shrink-0 ml-3">
+                    <span className="text-xs font-bold bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">PAID</span>
+                    <span className="text-xs text-slate-500">Learn More</span>
+                  </div>
+                </div>
+                <div className="bg-white/70 rounded-lg p-3 text-xs text-slate-700 mb-2 italic">
+                  "Tu știi ce are cu adevărat nevoie tenul tău? 🌟 La EpiSculpt Beauty poți beneficia de o analiză și diagnoză facială avansată cu Observ 320 la prețul de 149 lei."
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-md">✅ Identifică probleme ascunse</span>
+                  <span className="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-md">🎬 Video</span>
+                  <span className="text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded-md">⭐ Singurul aparat din Sibiu</span>
+                  <span className="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md">Entry-point offer 149 lei</span>
+                </div>
+              </div>
+
+              {/* Boost-uri organice */}
+              <div className="border border-slate-200 bg-slate-50 rounded-xl p-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="w-6 h-6 rounded-full bg-slate-400 text-white text-xs font-bold flex items-center justify-center shrink-0">3</span>
+                  <div>
+                    <p className="font-bold text-slate-700 text-sm">Boost-uri Organice (4+ reclame) — FB + IG</p>
+                    <p className="text-xs text-slate-500">Pornite: 19 iunie 2026 · CTA: Visit Instagram</p>
+                  </div>
+                  <span className="text-xs font-bold bg-slate-200 text-slate-600 px-2 py-0.5 rounded-full ml-auto shrink-0">BOOST ORGANIC</span>
+                </div>
+                <div className="space-y-2">
+                  {[
+                    { titlu: "Brand storytelling — Loredana & echipa", text: '"Dacă ajuță la ceva, sunteți mereu în mintea Loredanei 🧡 — muncă permanentă, de care suntem foarte mândri."' },
+                    { titlu: "Hydrafacial — Behind the scenes", text: '"Ready, set, gata de Hydrafacial sau... Loredana are o grămadă de roluri în același timp și le face pe toate extraordinar."' },
+                    { titlu: "Epilare + Servicii generale Sibiu", text: '"Crazy sau nu, așteptăm telefonul tău pentru cele mai bune servicii de epilare definitivă, tratamente corporale și faciale în Sibiu 😉"' },
+                    { titlu: "Alt post organic (detalii lipsă)", text: "Conținut parțial vizibil — ID: 1378285514113176, pornit 19 iunie 2026." },
+                  ].map(({ titlu, text }) => (
+                    <div key={titlu} className="bg-white rounded-lg p-3 border border-slate-100">
+                      <p className="text-xs font-semibold text-slate-700 mb-1">{titlu}</p>
+                      <p className="text-xs text-slate-500 italic">{text}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Analiza mesaje & tonalitate */}
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+            <h3 className="font-bold text-slate-800 mb-4">🎭 Analiză Mesaje & Tonalitate</h3>
+            <div className="grid md:grid-cols-2 gap-4">
+              <div className="space-y-3">
+                <p className="text-xs font-bold text-slate-500 uppercase tracking-wide">Ce fac BINE</p>
+                {[
+                  { icon: "✅", text: "Ton cald, autentic — vocea fondatoarei Loredana e prezentă" },
+                  { icon: "✅", text: "Evidențiază diferențiatorul: 'Singurul aparat din Sibiu' (Observ 320)" },
+                  { icon: "✅", text: "Oferă prețuri clare: 149 lei (Observ), -40% (Remodelare)" },
+                  { icon: "✅", text: "Folosesc liste cu beneficii (✅ bullet points) — scanabil rapid" },
+                  { icon: "✅", text: "Produc conținut constant — 6 reclame în 5 săptămâni" },
+                ].map(({ icon, text }) => (
+                  <div key={text} className="flex items-start gap-2 text-xs text-slate-700">
+                    <span className="shrink-0">{icon}</span>{text}
+                  </div>
+                ))}
+              </div>
+              <div className="space-y-3">
+                <p className="text-xs font-bold text-slate-500 uppercase tracking-wide">Ce lipsește / GAP-uri</p>
+                {[
+                  { icon: "❌", text: "Nicio reclamă paid pentru Epilare Definitivă (serviciul #1)" },
+                  { icon: "❌", text: "Nicio reclamă cu Google Ads — traficul de intenție ridicată e neacoperit" },
+                  { icon: "❌", text: "Niciun format carusel sau imagine statică — risc de oboseală vizuală" },
+                  { icon: "❌", text: "Niciun retargeting vizibil (follow-up vizitatori site sau form openers)" },
+                  { icon: "❌", text: "Lipsesc testimoniale video sau rezultate înainte/după în reclame" },
+                  { icon: "⚠️", text: "Boost-urile organice duc pe Instagram, nu pe landing page cu formular" },
+                ].map(({ icon, text }) => (
+                  <div key={text} className="flex items-start gap-2 text-xs text-slate-700">
+                    <span className="shrink-0">{icon}</span>{text}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Comparatie strategie noastra */}
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+            <h3 className="font-bold text-slate-800 mb-1">⚡ Comparație: Ce rulează EI vs. Ce propunem NOI</h3>
+            <p className="text-xs text-slate-400 mb-4">Bazat pe datele Ad Library — oportunități clare de diferențiere</p>
+            <div className="overflow-x-auto">
+              <table className="w-full text-xs">
+                <thead>
+                  <tr className="border-b border-slate-200">
+                    <th className="text-left py-2 px-3 text-slate-500 font-semibold">Serviciu / Canal</th>
+                    <th className="text-center py-2 px-3 text-slate-500 font-semibold">Ei rulează acum</th>
+                    <th className="text-center py-2 px-3 text-slate-500 font-semibold">Strategia noastră</th>
+                    <th className="text-left py-2 px-3 text-slate-500 font-semibold">Oportunitate</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {[
+                    {
+                      serviciu: "Epilare Definitivă (Primelase)",
+                      ei: "❌ Nimic",
+                      noi: "✅ Meta C1 Lead Gen + Google Search",
+                      oportunitate: "🔥 URGENT — gap total, concurența poate câștiga leads",
+                    },
+                    {
+                      serviciu: "Remodelare Corporală (Cooltech)",
+                      ei: "✅ Campanie paid (-40%)",
+                      noi: "📅 Planificată sezon (Mai-Oct)",
+                      oportunitate: "Deja acoperit de ei — diferențierea prin Primelase e mai importantă",
+                    },
+                    {
+                      serviciu: "Analiză Facială Observ 320",
+                      ei: "✅ Campanie paid (149 lei)",
+                      noi: "—",
+                      oportunitate: "Tactic bun de entry-offer — considerăm să îl adăugăm în funnel",
+                    },
+                    {
+                      serviciu: "Hydrafacial Syndeo",
+                      ei: "⚡ Boost organic",
+                      noi: "✅ Meta C2 Brand Awareness",
+                      oportunitate: "Ei comunică brand, noi vom face lead gen direct cu prețul",
+                    },
+                    {
+                      serviciu: "Google Ads (Search)",
+                      ei: "❌ Nimic vizibil",
+                      noi: "✅ 1 campanie Search dedicată",
+                      oportunitate: "🔥 Monopol pe 'epilare definitiva sibiu' — zero concurență plătită acum",
+                    },
+                    {
+                      serviciu: "Retargeting",
+                      ei: "❌ Nimic vizibil",
+                      noi: "✅ Retargeting vizitatori site (0.3 lei/interacțiune)",
+                      oportunitate: "Leads care au văzut dar nu au completat — ieftini de recapturat",
+                    },
+                  ].map(({ serviciu, ei, noi, oportunitate }) => (
+                    <tr key={serviciu} className="hover:bg-slate-50">
+                      <td className="py-2.5 px-3 font-medium text-slate-700">{serviciu}</td>
+                      <td className="py-2.5 px-3 text-center">{ei}</td>
+                      <td className="py-2.5 px-3 text-center">{noi}</td>
+                      <td className="py-2.5 px-3 text-slate-600">{oportunitate}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Recomandari actionale */}
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+            <h3 className="font-bold text-slate-800 mb-4">🎯 Recomandări Acționabile — Prioritizate</h3>
+            <div className="space-y-3">
+              {[
+                {
+                  nr: "1", urgenta: "URGENT", color: "bg-red-50 border-red-200",
+                  titlu: "Lansează Meta C1 — Lead Gen Epilare Definitivă",
+                  desc: "Ei nu rulează nimic pe epilare. Moment perfect să ocupi spațiul. Reel înainte/după + formular Meta nativ + WhatsApp Direct. Buget: 250 lei/7 zile.",
+                  actiuni: ["Creativ: Reel 9:16 — clientă după 6 ședințe Primelase", "Text: 'Full Body 910 lei — definitiv scăpată de brici'", "Lead Form Meta nativ: nume + telefon + zonă dorită", "CTA: WhatsApp Direct sau formular"],
+                },
+                {
+                  nr: "2", urgenta: "URGENT", color: "bg-red-50 border-red-200",
+                  titlu: "Activează Google Ads Search — Epilare Definitivă Sibiu",
+                  desc: "Zero concurență plătită pe Google acum. 'Epilare definitiva sibiu' e neacoperit — CPC probabil sub 10 lei. ROI imediat.",
+                  actiuni: ["Campanie Search cu cuvintele cheie din tab Google Ads", "Landing page dedicat cu formular + număr telefon vizibil", "Extensii apel + locație + prețuri", "Analiză săptămânală CPC și ajustare licitație"],
+                },
+                {
+                  nr: "3", urgenta: "RECOMANDAT", color: "bg-amber-50 border-amber-200",
+                  titlu: "Adaugă format carusel și imagini statice",
+                  desc: "Ei folosesc 100% video. Carusel cu 'Zone corporale + prețuri cu reducere' sau 'Pas cu pas epilare la Episculp' poate performa diferit și reduce oboseala vizuală.",
+                  actiuni: ["Carusel: 5 slide-uri zone epilare + prețuri -30%", "Imagine statică: înainte/după cu testimonial text", "Test A/B: video vs. imagine pe același audience"],
+                },
+                {
+                  nr: "4", urgenta: "RECOMANDAT", color: "bg-amber-50 border-amber-200",
+                  titlu: "Inspiră-te din entry-offer-ul lor (Observ 320 → 149 lei)",
+                  desc: "Tactic inteligent: oferă o primă consultație la preț mic → upsell servicii mari. Considerăm 'Consultație gratuită epilare definitiva' sau 'Testare laser gratuită 1 zonă mică'.",
+                  actiuni: ["Consultație 0 lei sau testare 1 zonă gratuită ca entry point", "Follow-up secvențial: zi 1 → zi 3 → zi 7 WhatsApp", "Conversie la pachet complet după consultație"],
+                },
+                {
+                  nr: "5", urgenta: "OPTIONAL", color: "bg-blue-50 border-blue-200",
+                  titlu: "Activează Retargeting",
+                  desc: "Ei nu au retargeting vizibil. Vizitatorii site-ului episculpt-beauty.ro care nu au completat formularul sunt ieftini de recapturat (0.3-0.5 lei/interacțiune).",
+                  actiuni: ["Instalare/verificare Meta Pixel pe site", "Custom Audience: vizitatori site ultimele 30 zile", "Creativ ofertă cu countdown: 'Rezervă azi — mai ai locuri!'", "Buget minimal: 50-100 lei/săptămână"],
+                },
+              ].map(({ nr, urgenta, color, titlu, desc, actiuni }) => (
+                <div key={nr} className={`border rounded-xl p-4 ${color}`}>
+                  <div className="flex items-start justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <span className="w-6 h-6 rounded-full bg-white font-bold text-xs flex items-center justify-center text-slate-700 shrink-0 shadow-sm">{nr}</span>
+                      <p className="font-bold text-slate-800 text-sm">{titlu}</p>
+                    </div>
+                    <span className={`text-xs font-bold px-2 py-0.5 rounded-full shrink-0 ml-2 ${
+                      urgenta === "URGENT" ? "bg-red-100 text-red-700" :
+                      urgenta === "RECOMANDAT" ? "bg-amber-100 text-amber-700" :
+                      "bg-blue-100 text-blue-700"
+                    }`}>{urgenta}</span>
+                  </div>
+                  <p className="text-xs text-slate-600 mb-2">{desc}</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {actiuni.map((a) => (
+                      <span key={a} className="text-xs bg-white/70 text-slate-600 border border-white rounded-lg px-2 py-0.5">✓ {a}</span>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <p className="text-xs text-slate-400 text-center">Date Ad Library Meta · EpiSculpt Beauty Sibiu · Analizat 25 iunie 2026</p>
         </div>
       )}
 
