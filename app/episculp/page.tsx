@@ -371,7 +371,7 @@ const smmPlatforme: SMMPlatforma[] = [
   },
 ];
 
-type Tab = "overview" | "google" | "meta1" | "meta2" | "calendar" | "materiale" | "concurenti" | "strategie" | "adlibrary" | "meeting" | "buget";
+type Tab = "overview" | "google" | "meta1" | "meta2" | "calendar" | "materiale" | "concurenti" | "strategie" | "adlibrary" | "meeting" | "buget" | "roadmap";
 
 export default function EpisculpPage() {
   const [tab, setTab] = useState<Tab>("overview");
@@ -387,13 +387,12 @@ export default function EpisculpPage() {
   const [sostacOpen, setSostacOpen] = useState<number | null>(0);
   const [bugetTotal, setBugetTotal] = useState(9000);
   const [splits, setSplits] = useState([
-    { canal: "Google Ads (1 campanie Search)", key: "google", proc: 16, color: "bg-blue-500", colorText: "text-blue-700", border: "border-blue-200" },
-    { canal: "Meta C1 — Lead Gen Epilare", key: "meta1", proc: 12, color: "bg-indigo-500", colorText: "text-indigo-700", border: "border-indigo-200" },
-    { canal: "Meta C2 — Brand Awareness Boost", key: "meta2", proc: 7, color: "bg-violet-500", colorText: "text-violet-700", border: "border-violet-200" },
-    { canal: "Producție materiale (3/lună)", key: "prod", proc: 17, color: "bg-pink-500", colorText: "text-pink-700", border: "border-pink-200" },
-    { canal: "Management + raportare", key: "mgmt", proc: 48, color: "bg-slate-400", colorText: "text-slate-600", border: "border-slate-200" },
+    { canal: "Meta C1 — Lead Gen Epilare", key: "meta1", proc: 45, color: "bg-indigo-500", colorText: "text-indigo-700", border: "border-indigo-200" },
+    { canal: "Meta C2 — Remodelare / Facial (sezon)", key: "meta2", proc: 30, color: "bg-violet-500", colorText: "text-violet-700", border: "border-violet-200" },
+    { canal: "Retargeting", key: "retarget", proc: 25, color: "bg-pink-500", colorText: "text-pink-700", border: "border-pink-200" },
   ]);
   const [scenBudget, setScenBudget] = useState(5000);
+  const [meetingAnswers, setMeetingAnswers] = useState<Record<string, string>>({});
 
   useEffect(() => {
     const saved = localStorage.getItem("episculp_data_v2");
@@ -405,7 +404,6 @@ export default function EpisculpPage() {
         if (d.materiale) setMateriale(d.materiale);
         if (d.leaduri) setLeaduri(d.leaduri);
         if (d.bugetTotal) setBugetTotal(d.bugetTotal);
-        if (d.splits) setSplits(d.splits);
       } catch {}
     }
   }, []);
@@ -413,6 +411,15 @@ export default function EpisculpPage() {
   useEffect(() => {
     localStorage.setItem("episculp_data_v2", JSON.stringify({ google, meta, materiale, leaduri, bugetTotal, splits }));
   }, [google, meta, materiale, leaduri]);
+
+  useEffect(() => {
+    const s = localStorage.getItem("episculp_meeting_answers");
+    if (s) { try { setMeetingAnswers(JSON.parse(s)); } catch {} }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("episculp_meeting_answers", JSON.stringify(meetingAnswers));
+  }, [meetingAnswers]);
 
   function updateMaterial(id: string, patch: Partial<Material>) {
     setMateriale((prev) => prev.map((m) => m.id === id ? { ...m, ...patch } : m));
@@ -427,6 +434,7 @@ export default function EpisculpPage() {
   const TABS: { id: Tab; label: string }[] = [
     { id: "overview", label: "📊 Overview" },
     { id: "meeting", label: "🤝 Pregătire Întâlnire" },
+    { id: "roadmap", label: "🗺️ Roadmap & Optimizare" },
     { id: "buget", label: "💰 Buget & Scenarii" },
     { id: "strategie", label: "🎯 Strategie SMM" },
     { id: "google", label: "🔵 Google Ads" },
@@ -833,7 +841,14 @@ export default function EpisculpPage() {
                       <div key={q} className="bg-white/80 rounded-lg p-3.5">
                         <p className="text-sm font-semibold text-slate-800 mb-1.5">❓ {q}</p>
                         <p className="text-xs text-slate-600 leading-relaxed mb-2">{de}</p>
-                        <p className="text-xs text-emerald-700 bg-emerald-50 rounded-md px-2.5 py-1.5"><span className="font-semibold">Ce facem cu răspunsul:</span> {cuRaspunsul}</p>
+                        <p className="text-xs text-emerald-700 bg-emerald-50 rounded-md px-2.5 py-1.5 mb-2"><span className="font-semibold">Ce facem cu răspunsul:</span> {cuRaspunsul}</p>
+                        <textarea
+                          value={meetingAnswers[q] ?? ""}
+                          onChange={(e) => setMeetingAnswers((p) => ({ ...p, [q]: e.target.value }))}
+                          placeholder="✍️ Scrie aici răspunsul clientului (se salvează automat)..."
+                          rows={2}
+                          className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400 resize-none bg-white"
+                        />
                       </div>
                     ))}
                   </div>
@@ -1254,6 +1269,175 @@ export default function EpisculpPage() {
         );
       })()}
 
+      {/* ── ROADMAP & OPTIMIZARE ─────────────────────────────────────────── */}
+      {tab === "roadmap" && (
+        <div className="space-y-5">
+
+          {/* Header */}
+          <div className="bg-gradient-to-r from-indigo-600 to-blue-600 rounded-2xl p-6 text-white">
+            <p className="text-blue-200 text-xs uppercase tracking-wide font-semibold mb-1">Plan de lucru · Nova Visio pentru Episculp Beauty</p>
+            <h2 className="text-2xl font-bold mb-2">Analizăm ce aveți → optimizăm → roadmap pas cu pas pe 3 luni</h2>
+            <p className="text-blue-100 text-sm">Nu reinventăm ce funcționează deja. Identificăm ce lipsește, aducem optimizarea și măsurăm impactul. Tot planul pe bugetul vostru de reclame — creativele le faceți voi.</p>
+          </div>
+
+          {/* PASUL 1 — DIAGNOSTIC */}
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+            <div className="flex items-center gap-2 mb-1">
+              <span className="w-7 h-7 rounded-full bg-indigo-600 text-white text-sm font-bold flex items-center justify-center">1</span>
+              <h3 className="font-bold text-slate-800 text-lg">Diagnostic — ce aveți deja vs. ce lipsește</h3>
+            </div>
+            <p className="text-xs text-slate-400 mb-4 ml-9">Vestea bună: aveți deja fundație solidă. Problema nu e lipsa de calitate, ci felul în care e promovată online.</p>
+
+            <div className="grid md:grid-cols-2 gap-4">
+              <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4">
+                <p className="text-xs font-bold text-emerald-800 uppercase tracking-wide mb-2">✅ Ce aveți deja (puncte forte)</p>
+                <ul className="space-y-1.5 text-sm text-slate-700">
+                  <li>✅ <strong>SEO puternic</strong> — sunteți #1 pe Google la „epilare definitiva sibiu”</li>
+                  <li>✅ Tehnologie premium (Primelase, Syndeo, Cooltech, Observ 320)</li>
+                  <li>✅ Prezență activă pe Instagram, Facebook, TikTok</li>
+                  <li>✅ Produceți singuri creative video</li>
+                  <li>✅ Investiți deja un buget pe Meta</li>
+                </ul>
+              </div>
+              <div className="bg-rose-50 border border-rose-200 rounded-xl p-4">
+                <p className="text-xs font-bold text-rose-800 uppercase tracking-wide mb-2">❌ Ce lipsește (de aici vin clienții pierduți)</p>
+                <ul className="space-y-1.5 text-sm text-slate-700">
+                  <li>❌ Reclamele sunt „boost-uri” — obiectiv greșit (engagement, nu clienți)</li>
+                  <li>❌ Trimit oamenii pe Instagram, fără a le cere datele</li>
+                  <li>❌ Fără tracking (pixel) → nu se poate măsura nimic</li>
+                  <li>❌ Fără retargeting → pierdeți cei care v-au văzut deja</li>
+                  <li>❌ Fără raport pe cifre (cost/lead, ce reclamă aduce clienți)</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          {/* DE CE NU GOOGLE ADS */}
+          <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5">
+            <p className="font-bold text-amber-800 text-sm mb-2">🔍 De ce NU recomandăm Google Ads acum</p>
+            <p className="text-sm text-amber-700 mb-2">Sunteți deja <strong>#1 organic</strong> pe „epilare definitiva sibiu”. Un Google Ad ar plăti pentru clicuri pe care le primiți deja gratuit prin SEO — bani dublați degeaba.</p>
+            <div className="grid md:grid-cols-2 gap-3 mt-3">
+              <div className="bg-white rounded-lg p-3">
+                <p className="text-xs font-bold text-slate-600 mb-1">Google = cererea care vă caută deja</p>
+                <p className="text-xs text-slate-500">O aveți acoperită gratuit prin SEO. Nu plătim pentru ea.</p>
+              </div>
+              <div className="bg-white rounded-lg p-3">
+                <p className="text-xs font-bold text-emerald-700 mb-1">Meta = cererea care încă nu vă cunoaște</p>
+                <p className="text-xs text-slate-500">Aici e creșterea: ajungem la cei care nu caută activ, dar sunt clienți potențiali. Acolo punem tot bugetul.</p>
+              </div>
+            </div>
+          </div>
+
+          {/* PASUL 2 — CE ADUCEM IN PLUS */}
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+            <div className="flex items-center gap-2 mb-1">
+              <span className="w-7 h-7 rounded-full bg-indigo-600 text-white text-sm font-bold flex items-center justify-center">2</span>
+              <h3 className="font-bold text-slate-800 text-lg">Ce aducem în plus față de ce aveți</h3>
+            </div>
+            <p className="text-xs text-slate-400 mb-4 ml-9">Optimizarea concretă — fiecare punct rezolvă un gap de mai sus.</p>
+            <div className="grid md:grid-cols-2 gap-3">
+              {[
+                { t: "Tracking complet", d: "Instalăm pixel + evenimente pe site. Din prima zi vedem ce funcționează. Fără asta, banii pe reclame sunt invizibili." },
+                { t: "Obiectiv corect: Lead Gen", d: "Înlocuim boost-urile cu campanii care cer clienți reali (formular / mesaj), nu doar like-uri." },
+                { t: "Captăm lead-ul, nu îl pierdem", d: "Formular nativ Meta + buton WhatsApp direct. Fiecare interesat devine un contact pe care îl puteți suna." },
+                { t: "Retargeting", d: "Recuperăm ieftin (0,3-0,5 lei/interacțiune) pe cei care v-au văzut dar nu au acționat încă." },
+                { t: "Structură + testare pe creativele VOASTRE", d: "Voi faceți materialele, noi le organizăm, testăm (A/B) și le punem în campanii corecte ca să scoatem maxim din ele." },
+                { t: "Raport lunar cu cifre", d: "Câte lead-uri, la ce cost, ce reclamă merge, cât ați investit vs. încasat. Transparent, lunar." },
+              ].map(({ t, d }) => (
+                <div key={t} className="border border-slate-200 rounded-xl p-4">
+                  <p className="font-bold text-slate-800 text-sm mb-1 flex items-center gap-2"><span className="text-emerald-500">+</span> {t}</p>
+                  <p className="text-xs text-slate-600">{d}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* PASUL 3 — ROADMAP 3 LUNI */}
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+            <div className="flex items-center gap-2 mb-1">
+              <span className="w-7 h-7 rounded-full bg-indigo-600 text-white text-sm font-bold flex items-center justify-center">3</span>
+              <h3 className="font-bold text-slate-800 text-lg">Roadmap pe 3 luni — pe serviciile voastre</h3>
+            </div>
+            <p className="text-xs text-slate-400 mb-4 ml-9">Pas cu pas. Fiecare lună are un focus, acțiuni concrete și ce măsurăm.</p>
+            <div className="space-y-4">
+              {[
+                {
+                  luna: "LUNA 1 — Iulie", faza: "Fundație + prima campanie", color: "bg-blue-50 border-blue-200", dot: "bg-blue-500",
+                  focus: "Remodelare corporală (sezon vară) + Epilare definitivă (evergreen)",
+                  actiuni: [
+                    "Instalăm pixel + tracking, conectăm conturile corect",
+                    "Lansăm prima campanie Lead Gen cu formular + WhatsApp",
+                    "Pornim retargeting de bază pe vizitatorii site-ului",
+                    "Organizăm creativele voastre în structură testabilă",
+                  ],
+                  masuram: "Cost/lead inițial, câte lead-uri, ce creativ prinde cel mai bine",
+                },
+                {
+                  luna: "LUNA 2 — August", faza: "Optimizare + extindere", color: "bg-violet-50 border-violet-200", dot: "bg-violet-500",
+                  focus: "Adăugăm Hydrafacial / facial (ten după soare) + Observ 320 ca ofertă de intrare",
+                  actiuni: [
+                    "Optimizăm pe baza datelor: oprim ce nu merge, dublăm ce merge",
+                    "A/B test pe creativele voastre — găsim mesajul câștigător",
+                    "Activăm retargeting cu ofertă (recuperăm interesații)",
+                    "Construim funnel: Observ 320 ieftin → consultație → serviciu mare",
+                  ],
+                  masuram: "Tendința cost/lead (scade?), rata lead → programare",
+                },
+                {
+                  luna: "LUNA 3 — Septembrie", faza: "Scalare + impact măsurabil", color: "bg-emerald-50 border-emerald-200", dot: "bg-emerald-500",
+                  focus: "Campanie „mămici revenite din concediu” + scalăm serviciul câștigător",
+                  actiuni: [
+                    "Creștem bugetul pe campaniile profitabile",
+                    "Lansăm mesaj de sezon (corp post-vară, re-start)",
+                    "Raport complet: comparație Luna 1 vs. Luna 3",
+                    "Definim planul pentru luna 4+ pe baza cifrelor reale",
+                  ],
+                  masuram: "IMPACT REAL: cost/client, ROI, evoluție față de start",
+                },
+              ].map(({ luna, faza, color, dot, focus, actiuni, masuram }) => (
+                <div key={luna} className={`border rounded-xl p-4 ${color}`}>
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className={`w-3 h-3 rounded-full ${dot}`} />
+                    <p className="font-bold text-slate-800 text-sm">{luna}</p>
+                    <span className="text-xs text-slate-500">· {faza}</span>
+                  </div>
+                  <div className="mb-3">
+                    <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-0.5">Focus</p>
+                    <p className="text-sm text-slate-700">{focus}</p>
+                  </div>
+                  <div className="grid md:grid-cols-2 gap-3">
+                    <div>
+                      <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-1">Ce facem</p>
+                      <ul className="space-y-1">
+                        {actiuni.map((a) => <li key={a} className="text-xs text-slate-600">→ {a}</li>)}
+                      </ul>
+                    </div>
+                    <div>
+                      <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-1">Ce măsurăm</p>
+                      <p className="text-xs text-slate-600 bg-white/70 rounded-md p-2">{masuram}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Nota impact L2-L3 */}
+          <div className="bg-indigo-50 border border-indigo-200 rounded-2xl p-5">
+            <p className="font-bold text-indigo-800 text-sm mb-2">📈 Când se vede impactul real</p>
+            <p className="text-sm text-indigo-700">Impactul măsurabil apare <strong>între luna 2 și 3</strong>, nu din prima săptămână. Două motive: (1) Meta are nevoie de ~2 săptămâni să „învețe” pe fiecare campanie; (2) epilarea definitivă e o decizie de cumpărare cu gândire — oamenii nu cumpără pe loc. <strong>Lunile 1-2 = construim și calibrăm. Luna 3 = cifrele devin concludente.</strong> De aceea evaluăm serios la finalul lunii 2 / începutul lunii 3.</p>
+          </div>
+
+          {/* Tie la buget */}
+          <div className="bg-slate-800 rounded-2xl p-5 text-white">
+            <p className="font-bold text-sm mb-2">💰 Totul rulează pe bugetul vostru</p>
+            <p className="text-sm text-slate-300">Tot planul folosește bugetul vostru de reclame (vezi tab <strong>💰 Buget & Scenarii</strong> pentru structura exactă în funcție de sumă). Creativele le faceți voi. Noi aducem strategia, setarea corectă, optimizarea și raportarea. Fără costuri ascunse de producție.</p>
+          </div>
+
+          <p className="text-xs text-slate-400 text-center">Roadmap & Optimizare · Episculp Beauty · Plan pe 3 luni</p>
+        </div>
+      )}
+
       {/* ── OVERVIEW ──────────────────────────────────────────────────────── */}
       {tab === "overview" && (
         <div className="space-y-5">
@@ -1618,26 +1802,14 @@ export default function EpisculpPage() {
 
             {/* Summary cards */}
             <div className="grid grid-cols-3 gap-3 mt-5 pt-4 border-t border-slate-100">
-              {[
-                {
-                  label: "Paid Ads total",
-                  lei: Math.round(bugetTotal * (splits[0].proc + splits[1].proc + splits[2].proc) / 100),
-                  sub: "Google + Meta C1 + Meta C2",
-                  color: "text-blue-600",
-                },
-                {
-                  label: "Producție + Mgmt",
-                  lei: Math.round(bugetTotal * (splits[3].proc + splits[4].proc) / 100),
-                  sub: "Materiale + Management",
-                  color: "text-slate-700",
-                },
-                {
-                  label: "TOTAL LUNAR",
-                  lei: bugetTotal,
-                  sub: `${splits.reduce((s, x) => s + x.proc, 0)}% alocat`,
-                  color: "text-emerald-600",
-                },
-              ].map(({ label, lei, sub, color }) => (
+              {(() => {
+                const pick = (k: string) => splits.find((s) => s.key === k)?.proc ?? 0;
+                return [
+                  { label: "Lead Gen (C1)", lei: Math.round(bugetTotal * pick("meta1") / 100), sub: "Epilare definitivă", color: "text-indigo-600" },
+                  { label: "Brand + Retargeting", lei: Math.round(bugetTotal * (pick("meta2") + pick("retarget")) / 100), sub: "Remodelare/Facial + retargeting", color: "text-violet-600" },
+                  { label: "TOTAL DIFUZARE", lei: bugetTotal, sub: `${splits.reduce((s, x) => s + x.proc, 0)}% alocat`, color: "text-emerald-600" },
+                ];
+              })().map(({ label, lei, sub, color }) => (
                 <div key={label} className="bg-slate-50 rounded-xl p-3 text-center">
                   <p className="text-xs text-slate-400 uppercase tracking-wide">{label}</p>
                   <p className={`text-lg font-bold mt-0.5 ${color}`}>{lei.toLocaleString("ro")} lei</p>
