@@ -371,7 +371,7 @@ const smmPlatforme: SMMPlatforma[] = [
   },
 ];
 
-type Tab = "overview" | "google" | "meta1" | "meta2" | "calendar" | "materiale" | "concurenti" | "strategie" | "adlibrary";
+type Tab = "overview" | "google" | "meta1" | "meta2" | "calendar" | "materiale" | "concurenti" | "strategie" | "adlibrary" | "meeting";
 
 export default function EpisculpPage() {
   const [tab, setTab] = useState<Tab>("overview");
@@ -425,6 +425,7 @@ export default function EpisculpPage() {
 
   const TABS: { id: Tab; label: string }[] = [
     { id: "overview", label: "📊 Overview" },
+    { id: "meeting", label: "🤝 Pregătire Întâlnire" },
     { id: "strategie", label: "🎯 Strategie SMM" },
     { id: "google", label: "🔵 Google Ads" },
     { id: "meta1", label: "📘 Meta C1 — Lead Gen" },
@@ -493,6 +494,328 @@ export default function EpisculpPage() {
           </button>
         ))}
       </div>
+
+      {/* ── PREGĂTIRE ÎNTÂLNIRE ──────────────────────────────────────────── */}
+      {tab === "meeting" && (
+        <div className="space-y-5">
+
+          {/* Header */}
+          <div className="bg-gradient-to-r from-emerald-600 to-teal-600 rounded-2xl p-6 text-white">
+            <h2 className="text-xl font-bold mb-1">Pregătire Întâlnire — Episculp Beauty</h2>
+            <p className="text-emerald-100 text-sm">Tot ce ai nevoie pentru o întâlnire de discovery puternică: întrebări, brief, audit ads, red flags și strategie de închidere.</p>
+            <div className="flex flex-wrap gap-2 mt-3">
+              {["Discovery", "Audit Ads", "Întrebări cheie", "Red Flags", "Închidere"].map((t) => (
+                <span key={t} className="text-xs bg-white/20 rounded-full px-3 py-1">{t}</span>
+              ))}
+            </div>
+          </div>
+
+          {/* Mindset banner */}
+          <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5">
+            <p className="font-bold text-amber-800 text-sm mb-2">🧠 Mentalitate pentru întâlnire</p>
+            <div className="space-y-1.5 text-sm text-amber-700">
+              <p>• <strong>Ascultă 70%, vorbește 30%.</strong> Cel mai bun pitch e diagnosticul corect. Pune întrebări, lasă-i să-ți spună problemele.</p>
+              <p>• <strong>Nu vinde reclame — vinde clienți noi.</strong> Lor nu le pasă de CPM sau CTR. Le pasă de scaune ocupate.</p>
+              <p>• <strong>Tu ai făcut temele.</strong> Ai analizat 7 concurenți + Ad Library-ul lor. Asta te pune deasupra oricărei alte agenții.</p>
+              <p>• <strong>Capacitate înainte de lead-uri.</strong> Întreabă câți clienți pot duce pe lună ÎNAINTE să promiți volum.</p>
+            </div>
+          </div>
+
+          {/* Cheat sheet — ce stiu deja */}
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+            <h3 className="font-bold text-slate-800 mb-4">📌 Cheat Sheet — Date pe care le știi deja (recapitulare rapidă)</h3>
+            <div className="grid md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <p className="text-xs font-bold text-slate-500 uppercase tracking-wide">Business</p>
+                <ul className="text-xs text-slate-700 space-y-1">
+                  <li>• Fondator: <strong>Loredana Voinea</strong>, cosmetician CIDESCO</li>
+                  <li>• Contact: Ionuț / Adi</li>
+                  <li>• Locație: Str. Doamna Stanca 5F, Șelimbăr</li>
+                  <li>• Program: L-V 10:00–20:00 (concurenții 8-22!)</li>
+                  <li>• Site: episculpt-beauty.ro</li>
+                </ul>
+              </div>
+              <div className="space-y-2">
+                <p className="text-xs font-bold text-slate-500 uppercase tracking-wide">Diferențiatori REALI (verificați)</p>
+                <ul className="text-xs text-slate-700 space-y-1">
+                  <li>• <strong>Observ 320</strong> — singurul în Sibiu ✅</li>
+                  <li>• <strong>Hydrafacial SYNDEO</strong> — versiunea premium 2024</li>
+                  <li>• Certificare CIDESCO (concurenții nu comunică)</li>
+                  <li>• Full body 910 lei (vs EC Beauty 1.850, Michaelis 2.130)</li>
+                  <li className="text-red-600">⚠️ NU mai zice "singurul Hydrafacial" — e fals</li>
+                </ul>
+              </div>
+            </div>
+            <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-xl text-xs text-red-700">
+              <strong>De reținut în întâlnire:</strong> CooLaser e la 50m (Doamna Stanca 5B), full body 350 lei. Dacă aduc vorba de preț, ai răspunsul în tab-ul Concurenți. Din Ad Library: ei dau bani pe boost-uri organice (obiectiv greșit) și NU au campanie pe epilare definitivă.
+            </div>
+          </div>
+
+          {/* Intrebari discovery */}
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+            <h3 className="font-bold text-slate-800 mb-1">❓ Întrebări de Discovery — Structurate pe Categorii</h3>
+            <p className="text-xs text-slate-400 mb-4">Întrebările bune îți arată unde e durerea reală și unde poți ajuta. Le-am marcat pe cele esențiale cu 🎯</p>
+            <div className="space-y-4">
+              {[
+                {
+                  cat: "A. Obiective & Business",
+                  color: "bg-blue-50 border-blue-200 text-blue-800",
+                  intrebari: [
+                    { q: "🎯 Câți clienți NOI vă puteți permite pe lună la capacitatea actuală?", de: "CRITIC — nu generăm 90 lead-uri dacă pot duce doar 30. Determină bugetul realist." },
+                    { q: "🎯 Care e valoarea medie a unui client? (ex: epilare = 6-8 ședințe × preț)", de: "Calculezi cât își pot permite să plătească pe lead. LTV-ul decide totul." },
+                    { q: "Care serviciu are cea mai mare marjă de profit?", de: "Acolo punem accentul în reclame — nu pe ce se vinde, pe ce aduce bani." },
+                    { q: "Care e obiectivul pe 6 luni — clienți noi sau fidelizare?", de: "Determină dacă mergem pe Lead Gen agresiv sau retenție/upsell." },
+                    { q: "Cât de plină e agenda acum? Aveți goluri în anumite zile/ore?", de: "Putem umple golurile cu oferte targetate pe acele intervale." },
+                  ],
+                },
+                {
+                  cat: "B. Marketing Actual",
+                  color: "bg-violet-50 border-violet-200 text-violet-800",
+                  intrebari: [
+                    { q: "🎯 Ce buget alocați acum lunar pe reclame?", de: "Ancorează propunerea. Dacă dau 1000 lei acum, 9000 e un salt — justifică-l." },
+                    { q: "🎯 De unde vin acum cei mai mulți clienți?", de: "Word of mouth / Instagram / Google? Arată unde e potențial neexploatat." },
+                    { q: "Cine vă face acum reclamele? Voi, o agenție, nimeni?", de: "Din Ad Library știm că dau boost-uri singuri. Confirmă cine decide." },
+                    { q: "Ce a funcționat cel mai bine până acum? Ce a fost bani aruncați?", de: "Înveți din istoricul lor, nu repeți greșelile." },
+                    { q: "Aveți date — cât vă costă acum un client din reclame?", de: "Probabil nu știu (boost-uri = fără tracking). E o problemă pe care o rezolvi tu." },
+                  ],
+                },
+                {
+                  cat: "C. Vânzare & Follow-up (aici mor lead-urile)",
+                  color: "bg-rose-50 border-rose-200 text-rose-800",
+                  intrebari: [
+                    { q: "🎯 Cine răspunde la mesaje/lead-uri și în cât timp?", de: "Cel mai mare leak. Un lead care așteaptă 3h e pierdut. Răspuns <2h obligatoriu." },
+                    { q: "🎯 Câți din cei care întreabă ajung clienți? (rata de conversie)", de: "Dacă închid prost, mai multe lead-uri = mai mulți bani aruncați. Poate problema nu e traficul." },
+                    { q: "Aveți un proces de follow-up dacă cineva nu răspunde imediat?", de: "Secvența zi 1 / zi 3 / zi 7 — îți poziționezi serviciul aici." },
+                    { q: "Folosiți WhatsApp Business? Aveți răspunsuri rapide/catalog?", de: "Tool gratuit pe care probabil nu-l folosesc la potențial maxim." },
+                    { q: "Ce întrebări pun cel mai des clienții înainte să se programeze?", de: "Aur pentru reclame și pagina de aterizare — răspunzi la obiecții din start." },
+                  ],
+                },
+                {
+                  cat: "D. Servicii & Prioritizare",
+                  color: "bg-amber-50 border-amber-200 text-amber-800",
+                  intrebari: [
+                    { q: "🎯 Pe ce serviciu vreți cel mai mult să creșteți acum?", de: "Recomandarea noastră: epilare definitivă (intent mare + zero concurență paid)." },
+                    { q: "Aveți o ofertă/promoție pe care o putem promova imediat?", de: "Reclamele au nevoie de un cârlig. Fără ofertă = CTR slab." },
+                    { q: "Aveți capacitate pentru remodelare corporală în sezonul de vară?", de: "Cooltech/criolipoliză e sezonier — sincronizăm cu agenda lor." },
+                    { q: "Ce serviciu aduce cei mai mulți clienți care revin după?", de: "Identifici poarta de intrare ideală pentru upsell." },
+                  ],
+                },
+                {
+                  cat: "E. Concurență & Poziționare",
+                  color: "bg-slate-50 border-slate-200 text-slate-800",
+                  intrebari: [
+                    { q: "Pe cine considerați concurenții voștri principali?", de: "Compară cu cercetarea ta (Shining Body, Michaelis, CooLaser). Vezi dacă știu de vecinul CooLaser." },
+                    { q: "Ce credeți că vă diferențiază — în cuvintele voastre?", de: "Vezi dacă diferențiatorul lor coincide cu ce am găsit (Observ 320, CIDESCO, Syndeo)." },
+                    { q: "Ați observat ce reclame dau concurenții?", de: "Le poți arăta analiza Ad Library — îi impresionezi cu temele făcute." },
+                  ],
+                },
+              ].map(({ cat, color, intrebari }) => (
+                <div key={cat} className={`border rounded-xl p-4 ${color}`}>
+                  <p className="font-bold text-sm mb-3">{cat}</p>
+                  <div className="space-y-2.5">
+                    {intrebari.map(({ q, de }) => (
+                      <div key={q} className="bg-white/70 rounded-lg p-3">
+                        <p className="text-xs font-semibold text-slate-800">{q}</p>
+                        <p className="text-xs text-slate-500 mt-0.5"><span className="font-medium">De ce contează:</span> {de}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Audit Ads */}
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+            <h3 className="font-bold text-slate-800 mb-1">📊 Audit Ads — Ce să Măsori și Verifici</h3>
+            <p className="text-xs text-slate-400 mb-4">Dacă îți dau acces la Meta Business Suite / Ads Manager sau Google Ads. Verifică în ordinea asta.</p>
+
+            {/* Pas 1 tracking */}
+            <div className="mb-5">
+              <p className="text-xs font-bold text-red-700 uppercase tracking-wide mb-2">PASUL 1 — Tracking (verifică ÎNTÂI asta)</p>
+              <div className="space-y-2">
+                {[
+                  { check: "E instalat Meta Pixel pe episculpt-beauty.ro?", unde: "Events Manager → Data Sources. Fără pixel = nu pot optimiza, nu pot face retargeting.", problema: "Probabil NU au — e prima ta recomandare." },
+                  { check: "Se declanșează evenimente (PageView, Lead, Contact)?", unde: "Events Manager → Test Events. Verifică dacă lead-urile sunt urmărite.", problema: "Boost-urile nu trimit evenimente de conversie." },
+                  { check: "Unde ajung lead-urile din formular?", unde: "Întreabă-i direct. Email? CRM? Nicăieri / pe Instagram DM?", problema: "Dacă merg pe DM Instagram → se pierd. Mare leak." },
+                  { check: "Au Google Analytics / GA4 pe site?", unde: "Verifică sursa paginii sau întreabă. Fără GA4 = orbi pe trafic.", problema: "Nu pot vedea ce pagini convertesc." },
+                ].map(({ check, unde, problema }) => (
+                  <div key={check} className="border border-slate-200 rounded-lg p-3">
+                    <p className="text-xs font-semibold text-slate-800">☐ {check}</p>
+                    <p className="text-xs text-slate-500 mt-1"><span className="font-medium text-slate-600">Unde verifici:</span> {unde}</p>
+                    <p className="text-xs text-red-600 mt-0.5"><span className="font-medium">Probabil:</span> {problema}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Pas 2 metrici */}
+            <div className="mb-5">
+              <p className="text-xs font-bold text-blue-700 uppercase tracking-wide mb-2">PASUL 2 — Metrici per campanie/reclamă (cu benchmark beauty)</p>
+              <div className="overflow-x-auto">
+                <table className="w-full text-xs min-w-[600px]">
+                  <thead>
+                    <tr className="border-b-2 border-slate-200">
+                      <th className="text-left py-2 px-3 text-slate-500 font-semibold">Metrică</th>
+                      <th className="text-left py-2 px-3 text-slate-500 font-semibold">Ce e bun (beauty RO)</th>
+                      <th className="text-left py-2 px-3 text-slate-500 font-semibold">Semnal de alarmă</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {[
+                      { m: "CTR (link)", bun: "1–2%+", rau: "< 1% = creative/ofertă slabă" },
+                      { m: "CPM (cost/1000 afișări)", bun: "20–60 lei", rau: "> 80 lei = audiență prea îngustă sau creative slab" },
+                      { m: "CPC (cost/click)", bun: "1–3 lei", rau: "> 5 lei = relevanță slabă" },
+                      { m: "Cost per lead", bun: "30–100 lei", rau: "> 150 lei = funnel de reparat" },
+                      { m: "Frequency", bun: "1.0–2.5", rau: "> 3 = oboseală reclamă, audiență epuizată" },
+                      { m: "Hook rate (video: 3s views / afișări)", bun: "> 25–30%", rau: "< 20% = primul cadru nu prinde" },
+                      { m: "Hold rate (retenție video)", bun: "> 15% la final", rau: "Drop mare în primele 3s = mesaj neclar" },
+                      { m: "Conversie landing page", bun: "> 5–10%", rau: "< 3% = pagina nu convinge" },
+                    ].map(({ m, bun, rau }) => (
+                      <tr key={m} className="hover:bg-slate-50">
+                        <td className="py-2 px-3 font-medium text-slate-700">{m}</td>
+                        <td className="py-2 px-3 text-emerald-700">{bun}</td>
+                        <td className="py-2 px-3 text-red-600">{rau}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Pas 3 structura cont */}
+            <div className="mb-5">
+              <p className="text-xs font-bold text-violet-700 uppercase tracking-wide mb-2">PASUL 3 — Structura contului</p>
+              <div className="grid md:grid-cols-2 gap-2">
+                {[
+                  "Câte campanii active și cu ce obiectiv? (Lead Gen ✅ vs Engagement/Boost ❌)",
+                  "Folosesc 'Boost post' din pagină? = bani aruncați, obiectiv greșit",
+                  "Reclamele duc spre formular/WhatsApp sau spre Instagram? (Instagram = leak)",
+                  "Folosesc Advantage+ Audience sau targetare manuală?",
+                  "Câte creative per campanie? (1 = fără A/B test)",
+                  "Cum e împărțit bugetul? Tot pe un serviciu sau diversificat?",
+                  "Au audiență de retargeting / custom audience? (probabil nu)",
+                  "Au Lookalike din clienți existenți? (oportunitate)",
+                ].map((item) => (
+                  <div key={item} className="bg-slate-50 border border-slate-100 rounded-lg p-2.5 text-xs text-slate-700">☐ {item}</div>
+                ))}
+              </div>
+            </div>
+
+            {/* Ce stim deja din Ad Library */}
+            <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+              <p className="text-xs font-bold text-blue-800 mb-2">💡 Ce știi DEJA din Ad Library (fără acces la cont)</p>
+              <div className="space-y-1 text-xs text-blue-700">
+                <p>• Rulează 2 campanii paid (Remodelare -40%, Observ 320 la 149 lei) + 4 boost-uri organice</p>
+                <p>• <strong>Boost-urile duc spre Instagram</strong>, nu spre formular → pierd lead-uri</p>
+                <p>• <strong>Zero campanie pe epilare definitivă</strong> — serviciul lor #1 neacoperit</p>
+                <p>• Toate reclamele sunt video, niciun carusel/imagine → fără diversitate de test</p>
+                <p>• Observ 320 la 149 lei = entry-offer inteligent (poți construi pe el)</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Red flags & oportunitati */}
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+            <h3 className="font-bold text-slate-800 mb-4">🚩 Red Flags & Oportunități — Ce să Asculți</h3>
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <p className="text-xs font-bold text-red-700 uppercase tracking-wide mb-2">🚩 Red Flags (atenție)</p>
+                <ul className="space-y-2 text-xs text-slate-700">
+                  {[
+                    "'Vrem rezultate imediat' → setează așteptări: Meta are nevoie de 1-2 săptămâni de învățare.",
+                    "'Am încercat reclame și nu a mers' → întreabă CE au făcut. Probabil boost-uri fără tracking.",
+                    "'Nu avem timp să răspundem la mesaje' → fără follow-up rapid, orice buget e irosit.",
+                    "'Vrem cel mai mic preț' → poziționează valoare, nu te bate pe preț cu CooLaser.",
+                    "Nu știu valoarea unui client / rata de conversie → trebuie să măsori de la zero.",
+                  ].map((t) => <li key={t} className="bg-red-50 rounded-lg p-2.5">{t}</li>)}
+                </ul>
+              </div>
+              <div>
+                <p className="text-xs font-bold text-emerald-700 uppercase tracking-wide mb-2">✅ Oportunități (semnal de cumpărare)</p>
+                <ul className="space-y-2 text-xs text-slate-700">
+                  {[
+                    "'Agenda nu e plină' → ai nevoie clară de lead-uri, vinde umplerea golurilor.",
+                    "'Concurența ne ia clienți' → poziționează diferențiatorii (Observ 320, CIDESCO).",
+                    "'Vrem să creștem' → deschis la buget, mergi pe pachet complet.",
+                    "'Nu avem timp de marketing' → vinde-le liniștea: tu te ocupi de tot.",
+                    "Au deja buget pe boost-uri → banii există, doar prost cheltuiți. Ușor de redirecționat.",
+                  ].map((t) => <li key={t} className="bg-emerald-50 rounded-lg p-2.5">{t}</li>)}
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          {/* Strategie inchidere */}
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+            <h3 className="font-bold text-slate-800 mb-4">🎯 Strategie de Închidere & Next Steps</h3>
+            <div className="space-y-3">
+              {[
+                {
+                  pas: "1", titlu: "Rezumă durerea cu cuvintele LOR",
+                  text: "'Deci, dacă am înțeles bine — aveți goluri în agendă marțea și miercurea, lead-urile vin haotic și nimeni nu le urmărește sistematic. Corect?' Validează problema înainte de soluție.",
+                  color: "bg-blue-50 border-blue-200",
+                },
+                {
+                  pas: "2", titlu: "Arată-le că ai făcut temele",
+                  text: "Deschide CRM-ul live: analiza celor 7 concurenți + Ad Library. 'Am analizat ce dau concurenții voștri și am observat că nimeni nu are campanie pe epilare definitivă — e un spațiu gol pe care îl putem ocupa.'",
+                  color: "bg-violet-50 border-violet-200",
+                },
+                {
+                  pas: "3", titlu: "Propune un prim pas mic, nu tot pachetul",
+                  text: "Nu cere 9000 lei/lună din prima. Propune o lună de test: 'Pornim cu o campanie de epilare definitivă + setăm tracking-ul corect. În 30 de zile vedem cifre reale.' Reduci riscul perceput.",
+                  color: "bg-emerald-50 border-emerald-200",
+                },
+                {
+                  pas: "4", titlu: "Stabilește un next step CONCRET cu dată",
+                  text: "Nu pleca cu 'ne mai auzim'. 'Vă trimit propunerea până vineri și ne auzim luni la 14:00 să o parcurgem. Bun?' Pune-l în calendar pe loc.",
+                  color: "bg-amber-50 border-amber-200",
+                },
+                {
+                  pas: "5", titlu: "Cere accesul de care ai nevoie",
+                  text: "Pentru audit real: acces la Meta Business Suite (ca Partener), Google Ads (dacă au), și acces la site pentru pixel. Lista e în tab-ul de acces — cere-o înainte să pleci.",
+                  color: "bg-slate-50 border-slate-200",
+                },
+              ].map(({ pas, titlu, text, color }) => (
+                <div key={pas} className={`border rounded-xl p-4 ${color}`}>
+                  <div className="flex items-start gap-3">
+                    <span className="w-7 h-7 rounded-full bg-white font-bold text-sm flex items-center justify-center text-slate-700 shrink-0 shadow-sm">{pas}</span>
+                    <div>
+                      <p className="font-bold text-slate-800 text-sm">{titlu}</p>
+                      <p className="text-xs text-slate-600 mt-1">{text}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Checklist acces */}
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+            <h3 className="font-bold text-slate-800 mb-1">🔑 Accese de Cerut (pentru a putea lucra)</h3>
+            <p className="text-xs text-slate-400 mb-4">Cere-le la finalul întâlnirii — fără ele nu poți face audit real sau lansa campanii.</p>
+            <div className="grid md:grid-cols-2 gap-2">
+              {[
+                "Acces Meta Business Suite ca Partener (NU parola lor — prin Business Manager)",
+                "Acces la Google Ads (dacă au cont)",
+                "Acces / colaborare pe site episculpt-beauty.ro (pentru pixel + GA4)",
+                "Acces editor pe pagina de Facebook & Instagram",
+                "Acces Google Business Profile (pentru SEO local + recenzii)",
+                "Materialele existente: poze, video, înainte/după (cu acord clienți)",
+                "Prețurile actualizate și ofertele pe care le putem promova",
+                "Logo, culori brand, font (dacă au branding definit)",
+              ].map((item) => (
+                <div key={item} className="bg-slate-50 border border-slate-100 rounded-lg p-2.5 text-xs text-slate-700">☐ {item}</div>
+              ))}
+            </div>
+            <div className="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-700">
+              ⚠️ <strong>Niciodată nu cere parolele lor.</strong> Accesul se dă prin Business Manager / partener — e mai sigur și mai profesionist. Dacă insistă să-ți dea parola, refuză politicos și explică de ce.
+            </div>
+          </div>
+
+          <p className="text-xs text-slate-400 text-center">Pregătire întâlnire · Episculp Beauty · Succes mâine! 🍀</p>
+        </div>
+      )}
 
       {/* ── OVERVIEW ──────────────────────────────────────────────────────── */}
       {tab === "overview" && (
