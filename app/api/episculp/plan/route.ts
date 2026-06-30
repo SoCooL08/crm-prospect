@@ -37,6 +37,7 @@ CONTEXT FIX DESPRE CLIENT (nu îl repeta, folosește-l):
   * DOAR Meta/Facebook — FĂRĂ Google Ads. Motivul: clientul e deja #1 organic pe "epilare definitiva sibiu", deci Google ar dubla gratuit traficul. Meta = cerere latentă (oameni care nu caută încă).
   * Pixel-ul Meta este DEJA INSTALAT pe site. NU recomanda instalarea lui — recomandă verificarea/optimizarea evenimentelor și folosirea lui pentru retargeting și audiențe.
   * Creativele (video/foto) le produce CLIENTUL singur. NU propune costuri de producție. Tu propui unghiuri/concepte pe care le pot filma ei.
+  * Clientul își administrează singur conturile Meta (are acces și le configurează), are materialele organizate pe foldere și filmează conținut nou săptămânal — poate susține testare frecventă de creative. NU propune setări de cont sau producție pe care le are deja.
   * La buget mic se CONCENTREAZĂ, nu se fragmentează: o singură campanie cold + retargeting până spre 6000 lei/lună; 2 campanii cold doar peste 6000 lei.
 - Concurenți principali: Shining Body (agresiv pe preț, 2 locații), Clinica Michaelis, EC Beauty, CooLaser (la 50m, full body 350 lei).
 

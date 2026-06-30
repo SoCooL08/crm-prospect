@@ -515,58 +515,56 @@ export default function EpisculpPage() {
       {tab === "fisa" && (() => {
         const piloni = [
           {
-            id: "P1", icon: "🎯", color: "border-blue-200", chip: "bg-blue-100 text-blue-700",
-            titlu: "Pilon 1 — Profil & Obiective",
-            scop: "Fundația fișei: unde vor să ajungă și ce capacitate au.",
+            id: "P1", icon: "🔍", color: "border-blue-200", chip: "bg-blue-100 text-blue-700",
+            titlu: "Pilon 1 — Cunoaște business-ul",
+            scop: "Înțelegem cine sunt clienții lor și care e durerea reală.",
             intrebari: [
-              { q: "Care e obiectivul principal pe următoarele 6 luni?", h: "Clienți noi vs. fidelizare — schimbă toată strategia." },
-              { q: "Câți clienți NOI puteți onora pe lună fără să scadă calitatea?", h: "Capacitatea reală — calibrăm volumul ca să nu sufocăm agenda." },
-              { q: "Care serviciu vreți cel mai mult să-l creșteți acum?", h: "Aici punem accentul în campanii." },
+              { q: "Cine e clientul vostru ideal — cine sunt cei care revin cel mai des?", h: "Definește audiența reală pe care o targetăm." },
+              { q: "Care e cea mai mare provocare a voastră acum în a aduce clienți noi?", h: "Durerea reală — exact aici intervenim." },
             ],
           },
           {
-            id: "P2", icon: "💰", color: "border-emerald-200", chip: "bg-emerald-100 text-emerald-700",
-            titlu: "Pilon 2 — Buget & Valoare",
-            scop: "Calibrăm bugetul de campanii și cât putem plăti pe un client.",
+            id: "P2", icon: "🎯", color: "border-emerald-200", chip: "bg-emerald-100 text-emerald-700",
+            titlu: "Pilon 2 — Obiective & Capacitate",
+            scop: "Unde vor să ajungă și cât pot duce realist.",
             intrebari: [
-              { q: "Ce buget alocați lunar DOAR pe reclame?", h: "Creativele le faceți voi — bugetul ăsta merge integral pe difuzare." },
-              { q: "Cât valorează în medie un client? (ex: epilare = 6-8 ședințe)", h: "LTV-ul decide cât putem plăti pe un lead." },
+              { q: "Care e obiectivul principal pe următoarele 6 luni?", h: "Creștere clienți noi vs. fidelizare — schimbă strategia." },
+              { q: "Câți clienți NOI puteți onora pe lună fără să scadă calitatea?", h: "Calibrăm volumul ca să nu sufocăm agenda." },
             ],
           },
           {
-            id: "P3", icon: "📊", color: "border-indigo-200", chip: "bg-indigo-100 text-indigo-700",
-            titlu: "Pilon 3 — Reclame actuale & Cont",
-            scop: "Inventarul a ce rulează acum, accesul și tracking-ul.",
+            id: "P3", icon: "💰", color: "border-indigo-200", chip: "bg-indigo-100 text-indigo-700",
+            titlu: "Pilon 3 — Bani & Valoare",
+            scop: "Calibrăm bugetul și cât putem plăti pe un client.",
+            intrebari: [
+              { q: "Ce buget alocați lunar pe reclame?", h: "Punctul de pornire — creativele le faceți voi." },
+              { q: "Cât valorează în medie un client? (ex: epilare = 6-8 ședințe)", h: "Decide cât putem plăti pe un lead și rămânem pe profit." },
+            ],
+          },
+          {
+            id: "P4", icon: "📊", color: "border-violet-200", chip: "bg-violet-100 text-violet-700",
+            titlu: "Pilon 4 — Reclame & Istoric",
+            scop: "Ce au încercat, ce a mers, ce nu.",
             intrebari: [
               { q: "Ce reclame rulați acum și cu ce obiectiv?", h: "Din Ad Library: boost-uri spre Instagram — confirmăm." },
-              { q: "Aveți acces la Meta Business Suite / Ads Manager?", h: "Necesar ca să putem lucra ca parteneri." },
-              { q: "Ce a funcționat și ce a fost bani aruncați până acum?", h: "Învățăm din istoric, nu repetăm greșelile." },
-            ],
-          },
-          {
-            id: "P4", icon: "🎬", color: "border-pink-200", chip: "bg-pink-100 text-pink-700",
-            titlu: "Pilon 4 — Creative & Materiale",
-            scop: "Ce materiale produc ei și cât de repede pot livra concepte noi.",
-            intrebari: [
-              { q: "Aveți materiale înainte/după și testimoniale (cu acordul clienților)?", h: "Cel mai puternic social proof pentru reclame." },
-              { q: "Cât de repede puteți filma un creativ nou la cerere?", h: "Ritmul de testare depinde direct de asta." },
+              { q: "Ce a funcționat cel mai bine până acum și ce a fost bani aruncați?", h: "Pornim de la ce merge, nu de la zero." },
             ],
           },
           {
             id: "P5", icon: "📞", color: "border-rose-200", chip: "bg-rose-100 text-rose-700",
             titlu: "Pilon 5 — Vânzare & Follow-up",
-            scop: "Verificăm unde se pierd lead-urile — procesul de conversie.",
+            scop: "Verificăm unde se pierd lead-urile.",
             intrebari: [
-              { q: "Când cineva întreabă, cine răspunde și în cât timp?", h: "Cel mai mare leak — răspuns sub 2h e ideal." },
+              { q: "Când cineva întreabă, cine răspunde și în cât timp?", h: "Cel mai mare leak — viteza de răspuns contează enorm." },
               { q: "Din 10 care întreabă, câți se programează?", h: "Rata de conversie — poate problema nu e traficul." },
             ],
           },
           {
             id: "P6", icon: "⚔️", color: "border-amber-200", chip: "bg-amber-100 text-amber-700",
-            titlu: "Pilon 6 — Poziționare & Concurență",
-            scop: "Mesajul de diferențiere, în vocea lor.",
+            titlu: "Pilon 6 — Poziționare & Ofertă",
+            scop: "Mesajul de diferențiere și cârligul pentru reclame.",
             intrebari: [
-              { q: "De ce ar alege cineva Episculp în locul altora? (în cuvintele voastre)", h: "Mesajul autentic de poziționare pentru reclame." },
+              { q: "De ce ar alege cineva Episculp în locul altor clinici? (în cuvintele voastre)", h: "Mesajul autentic de poziționare pentru reclame." },
               { q: "Aveți o ofertă sau promoție pe care o putem promova acum?", h: "Reclamele au nevoie de un cârlig clar." },
             ],
           },
