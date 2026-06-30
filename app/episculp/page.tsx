@@ -522,8 +522,6 @@ export default function EpisculpPage() {
               { q: "Care e obiectivul principal pe următoarele 6 luni?", h: "Clienți noi vs. fidelizare — schimbă toată strategia." },
               { q: "Câți clienți NOI puteți onora pe lună fără să scadă calitatea?", h: "Capacitatea reală — calibrăm volumul ca să nu sufocăm agenda." },
               { q: "Care serviciu vreți cel mai mult să-l creșteți acum?", h: "Aici punem accentul în campanii." },
-              { q: "Care serviciu vă aduce cea mai mare marjă de profit?", h: "Promovăm ce aduce bani, nu doar ce se vinde." },
-              { q: "Aveți goluri în agendă — zile sau ore mai slabe?", h: "Putem targeta oferte pe intervalele goale." },
             ],
           },
           {
@@ -532,9 +530,7 @@ export default function EpisculpPage() {
             scop: "Calibrăm bugetul de campanii și cât putem plăti pe un client.",
             intrebari: [
               { q: "Ce buget alocați lunar DOAR pe reclame?", h: "Creativele le faceți voi — bugetul ăsta merge integral pe difuzare." },
-              { q: "Bugetul e flexibil dacă rezultatele sunt bune?", h: "Vedem dacă putem scala în luna 2-3." },
               { q: "Cât valorează în medie un client? (ex: epilare = 6-8 ședințe)", h: "LTV-ul decide cât putem plăti pe un lead." },
-              { q: "Cât sunteți dispuși să plătiți ca să aduceți un client nou?", h: "Pragul de rentabilitate al campaniilor." },
             ],
           },
           {
@@ -543,11 +539,7 @@ export default function EpisculpPage() {
             scop: "Inventarul a ce rulează acum, accesul și tracking-ul.",
             intrebari: [
               { q: "Ce reclame rulați acum și cu ce obiectiv?", h: "Din Ad Library: boost-uri spre Instagram — confirmăm." },
-              { q: "Cine vă administrează contul de reclame?", h: "Cine decide și cui cerem acces." },
               { q: "Aveți acces la Meta Business Suite / Ads Manager?", h: "Necesar ca să putem lucra ca parteneri." },
-              { q: "Pixel-ul instalat ce evenimente urmărește? (doar PageView sau și Lead?)", h: "Pixel-ul EXISTĂ — verificăm dacă măsoară conversii." },
-              { q: "Ați testat formulare Lead native sau mesaje WhatsApp în reclame?", h: "Captarea lead-ului vs. trafic pierdut pe Instagram." },
-              { q: "Aveți audiențe salvate, lookalike sau retargeting setate?", h: "Probabil nu — oportunitate imediată." },
               { q: "Ce a funcționat și ce a fost bani aruncați până acum?", h: "Învățăm din istoric, nu repetăm greșelile." },
             ],
           },
@@ -556,10 +548,8 @@ export default function EpisculpPage() {
             titlu: "Pilon 4 — Creative & Materiale",
             scop: "Ce materiale produc ei și cât de repede pot livra concepte noi.",
             intrebari: [
-              { q: "Ce tip de creative produceți acum? (video, foto, carusel)", h: "Din Ad Library: doar video — putem diversifica." },
               { q: "Aveți materiale înainte/după și testimoniale (cu acordul clienților)?", h: "Cel mai puternic social proof pentru reclame." },
               { q: "Cât de repede puteți filma un creativ nou la cerere?", h: "Ritmul de testare depinde direct de asta." },
-              { q: "Cine se ocupă de producția materialelor la voi?", h: "Punctul de contact pentru concepte/creative." },
             ],
           },
           {
@@ -569,9 +559,6 @@ export default function EpisculpPage() {
             intrebari: [
               { q: "Când cineva întreabă, cine răspunde și în cât timp?", h: "Cel mai mare leak — răspuns sub 2h e ideal." },
               { q: "Din 10 care întreabă, câți se programează?", h: "Rata de conversie — poate problema nu e traficul." },
-              { q: "Aveți follow-up dacă cineva nu răspunde imediat?", h: "Secvența zi 1/3/7 recuperează interesații." },
-              { q: "Folosiți WhatsApp Business (răspunsuri rapide, catalog)?", h: "Tool gratuit, de obicei subutilizat." },
-              { q: "Ce întrebări pun cel mai des înainte să se programeze?", h: "Aur pentru reclame — răspundem la obiecții din start." },
             ],
           },
           {
@@ -579,8 +566,6 @@ export default function EpisculpPage() {
             titlu: "Pilon 6 — Poziționare & Concurență",
             scop: "Mesajul de diferențiere, în vocea lor.",
             intrebari: [
-              { q: "Pe cine considerați principalii concurenți?", h: "Comparăm cu analiza noastră (7 clinici Sibiu)." },
-              { q: "Știați că CooLaser e la ~50m de voi, cu full body la 350 lei?", h: "Vecinul direct — detalii în tab Concurenți." },
               { q: "De ce ar alege cineva Episculp în locul altora? (în cuvintele voastre)", h: "Mesajul autentic de poziționare pentru reclame." },
               { q: "Aveți o ofertă sau promoție pe care o putem promova acum?", h: "Reclamele au nevoie de un cârlig clar." },
             ],
