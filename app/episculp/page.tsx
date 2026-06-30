@@ -463,14 +463,8 @@ export default function EpisculpPage() {
   const TABS: { id: Tab; label: string }[] = [
     { id: "fisa", label: "🗂️ Fișă Client" },
     { id: "overview", label: "📊 Overview" },
-    { id: "strategie", label: "🎯 Strategie SMM" },
-    { id: "google", label: "🔵 Google Ads" },
-    { id: "meta1", label: "📘 Meta C1 — Lead Gen" },
-    { id: "meta2", label: "📗 Meta C2 — Boost" },
     { id: "calendar", label: "📅 Calendar" },
-    { id: "materiale", label: "🎬 Materiale" },
     { id: "concurenti", label: "⚔️ Concurenți" },
-    { id: "adlibrary", label: "📊 Ad Library" },
     { id: "admin", label: "⚙️ Admin / Config" },
   ];
 
@@ -502,22 +496,6 @@ export default function EpisculpPage() {
               WhatsApp
             </a>
           </div>
-        </div>
-
-        {/* KPI bar */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          {[
-            { label: "Buget total / lună", value: "9.000 lei", color: "text-slate-900", sub: "Google + Meta" },
-            { label: "Target leads / lună", value: "80–90", color: "text-blue-600", sub: "min. 50 leads" },
-            { label: "Conv. țintă client", value: ">30%", color: "text-emerald-600", sub: "din leads" },
-            { label: "CPC țintă Google", value: "≤10 lei", color: "text-amber-600", sub: "epilare definitivă" },
-          ].map((k) => (
-            <div key={k.label} className="bg-white border border-slate-200 rounded-xl p-3 shadow-sm">
-              <p className="text-xs text-slate-400 uppercase tracking-wide">{k.label}</p>
-              <p className={`text-xl font-bold mt-0.5 ${k.color}`}>{k.value}</p>
-              <p className="text-xs text-slate-400">{k.sub}</p>
-            </div>
-          ))}
         </div>
       </div>
 
@@ -1322,7 +1300,7 @@ export default function EpisculpPage() {
       )}
 
       {/* ── STRATEGIE SMM + SOSTAC ──────────────────────────────────────── */}
-      {tab === "strategie" && (
+      {tab === "admin" && (
         <div className="space-y-6">
 
           {/* Header strategie */}
@@ -1589,7 +1567,7 @@ export default function EpisculpPage() {
       )}
 
       {/* ── GOOGLE ADS ──────────────────────────────────────────────────── */}
-      {tab === "google" && (
+      {tab === "admin" && (
         <div className="bg-white border border-blue-200 rounded-2xl shadow-sm overflow-hidden">
           <div className="bg-blue-600 px-6 py-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -1632,15 +1610,15 @@ export default function EpisculpPage() {
       )}
 
       {/* ── META C1 + C2 ────────────────────────────────────────────────── */}
-      {(tab === "meta1" || tab === "meta2") && (() => {
-        const idx = tab === "meta1" ? 0 : 1;
-        const c = meta[idx];
-        const update = (patch: Partial<CampaniaMeta>) =>
-          setMeta((prev) => prev.map((m, i) => i === idx ? { ...m, ...patch } : m));
-        const hc = idx === 0 ? "bg-blue-700" : "bg-emerald-700";
-        const bc = idx === 0 ? "border-blue-200" : "border-emerald-200";
-        return (
-          <div className={`bg-white border ${bc} rounded-2xl shadow-sm overflow-hidden`}>
+      {tab === "admin" && (
+        <div className="space-y-5">
+        {meta.map((c, idx) => {
+          const update = (patch: Partial<CampaniaMeta>) =>
+            setMeta((prev) => prev.map((m, i) => i === idx ? { ...m, ...patch } : m));
+          const hc = idx === 0 ? "bg-blue-700" : "bg-emerald-700";
+          const bc = idx === 0 ? "border-blue-200" : "border-emerald-200";
+          return (
+          <div key={idx} className={`bg-white border ${bc} rounded-2xl shadow-sm overflow-hidden`}>
             <div className={`${hc} px-6 py-4 flex items-center justify-between`}>
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center font-bold text-sm"
@@ -1672,8 +1650,10 @@ export default function EpisculpPage() {
               <F label="Note" value={c.note} onChange={(v) => update({ note: v })} big />
             </div>
           </div>
-        );
-      })()}
+          );
+        })}
+        </div>
+      )}
 
       {/* ── CALENDAR ──────────────────────────────────────────────────────── */}
       {tab === "calendar" && (
@@ -1694,7 +1674,7 @@ export default function EpisculpPage() {
       )}
 
       {/* ── MATERIALE ──────────────────────────────────────────────────────── */}
-      {tab === "materiale" && (
+      {tab === "admin" && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <p className="text-sm text-slate-500">3 materiale noi / lună · organic + boost Instagram / Facebook / TikTok</p>
@@ -2180,7 +2160,7 @@ export default function EpisculpPage() {
       )}
 
       {/* ── AD LIBRARY FACEBOOK ──────────────────────────────────────────── */}
-      {tab === "adlibrary" && (
+      {tab === "admin" && (
         <div className="space-y-5">
 
           {/* Header */}
