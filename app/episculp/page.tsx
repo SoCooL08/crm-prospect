@@ -371,7 +371,7 @@ const smmPlatforme: SMMPlatforma[] = [
   },
 ];
 
-type Tab = "overview" | "google" | "meta1" | "meta2" | "calendar" | "materiale" | "concurenti" | "strategie" | "adlibrary" | "meeting";
+type Tab = "overview" | "google" | "meta1" | "meta2" | "calendar" | "materiale" | "concurenti" | "strategie" | "adlibrary" | "meeting" | "buget";
 
 export default function EpisculpPage() {
   const [tab, setTab] = useState<Tab>("overview");
@@ -393,6 +393,9 @@ export default function EpisculpPage() {
     { canal: "Producție materiale (3/lună)", key: "prod", proc: 17, color: "bg-pink-500", colorText: "text-pink-700", border: "border-pink-200" },
     { canal: "Management + raportare", key: "mgmt", proc: 48, color: "bg-slate-400", colorText: "text-slate-600", border: "border-slate-200" },
   ]);
+  const [scenBudget, setScenBudget] = useState(5000);
+  const [scenMode, setScenMode] = useState<"media" | "total">("media");
+  const [scenFee, setScenFee] = useState(35);
 
   useEffect(() => {
     const saved = localStorage.getItem("episculp_data_v2");
@@ -426,6 +429,7 @@ export default function EpisculpPage() {
   const TABS: { id: Tab; label: string }[] = [
     { id: "overview", label: "📊 Overview" },
     { id: "meeting", label: "🤝 Pregătire Întâlnire" },
+    { id: "buget", label: "💰 Buget & Scenarii" },
     { id: "strategie", label: "🎯 Strategie SMM" },
     { id: "google", label: "🔵 Google Ads" },
     { id: "meta1", label: "📘 Meta C1 — Lead Gen" },
@@ -1017,6 +1021,267 @@ export default function EpisculpPage() {
           <p className="text-xs text-slate-400 text-center">Prezentare întâlnire · Episculp Beauty · Succes! 🍀</p>
         </div>
       )}
+
+      {/* ── BUGET & SCENARII ─────────────────────────────────────────────── */}
+      {tab === "buget" && (() => {
+        const TIERS = [
+          {
+            id: "low", min: 0, max: 1499, eticheta: "Sub prag", badge: "bg-rose-100 text-rose-700",
+            titlu: "Buget prea mic pentru rezultate stabile",
+            simultane: "Niciuna recomandată",
+            obiectiv: "—",
+            servicii: "—",
+            cpl: [0, 0] as [number, number],
+            splits: [{ nume: "Strânge la minim 1.500 lei/lună înainte de start", proc: 100, color: "bg-rose-400" }],
+            nota: "Sub ~50 lei/zi, Meta nu are spațiu să optimizeze. Mai bine aștepți și pornești concentrat decât să arzi bugetul.",
+          },
+          {
+            id: "A", min: 1500, max: 2999, eticheta: "Start minim", badge: "bg-amber-100 text-amber-700",
+            titlu: "1 campanie, concentrată total",
+            simultane: "1 campanie COLD",
+            obiectiv: "Mesaje / WhatsApp (mai ieftin ca Lead Form la buget mic)",
+            servicii: "Doar Epilare Definitivă (gap-ul din piață)",
+            cpl: [70, 120] as [number, number],
+            splits: [{ nume: "Campanie Cold — Epilare Definitivă", proc: 100, color: "bg-blue-500" }],
+            nota: "Greu iese din faza de învățare → optimizezi pe eveniment ieftin (mesaje). Un singur mesaj, o singură ofertă, toate creative-ele pe ea.",
+          },
+          {
+            id: "B", min: 3000, max: 5999, eticheta: "Optim pentru start serios", badge: "bg-emerald-100 text-emerald-700",
+            titlu: "1 campanie cold + retargeting",
+            simultane: "1 COLD + 1 retargeting",
+            obiectiv: "Lead Gen (formular nativ) + WhatsApp pe retargeting",
+            servicii: "Epilare Definitivă (cold) · oferta pe retargeting",
+            cpl: [50, 90] as [number, number],
+            splits: [
+              { nume: "Campanie Cold — Epilare Definitivă", proc: 80, color: "bg-blue-500" },
+              { nume: "Retargeting (vizitatori + interacțiuni)", proc: 20, color: "bg-violet-500" },
+            ],
+            nota: "Aici bugetul cold începe să învețe corect. Retargeting-ul NU concurează — e audiență caldă separată, ieftină. NU adăuga a 2-a campanie cold încă.",
+          },
+          {
+            id: "C", min: 6000, max: 9999, eticheta: "Creștere", badge: "bg-indigo-100 text-indigo-700",
+            titlu: "2 campanii cold (servicii + audiențe diferite) + retargeting",
+            simultane: "2 COLD + retargeting",
+            obiectiv: "Lead Gen pe ambele + WhatsApp retargeting",
+            servicii: "Epilare (22-40 ani) + Remodelare (30-55, sezonier)",
+            cpl: [40, 80] as [number, number],
+            splits: [
+              { nume: "Cold 1 — Epilare Definitivă", proc: 45, color: "bg-blue-500" },
+              { nume: "Cold 2 — Remodelare Corporală", proc: 35, color: "bg-pink-500" },
+              { nume: "Retargeting", proc: 20, color: "bg-violet-500" },
+            ],
+            nota: "Abia acum 2 campanii cold au sens — pe servicii ȘI audiențe diferite, ca să nu se suprapună. Fiecare are buget suficient să învețe.",
+          },
+          {
+            id: "D", min: 10000, max: Infinity, eticheta: "Scalare", badge: "bg-slate-200 text-slate-700",
+            titlu: "Structură completă: prospecting + lookalike + retargeting",
+            simultane: "3+ campanii",
+            obiectiv: "Mix complet de obiective, testare rapidă",
+            servicii: "Toate serviciile + lookalike din clienți existenți",
+            cpl: [35, 70] as [number, number],
+            splits: [
+              { nume: "Prospecting (cold) — serviciul principal", proc: 40, color: "bg-blue-500" },
+              { nume: "Lookalike din clienți existenți", proc: 25, color: "bg-cyan-500" },
+              { nume: "Retargeting", proc: 20, color: "bg-violet-500" },
+              { nume: "Testare creative noi", proc: 15, color: "bg-amber-500" },
+            ],
+            nota: "Sistem complet. Poți testa constant creative noi fără să strici campaniile care merg. Aici se scalează cu cap.",
+          },
+        ];
+
+        const mediaBudget = scenMode === "media" ? scenBudget : Math.round(scenBudget * (100 - scenFee) / 100);
+        const feeAmount = scenBudget - mediaBudget;
+        const daily = Math.round(mediaBudget / 30.4);
+        const tier = TIERS.find((t) => mediaBudget >= t.min && mediaBudget <= t.max) ?? TIERS[0];
+        const leadBudget = tier.id === "D" ? Math.round(mediaBudget * 0.85) : mediaBudget;
+        const leadsLow = tier.cpl[1] ? Math.round(leadBudget / tier.cpl[1]) : 0;
+        const leadsHigh = tier.cpl[0] ? Math.round(leadBudget / tier.cpl[0]) : 0;
+
+        return (
+          <div className="space-y-5">
+
+            {/* Header */}
+            <div className="bg-gradient-to-r from-emerald-600 to-green-600 rounded-2xl p-6 text-white">
+              <h2 className="text-xl font-bold mb-1">Calculator Buget & Scenarii — Doar Meta/Facebook</h2>
+              <p className="text-emerald-100 text-sm">Introdu bugetul → îți spune câte campanii poți rula simultan și cu ce structură. Regula de bază: la buget mic <strong>concentrezi</strong>, nu fragmentezi.</p>
+            </div>
+
+            {/* Calculator */}
+            <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+              <h3 className="font-bold text-slate-800 mb-4">💰 Introdu bugetul lunar</h3>
+
+              {/* Mode toggle */}
+              <div className="flex gap-2 mb-4">
+                {([["media", "Doar reclame (media)"], ["total", "Total (cu fee + producție)"]] as [typeof scenMode, string][]).map(([m, label]) => (
+                  <button key={m} onClick={() => setScenMode(m)}
+                    className={`flex-1 px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${
+                      scenMode === m ? "bg-emerald-600 text-white shadow-sm" : "bg-slate-100 text-slate-500 hover:text-slate-700"
+                    }`}>
+                    {label}
+                  </button>
+                ))}
+              </div>
+
+              <div className="flex items-center gap-4 mb-4 p-4 bg-slate-50 rounded-xl border border-slate-200">
+                <div className="flex-1">
+                  <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wide mb-1">
+                    Buget {scenMode === "media" ? "de reclame" : "total"} / lună (lei)
+                  </label>
+                  <input
+                    type="number"
+                    value={scenBudget}
+                    onChange={(e) => setScenBudget(Math.max(0, Number(e.target.value)))}
+                    className="w-full text-3xl font-bold text-slate-900 bg-transparent border-0 outline-none p-0 focus:ring-0"
+                    placeholder="5000"
+                  />
+                </div>
+                {scenMode === "total" && (
+                  <div className="text-right">
+                    <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wide mb-1">Fee + producție</label>
+                    <div className="flex items-center gap-1 justify-end">
+                      <input type="number" value={scenFee} min={0} max={80}
+                        onChange={(e) => setScenFee(Math.min(80, Math.max(0, Number(e.target.value))))}
+                        className="w-14 text-lg font-bold text-center border border-slate-200 rounded-lg py-1 focus:outline-none focus:ring-1 focus:ring-emerald-400" />
+                      <span className="text-sm text-slate-400">%</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Derived numbers */}
+              <div className="grid grid-cols-3 gap-3">
+                {[
+                  { label: "Buget media real", value: `${mediaBudget.toLocaleString("ro")} lei`, color: "text-emerald-600", sub: scenMode === "total" ? `după ${scenFee}% fee` : "integral pe reclame" },
+                  { label: "Buget zilnic", value: `~${daily} lei/zi`, color: "text-blue-600", sub: "media ÷ 30,4" },
+                  { label: scenMode === "total" ? "Fee + producție" : "Adaugă fee separat", value: scenMode === "total" ? `${feeAmount.toLocaleString("ro")} lei` : "—", color: "text-slate-500", sub: scenMode === "total" ? "partea ta + materiale" : "nu e inclus aici" },
+                ].map((k) => (
+                  <div key={k.label} className="bg-slate-50 rounded-xl p-3 text-center">
+                    <p className="text-xs text-slate-400 uppercase tracking-wide">{k.label}</p>
+                    <p className={`text-lg font-bold mt-0.5 ${k.color}`}>{k.value}</p>
+                    <p className="text-xs text-slate-400">{k.sub}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Recomandare dinamica */}
+            <div className="bg-white border-2 border-emerald-200 rounded-2xl p-6 shadow-sm">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-bold text-slate-800">📋 Structura recomandată pentru bugetul tău</h3>
+                <span className={`text-xs font-bold px-3 py-1 rounded-full ${tier.badge}`}>{tier.eticheta}</span>
+              </div>
+
+              <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 mb-4">
+                <p className="text-lg font-bold text-emerald-800">{tier.titlu}</p>
+                <p className="text-sm text-emerald-700 mt-1">Campanii simultane: <strong>{tier.simultane}</strong></p>
+              </div>
+
+              {/* Split bars */}
+              <div className="space-y-3 mb-4">
+                {tier.splits.map((s) => {
+                  const lei = Math.round(mediaBudget * s.proc / 100);
+                  const leiSapt = Math.round(lei / 4.3);
+                  return (
+                    <div key={s.nume}>
+                      <div className="flex items-center justify-between mb-1.5">
+                        <div className="flex items-center gap-2">
+                          <div className={`w-2.5 h-2.5 rounded-full ${s.color} shrink-0`} />
+                          <span className="text-sm font-medium text-slate-700">{s.nume}</span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          {tier.id !== "low" && <span className="text-xs text-slate-400">~{leiSapt} lei/săpt.</span>}
+                          <span className="text-sm font-bold text-slate-700">{tier.id === "low" ? "—" : `${lei.toLocaleString("ro")} lei`}</span>
+                        </div>
+                      </div>
+                      <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+                        <div className={`h-full rounded-full ${s.color}`} style={{ width: `${s.proc}%` }} />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Detalii */}
+              <div className="grid md:grid-cols-3 gap-3 mb-4">
+                {[
+                  { label: "Obiectiv recomandat", value: tier.obiectiv },
+                  { label: "Servicii de promovat", value: tier.servicii },
+                  { label: "Lead-uri estimate / lună", value: tier.cpl[0] ? `~${leadsLow}–${leadsHigh}` : "—" },
+                ].map((d) => (
+                  <div key={d.label} className="bg-slate-50 rounded-xl p-3">
+                    <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-1">{d.label}</p>
+                    <p className="text-sm text-slate-700">{d.value}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className={`rounded-xl p-3 text-sm ${tier.id === "low" ? "bg-rose-50 border border-rose-200 text-rose-700" : "bg-blue-50 border border-blue-200 text-blue-700"}`}>
+                💡 {tier.nota}
+              </div>
+              {tier.cpl[0] > 0 && (
+                <p className="text-xs text-slate-400 mt-2">* Estimare la cost/lead {tier.cpl[0]}–{tier.cpl[1]} lei (benchmark estetică RO). Depinde de creative, ofertă și viteza de răspuns la lead-uri.</p>
+              )}
+            </div>
+
+            {/* Tabel referinta toate scenariile */}
+            <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm overflow-x-auto">
+              <h3 className="font-bold text-slate-800 mb-1">📊 Toate scenariile — referință rapidă</h3>
+              <p className="text-xs text-slate-400 mb-4">Doar buget media (fără fee). Rândul tău e evidențiat.</p>
+              <table className="w-full text-xs min-w-[640px]">
+                <thead>
+                  <tr className="border-b-2 border-slate-200">
+                    <th className="text-left py-2 px-2 text-slate-500 font-semibold">Buget media/lună</th>
+                    <th className="text-left py-2 px-2 text-slate-500 font-semibold">Structură</th>
+                    <th className="text-center py-2 px-2 text-slate-500 font-semibold">Campanii simultane</th>
+                    <th className="text-center py-2 px-2 text-slate-500 font-semibold">Lead-uri/lună*</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {[
+                    { r: "1.500–2.999 lei", s: "1 cold (epilare), obiectiv Mesaje", c: "1 cold", l: "~15–35", id: "A" },
+                    { r: "3.000–5.999 lei", s: "1 cold + retargeting mic", c: "1 cold + retarget", l: "~40–80", id: "B" },
+                    { r: "6.000–9.999 lei", s: "2 cold (servicii+audiențe diferite) + retargeting", c: "2 cold + retarget", l: "~80–150", id: "C" },
+                    { r: "10.000+ lei", s: "Prospecting + lookalike + retargeting + testare", c: "3+", l: "150+", id: "D" },
+                  ].map((row) => (
+                    <tr key={row.id} className={tier.id === row.id ? "bg-emerald-50" : "hover:bg-slate-50"}>
+                      <td className={`py-2.5 px-2 font-semibold ${tier.id === row.id ? "text-emerald-700" : "text-slate-700"}`}>{row.r}{tier.id === row.id && " ◄ tu"}</td>
+                      <td className="py-2.5 px-2 text-slate-600">{row.s}</td>
+                      <td className="py-2.5 px-2 text-center text-slate-600">{row.c}</td>
+                      <td className="py-2.5 px-2 text-center text-slate-600">{row.l}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Reguli de aur */}
+            <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+              <h3 className="font-bold text-slate-800 mb-4">⚖️ Regulile din spate — de ce NU 2 campanii cold pe buget mic</h3>
+              <div className="space-y-3">
+                {[
+                  { t: "Faza de învățare Meta", d: "Fiecare ad set are nevoie de ~50 rezultate/săptămână ca să iasă din 'learning'. La 50-80 lei/lead, asta înseamnă mii de lei/săptămână PER campanie. Împarți bugetul la 2 → niciuna nu învață." },
+                  { t: "Audiența din Sibiu e mică", d: "Sibiu + Șelimbăr = ~80-150k femei relevante. Două campanii cold pe aceeași audiență = liciți contra ta în licitație și îți crești singur costurile." },
+                  { t: "Concentrează, nu fragmenta", d: "La buget mic: un mesaj, o ofertă, tot bugetul pe ea. Un singur lucru făcut bine bate trei lucruri făcute pe jumătate." },
+                  { t: "Excepția: retargeting-ul", d: "Retargeting-ul NU concurează cu cold — e audiență caldă, separată, ieftină (0,3-0,5 lei/interacțiune). De aceea poate rula în paralel de la 3.000 lei în sus." },
+                ].map(({ t, d }) => (
+                  <div key={t} className="flex gap-3">
+                    <span className="text-emerald-500 shrink-0">✓</span>
+                    <p className="text-sm text-slate-600"><strong className="text-slate-800">{t}.</strong> {d}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Clarificare media vs total */}
+            <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5">
+              <p className="font-bold text-amber-800 text-sm mb-2">⚠️ Prima întrebare de pus clientului despre buget</p>
+              <p className="text-sm text-amber-700">Când zice „5.000 lei”, întreabă: <strong>e doar buget de reclame sau total (cu tot cu serviciul tău + producție materiale)?</strong> Diferența e enormă — 5.000 doar media e cu totul alt scenariu decât 5.000 total (din care media ar fi ~3.250). Folosește toggle-ul de mai sus ca să-i arăți live impactul.</p>
+            </div>
+
+            <p className="text-xs text-slate-400 text-center">Calculator buget · Doar Meta/Facebook · Episculp Beauty</p>
+          </div>
+        );
+      })()}
 
       {/* ── OVERVIEW ──────────────────────────────────────────────────────── */}
       {tab === "overview" && (
