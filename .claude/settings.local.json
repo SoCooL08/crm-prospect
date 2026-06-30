@@ -1,7 +1,19 @@
 {
   "permissions": {
     "allow": [
-      "PowerShell(Rename-Item \"C:\\\\Users\\\\hilas\\\\Desktop\\\\crm-prospect\\\\.env,local\" \".env.local\")"
+      "PowerShell(Rename-Item \"C:\\\\Users\\\\hilas\\\\Desktop\\\\crm-prospect\\\\.env,local\" \".env.local\")",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(npx tsc *)",
+      "WebSearch",
+      "WebFetch(domain:shiningbody.ro)",
+      "WebFetch(domain:ecbeautycenter.ro)",
+      "WebFetch(domain:coolaser.ro)",
+      "WebFetch(domain:www.epilaredefinitivasibiu.ro)",
+      "WebFetch(domain:avasalon.ro)",
+      "WebFetch(domain:michaelis.ro)",
+      "WebFetch(domain:epilux.ro)"
     ]
   }
 }

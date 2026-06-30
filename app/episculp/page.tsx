@@ -393,6 +393,29 @@ export default function EpisculpPage() {
   ]);
   const [scenBudget, setScenBudget] = useState(5000);
   const [meetingAnswers, setMeetingAnswers] = useState<Record<string, string>>({});
+  const [answerEditing, setAnswerEditing] = useState<Record<string, boolean>>({});
+  const [planText, setPlanText] = useState("");
+  const [planLoading, setPlanLoading] = useState(false);
+  const [planError, setPlanError] = useState("");
+
+  async function genereazaPlanFB() {
+    setPlanLoading(true);
+    setPlanError("");
+    try {
+      const res = await fetch("/api/episculp/plan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ answers: meetingAnswers }),
+      });
+      const data = await res.json();
+      if (!res.ok) setPlanError(data.error || "Eroare la generare");
+      else setPlanText(data.plan || "");
+    } catch (e) {
+      setPlanError(e instanceof Error ? e.message : "Eroare de rețea");
+    } finally {
+      setPlanLoading(false);
+    }
+  }
 
   useEffect(() => {
     const saved = localStorage.getItem("episculp_data_v2");
@@ -415,11 +438,17 @@ export default function EpisculpPage() {
   useEffect(() => {
     const s = localStorage.getItem("episculp_meeting_answers");
     if (s) { try { setMeetingAnswers(JSON.parse(s)); } catch {} }
+    const p = localStorage.getItem("episculp_fb_plan");
+    if (p) setPlanText(p);
   }, []);
 
   useEffect(() => {
     localStorage.setItem("episculp_meeting_answers", JSON.stringify(meetingAnswers));
   }, [meetingAnswers]);
+
+  useEffect(() => {
+    if (planText) localStorage.setItem("episculp_fb_plan", planText);
+  }, [planText]);
 
   function updateMaterial(id: string, patch: Partial<Material>) {
     setMateriale((prev) => prev.map((m) => m.id === id ? { ...m, ...patch } : m));
@@ -664,7 +693,7 @@ export default function EpisculpPage() {
                 {
                   nr: "03", titlu: "Banii pe „boost” nu se pot măsura",
                   problema: "Boost-urile din pagină nu au tracking. Nu se poate spune cât a costat un client sau ce reclamă a funcționat. E ca și cum ai conduce cu ochii închiși.",
-                  solutie: "Instalăm pixel + tracking. Din prima lună vedeți negru pe alb: câte lead-uri, la ce cost, din ce reclamă.",
+                  solutie: "Pixel-ul e instalat — îl configurăm corect (evenimente de conversie). Din prima lună vedeți negru pe alb: câte lead-uri, la ce cost, din ce reclamă.",
                 },
                 {
                   nr: "04", titlu: "Aveți deja un cârlig inteligent — îl putem scala",
@@ -761,7 +790,7 @@ export default function EpisculpPage() {
                     {
                       q: "Știți acum cât vă costă să aduceți un client din reclame?",
                       de: "Probabil nu — și e normal, pentru că boost-urile nu măsoară asta. Tocmai aici e una dintre cele mai mari valori pe care le aducem: din prima lună veți ști exact câți lei costă un client și care reclamă îl aduce. Asta transformă marketingul din pariu în investiție controlată.",
-                      cuRaspunsul: "Implementăm tracking-ul care lipsește — vizibilitate totală pe costuri.",
+                      cuRaspunsul: "Configurăm corect tracking-ul (pixel-ul există deja) — vizibilitate totală pe costuri.",
                     },
                   ],
                 },
@@ -837,24 +866,83 @@ export default function EpisculpPage() {
                 <div key={cat} className={`border rounded-xl p-4 ${color}`}>
                   <p className="font-bold text-sm mb-3">{cat}</p>
                   <div className="space-y-3">
-                    {intrebari.map(({ q, de, cuRaspunsul }) => (
-                      <div key={q} className="bg-white/80 rounded-lg p-3.5">
-                        <p className="text-sm font-semibold text-slate-800 mb-1.5">❓ {q}</p>
-                        <p className="text-xs text-slate-600 leading-relaxed mb-2">{de}</p>
-                        <p className="text-xs text-emerald-700 bg-emerald-50 rounded-md px-2.5 py-1.5 mb-2"><span className="font-semibold">Ce facem cu răspunsul:</span> {cuRaspunsul}</p>
-                        <textarea
-                          value={meetingAnswers[q] ?? ""}
-                          onChange={(e) => setMeetingAnswers((p) => ({ ...p, [q]: e.target.value }))}
-                          placeholder="✍️ Scrie aici răspunsul clientului (se salvează automat)..."
-                          rows={2}
-                          className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400 resize-none bg-white"
-                        />
-                      </div>
-                    ))}
+                    {intrebari.map(({ q, de, cuRaspunsul }) => {
+                      const hasAns = !!(meetingAnswers[q] && meetingAnswers[q].trim());
+                      const isEditing = answerEditing[q] ?? !hasAns;
+                      return (
+                        <div key={q} className="bg-white/80 rounded-lg p-3.5">
+                          <p className="text-sm font-semibold text-slate-800 mb-1.5">❓ {q}</p>
+                          <p className="text-xs text-slate-600 leading-relaxed mb-2">{de}</p>
+                          <p className="text-xs text-emerald-700 bg-emerald-50 rounded-md px-2.5 py-1.5 mb-2"><span className="font-semibold">Ce facem cu răspunsul:</span> {cuRaspunsul}</p>
+                          {isEditing ? (
+                            <div>
+                              <textarea
+                                value={meetingAnswers[q] ?? ""}
+                                onChange={(e) => setMeetingAnswers((p) => ({ ...p, [q]: e.target.value }))}
+                                placeholder="✍️ Scrie aici răspunsul clientului..."
+                                rows={2}
+                                className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400 resize-none bg-white"
+                              />
+                              <button
+                                onClick={() => setAnswerEditing((p) => ({ ...p, [q]: false }))}
+                                disabled={!hasAns}
+                                className="mt-1.5 text-xs font-medium px-3 py-1.5 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+                                💾 Salvează
+                              </button>
+                            </div>
+                          ) : (
+                            <div className="flex items-start justify-between gap-2 bg-emerald-50 border border-emerald-200 rounded-lg p-2.5">
+                              <p className="text-sm text-slate-700 whitespace-pre-wrap flex-1">{meetingAnswers[q]}</p>
+                              <button
+                                onClick={() => setAnswerEditing((p) => ({ ...p, [q]: true }))}
+                                className="text-xs font-medium text-emerald-700 hover:text-emerald-900 shrink-0 px-2 py-1 rounded-md hover:bg-emerald-100 transition-colors">
+                                ✏️ Editează
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               ))}
             </div>
+          </div>
+
+          {/* ====== GENERARE PLAN FB ADS (AI) ====== */}
+          <div className="bg-white border-2 border-blue-200 rounded-2xl p-6 shadow-sm">
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-xl">🤖</span>
+              <h3 className="font-bold text-slate-800 text-lg">Generează cel mai bun plan de Facebook Ads</h3>
+            </div>
+            <p className="text-xs text-slate-400 mb-4">Pe baza TUTUROR răspunsurilor de mai sus, AI-ul (Claude Opus) construiește un plan complet de campanii Meta — adaptat la capacitatea, bugetul și serviciile lor. Completează întâi răspunsurile, apoi apasă butonul.</p>
+
+            <button
+              onClick={genereazaPlanFB}
+              disabled={planLoading}
+              className="flex items-center gap-2 text-sm font-semibold px-5 py-2.5 rounded-xl bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+              {planLoading ? "⏳ Se generează planul... (30-60s)" : planText ? "🔄 Regenerează planul" : "✨ Generează plan FB Ads"}
+            </button>
+
+            {planError && (
+              <div className="mt-3 p-3 bg-rose-50 border border-rose-200 rounded-xl text-sm text-rose-700">
+                ⚠️ {planError}
+              </div>
+            )}
+
+            {planText && !planLoading && (
+              <div className="mt-4">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-xs font-bold text-slate-500 uppercase tracking-wide">Plan generat</p>
+                  <button
+                    onClick={() => { navigator.clipboard.writeText(planText); }}
+                    className="text-xs text-blue-600 hover:text-blue-800">📋 Copiază</button>
+                </div>
+                <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 text-sm text-slate-700 whitespace-pre-wrap leading-relaxed max-h-[600px] overflow-y-auto">
+                  {planText}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* ====== 5. CUM MĂSURĂM SUCCESUL ====== */}
@@ -878,7 +966,7 @@ export default function EpisculpPage() {
               </div>
               <div className="bg-emerald-50 border border-emerald-100 rounded-xl p-4">
                 <p className="text-xs font-bold text-emerald-700 uppercase tracking-wide mb-2">Primul lucru pe care îl facem (săptămâna 1)</p>
-                <p className="text-sm text-slate-700">Instalăm <strong>tracking-ul</strong> (pixel pe site + conectarea formularelor) care lipsește acum. Fără el, banii pe reclame nu se pot măsura. Cu el, fiecare leu devine vizibil și optimizabil.</p>
+                <p className="text-sm text-slate-700">Pixel-ul e instalat — îl <strong>configurăm corect</strong> (evenimente de conversie + conectarea formularelor). Acum nu măsoară nimic util; după setare, fiecare leu devine vizibil și optimizabil.</p>
               </div>
             </div>
 
@@ -925,7 +1013,7 @@ export default function EpisculpPage() {
             <p className="text-xs text-slate-300 mb-4 ml-9">Propunere de prim pas — mic, măsurabil, fără risc mare.</p>
             <div className="grid md:grid-cols-3 gap-3">
               {[
-                { f: "Faza 1 — Fundație (săpt. 1)", d: "Instalăm tracking, setăm conturile corect, pregătim prima campanie de epilare definitivă cu formular + WhatsApp." },
+                { f: "Faza 1 — Fundație (săpt. 1)", d: "Configurăm tracking-ul existent, setăm conturile corect, pregătim prima campanie de epilare definitivă cu formular + WhatsApp." },
                 { f: "Faza 2 — Lansare & măsurare (săpt. 2–4)", d: "Pornim campania, urmărim zilnic, optimizăm. La final de lună: primul raport cu cifre reale." },
                 { f: "Faza 3 — Scalare (luna 2+)", d: "Creștem ce funcționează, adăugăm remodelare pe sezon, retargeting și recenzii. Construim sistemul complet." },
               ].map(({ f, d }) => (
@@ -1297,6 +1385,7 @@ export default function EpisculpPage() {
                   <li>✅ Prezență activă pe Instagram, Facebook, TikTok</li>
                   <li>✅ Produceți singuri creative video</li>
                   <li>✅ Investiți deja un buget pe Meta</li>
+                  <li>✅ <strong>Pixel Meta deja instalat</strong> pe site</li>
                 </ul>
               </div>
               <div className="bg-rose-50 border border-rose-200 rounded-xl p-4">
@@ -1304,7 +1393,7 @@ export default function EpisculpPage() {
                 <ul className="space-y-1.5 text-sm text-slate-700">
                   <li>❌ Reclamele sunt „boost-uri” — obiectiv greșit (engagement, nu clienți)</li>
                   <li>❌ Trimit oamenii pe Instagram, fără a le cere datele</li>
-                  <li>❌ Fără tracking (pixel) → nu se poate măsura nimic</li>
+                  <li>❌ Pixel-ul există, dar nu e folosit — fără evenimente de conversie configurate</li>
                   <li>❌ Fără retargeting → pierdeți cei care v-au văzut deja</li>
                   <li>❌ Fără raport pe cifre (cost/lead, ce reclamă aduce clienți)</li>
                 </ul>
@@ -1337,7 +1426,7 @@ export default function EpisculpPage() {
             <p className="text-xs text-slate-400 mb-4 ml-9">Optimizarea concretă — fiecare punct rezolvă un gap de mai sus.</p>
             <div className="grid md:grid-cols-2 gap-3">
               {[
-                { t: "Tracking complet", d: "Instalăm pixel + evenimente pe site. Din prima zi vedem ce funcționează. Fără asta, banii pe reclame sunt invizibili." },
+                { t: "Activăm pixel-ul existent", d: "Pixel-ul e deja instalat — configurăm evenimentele de conversie (Lead) și îl folosim pentru retargeting și audiențe. Din prima zi vedem ce funcționează." },
                 { t: "Obiectiv corect: Lead Gen", d: "Înlocuim boost-urile cu campanii care cer clienți reali (formular / mesaj), nu doar like-uri." },
                 { t: "Captăm lead-ul, nu îl pierdem", d: "Formular nativ Meta + buton WhatsApp direct. Fiecare interesat devine un contact pe care îl puteți suna." },
                 { t: "Retargeting", d: "Recuperăm ieftin (0,3-0,5 lei/interacțiune) pe cei care v-au văzut dar nu au acționat încă." },
@@ -1365,7 +1454,7 @@ export default function EpisculpPage() {
                   luna: "LUNA 1 — Iulie", faza: "Fundație + prima campanie", color: "bg-blue-50 border-blue-200", dot: "bg-blue-500",
                   focus: "Remodelare corporală (sezon vară) + Epilare definitivă (evergreen)",
                   actiuni: [
-                    "Instalăm pixel + tracking, conectăm conturile corect",
+                    "Configurăm pixel-ul existent (evenimente de conversie), conectăm conturile corect",
                     "Lansăm prima campanie Lead Gen cu formular + WhatsApp",
                     "Pornim retargeting de bază pe vizitatorii site-ului",
                     "Organizăm creativele voastre în structură testabilă",
