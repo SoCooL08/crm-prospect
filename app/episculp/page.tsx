@@ -394,8 +394,6 @@ export default function EpisculpPage() {
     { canal: "Management + raportare", key: "mgmt", proc: 48, color: "bg-slate-400", colorText: "text-slate-600", border: "border-slate-200" },
   ]);
   const [scenBudget, setScenBudget] = useState(5000);
-  const [scenMode, setScenMode] = useState<"media" | "total">("media");
-  const [scenFee, setScenFee] = useState(35);
 
   useEffect(() => {
     const saved = localStorage.getItem("episculp_data_v2");
@@ -1089,8 +1087,7 @@ export default function EpisculpPage() {
           },
         ];
 
-        const mediaBudget = scenMode === "media" ? scenBudget : Math.round(scenBudget * (100 - scenFee) / 100);
-        const feeAmount = scenBudget - mediaBudget;
+        const mediaBudget = scenBudget;
         const daily = Math.round(mediaBudget / 30.4);
         const tier = TIERS.find((t) => mediaBudget >= t.min && mediaBudget <= t.max) ?? TIERS[0];
         const leadBudget = tier.id === "D" ? Math.round(mediaBudget * 0.85) : mediaBudget;
@@ -1108,24 +1105,12 @@ export default function EpisculpPage() {
 
             {/* Calculator */}
             <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-              <h3 className="font-bold text-slate-800 mb-4">💰 Introdu bugetul lunar</h3>
-
-              {/* Mode toggle */}
-              <div className="flex gap-2 mb-4">
-                {([["media", "Doar reclame (media)"], ["total", "Total (cu fee + producție)"]] as [typeof scenMode, string][]).map(([m, label]) => (
-                  <button key={m} onClick={() => setScenMode(m)}
-                    className={`flex-1 px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${
-                      scenMode === m ? "bg-emerald-600 text-white shadow-sm" : "bg-slate-100 text-slate-500 hover:text-slate-700"
-                    }`}>
-                    {label}
-                  </button>
-                ))}
-              </div>
+              <h3 className="font-bold text-slate-800 mb-4">💰 Bugetul lor de reclame</h3>
 
               <div className="flex items-center gap-4 mb-4 p-4 bg-slate-50 rounded-xl border border-slate-200">
                 <div className="flex-1">
                   <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wide mb-1">
-                    Buget {scenMode === "media" ? "de reclame" : "total"} / lună (lei)
+                    Buget de reclame / lună (lei)
                   </label>
                   <input
                     type="number"
@@ -1135,32 +1120,15 @@ export default function EpisculpPage() {
                     placeholder="5000"
                   />
                 </div>
-                {scenMode === "total" && (
-                  <div className="text-right">
-                    <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wide mb-1">Fee + producție</label>
-                    <div className="flex items-center gap-1 justify-end">
-                      <input type="number" value={scenFee} min={0} max={80}
-                        onChange={(e) => setScenFee(Math.min(80, Math.max(0, Number(e.target.value))))}
-                        className="w-14 text-lg font-bold text-center border border-slate-200 rounded-lg py-1 focus:outline-none focus:ring-1 focus:ring-emerald-400" />
-                      <span className="text-sm text-slate-400">%</span>
-                    </div>
-                  </div>
-                )}
+                <div className="text-right shrink-0">
+                  <p className="text-xs text-slate-400 uppercase tracking-wide">Buget zilnic</p>
+                  <p className="text-2xl font-bold text-blue-600">~{daily} lei</p>
+                  <p className="text-xs text-slate-400">media ÷ 30,4</p>
+                </div>
               </div>
 
-              {/* Derived numbers */}
-              <div className="grid grid-cols-3 gap-3">
-                {[
-                  { label: "Buget media real", value: `${mediaBudget.toLocaleString("ro")} lei`, color: "text-emerald-600", sub: scenMode === "total" ? `după ${scenFee}% fee` : "integral pe reclame" },
-                  { label: "Buget zilnic", value: `~${daily} lei/zi`, color: "text-blue-600", sub: "media ÷ 30,4" },
-                  { label: scenMode === "total" ? "Fee + producție" : "Adaugă fee separat", value: scenMode === "total" ? `${feeAmount.toLocaleString("ro")} lei` : "—", color: "text-slate-500", sub: scenMode === "total" ? "partea ta + materiale" : "nu e inclus aici" },
-                ].map((k) => (
-                  <div key={k.label} className="bg-slate-50 rounded-xl p-3 text-center">
-                    <p className="text-xs text-slate-400 uppercase tracking-wide">{k.label}</p>
-                    <p className={`text-lg font-bold mt-0.5 ${k.color}`}>{k.value}</p>
-                    <p className="text-xs text-slate-400">{k.sub}</p>
-                  </div>
-                ))}
+              <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-700">
+                ✓ <strong>Creativele le produce clientul.</strong> Bugetul de mai sus merge integral pe difuzare — fără cost de producție.
               </div>
             </div>
 
@@ -1272,10 +1240,13 @@ export default function EpisculpPage() {
               </div>
             </div>
 
-            {/* Clarificare media vs total */}
+            {/* Nota creative + fee separat */}
             <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5">
-              <p className="font-bold text-amber-800 text-sm mb-2">⚠️ Prima întrebare de pus clientului despre buget</p>
-              <p className="text-sm text-amber-700">Când zice „5.000 lei”, întreabă: <strong>e doar buget de reclame sau total (cu tot cu serviciul tău + producție materiale)?</strong> Diferența e enormă — 5.000 doar media e cu totul alt scenariu decât 5.000 total (din care media ar fi ~3.250). Folosește toggle-ul de mai sus ca să-i arăți live impactul.</p>
+              <p className="font-bold text-amber-800 text-sm mb-2">💡 De reținut despre buget</p>
+              <div className="space-y-1.5 text-sm text-amber-700">
+                <p>• <strong>Creativele le fac ei</strong> — bugetul de mai sus e 100% difuzare, fără producție din partea ta.</p>
+                <p>• <strong>Fee-ul tău de management e separat</strong> de bugetul de reclame — nu îl amesteca cu cifra de aici. Bugetul de campanii merge integral la Meta, fee-ul e pentru serviciul tău (strategie, setare, optimizare, raportare).</p>
+              </div>
             </div>
 
             <p className="text-xs text-slate-400 text-center">Calculator buget · Doar Meta/Facebook · Episculp Beauty</p>
