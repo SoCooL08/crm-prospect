@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { MODEL, LUNI, REPERE, SITE, SOCIAL, SCALARE, GRESELI, KPI, DIAGNOSTIC } from "@/lib/sistem";
 import { Target, Image, TrendingUp, Users, Zap, Plus, Trash2 } from "lucide-react";
 
 // ── Types ──────────────────────────────────────────────────────────────────
@@ -33,7 +34,7 @@ type PostAgentie = {
   data: string;
 };
 
-type TabNV = "overview" | "setup" | "strategie" | "campanii" | "posturi";
+type TabNV = "overview" | "sistem" | "setup" | "strategie" | "campanii" | "posturi";
 
 type SostacItem = { titlu: string; label: string; color: string; continut: string };
 
@@ -367,7 +368,7 @@ export default function NovaVisioPage() {
 
   useEffect(() => {
     localStorage.setItem("novavisio_data", JSON.stringify({ campanii, posturi, buget, sostac, checks }));
-  }, [campanii, posturi, buget]);
+  }, [campanii, posturi, buget, sostac, checks]);
 
   function updateCampanie(id: string, patch: Partial<CampaniaAgentie>) {
     setCampanii((prev) => prev.map((c) => c.id === id ? { ...c, ...patch } : c));
@@ -402,6 +403,7 @@ export default function NovaVisioPage() {
 
   const TABS = [
     { id: "overview" as TabNV, label: "📊 Overview" },
+    { id: "sistem" as TabNV, label: "🚀 Sistem" },
     { id: "setup" as TabNV, label: "⚙️ Setup Profiluri" },
     { id: "strategie" as TabNV, label: "🎯 SOSTAC + SMM" },
     { id: "campanii" as TabNV, label: "🚀 Campanii Paid" },
@@ -454,6 +456,150 @@ export default function NovaVisioPage() {
       </div>
 
       {/* ── OVERVIEW ──────────────────────────────────────────────────────── */}
+      {/* -- SISTEM DE SCALARE ---------------------------------------------- */}
+      {tab === "sistem" && (
+        <div className="space-y-5">
+
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+            {REPERE.map((r) => (
+              <div key={r.eticheta} className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
+                <p className="text-xs text-slate-400 uppercase tracking-wide">{r.eticheta}</p>
+                <p className="text-lg font-black text-slate-900 mt-0.5">{r.valoare}</p>
+                <p className="text-xs text-slate-400 mt-1 leading-snug">{r.nota}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm overflow-x-auto">
+            <h2 className="font-bold text-slate-800 mb-1">Modelul aug-dec 2026</h2>
+            <p className="text-xs text-slate-400 mb-4">
+              Recalibrat 29.07.2026 &mdash; valoare medie proiect 1.255 EUR. Singurul rand pe care il controlezi 100% sunt apelurile.
+            </p>
+            <table className="w-full text-sm min-w-[560px]">
+              <thead>
+                <tr className="text-xs text-slate-400 uppercase tracking-wide">
+                  <th className="text-left pb-2 font-semibold">Indicator</th>
+                  {LUNI.map((l) => <th key={l} className="text-right pb-2 font-semibold w-16">{l}</th>)}
+                  <th className="text-right pb-2 font-semibold w-20">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                {MODEL.map((r) => (
+                  <tr key={r.linie} className={`border-t border-slate-100 ${r.accent ? "font-bold text-slate-900" : "text-slate-600"}`}>
+                    <td className="py-2">{r.linie}</td>
+                    {r.valori.map((v, i) => <td key={i} className="text-right py-2 tabular-nums">{v}</td>)}
+                    <td className="text-right py-2 tabular-nums text-slate-900">{r.total}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {[
+            { titlu: "Site \u2014 novavisiotech.ro", grupuri: SITE, bara: "bg-blue-500" },
+            { titlu: "Social & con\u021binut", grupuri: SOCIAL, bara: "bg-violet-500" },
+            { titlu: "Scalare", grupuri: SCALARE, bara: "bg-emerald-500" },
+          ].map((zona) => {
+            const toateIds = zona.grupuri.flatMap((g) => g.items.map((i) => i.id));
+            const facute = doneCount(toateIds);
+            return (
+              <div key={zona.titlu} className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
+                <div className="flex items-center justify-between gap-3 mb-3">
+                  <h2 className="font-bold text-slate-800">{zona.titlu}</h2>
+                  <span className="text-xs font-semibold text-slate-500 shrink-0">{facute} / {toateIds.length}</span>
+                </div>
+                <div className="h-1.5 bg-slate-100 rounded-full mb-5 overflow-hidden">
+                  <div className={`h-full rounded-full transition-all ${zona.bara}`}
+                    style={{ width: toateIds.length ? `${(facute / toateIds.length) * 100}%` : "0%" }} />
+                </div>
+
+                <div className="space-y-5">
+                  {zona.grupuri.map((g) => (
+                    <div key={g.titlu}>
+                      <p className="text-sm font-bold text-slate-700">{g.titlu}</p>
+                      {g.subtitlu && <p className="text-xs text-slate-400 mb-2 leading-snug">{g.subtitlu}</p>}
+                      <div className="space-y-1 mt-2">
+                        {g.items.map((it) => (
+                          <label key={it.id}
+                            className={`flex items-start gap-2.5 px-3 py-2 rounded-lg border cursor-pointer transition-colors ${
+                              checks[it.id] ? "bg-slate-50 border-slate-200" : "bg-white border-slate-100 hover:bg-slate-50"
+                            }`}>
+                            <input type="checkbox" checked={!!checks[it.id]} onChange={() => toggle(it.id)}
+                              className="w-4 h-4 mt-0.5 accent-slate-900 shrink-0" />
+                            <span className="min-w-0 flex-1">
+                              <span className={`text-sm block leading-snug ${checks[it.id] ? "text-slate-400 line-through" : "text-slate-800"}`}>
+                                {it.text}
+                              </span>
+                              {it.nota && <span className="text-xs text-slate-400 block mt-0.5 leading-snug">{it.nota}</span>}
+                            </span>
+                            {it.termen && (
+                              <span className="text-xs font-bold text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-md shrink-0">
+                                {it.termen}
+                              </span>
+                            )}
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+
+          <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
+            <h2 className="font-bold text-slate-800 mb-1">KPI saptamanali</h2>
+            <p className="text-xs text-slate-400 mb-4">Se completeaza vineri, in 10 minute. Indicatorii de activitate ii controlezi 100% &mdash; aici te judeci.</p>
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-xs text-slate-400 uppercase tracking-wide">
+                  <th className="text-left pb-2 font-semibold">Indicator</th>
+                  <th className="text-right pb-2 font-semibold w-24">August</th>
+                  <th className="text-right pb-2 font-semibold w-24">Oct+</th>
+                </tr>
+              </thead>
+              <tbody>
+                {KPI.map((k) => (
+                  <tr key={k.kpi} className="border-t border-slate-100 text-slate-600">
+                    <td className="py-2">{k.kpi}</td>
+                    <td className="text-right py-2 font-semibold text-slate-900 tabular-nums">{k.aug}</td>
+                    <td className="text-right py-2 tabular-nums">{k.oct}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="bg-slate-900 rounded-2xl p-5 text-slate-300">
+            <h2 className="font-bold text-white mb-1">Cand o luna merge prost</h2>
+            <p className="text-xs text-slate-500 mb-4">Verifici in ordinea asta, nu la intamplare. In 8 din 10 cazuri raspunsul e la punctul 1.</p>
+            <ol className="space-y-2">
+              {DIAGNOSTIC.map((d, i) => (
+                <li key={i} className="flex gap-3 text-sm leading-snug">
+                  <span className="font-black text-slate-600 shrink-0">{i + 1}</span>
+                  <span className={i === 0 ? "text-white font-medium" : ""}>{d}</span>
+                </li>
+              ))}
+            </ol>
+          </div>
+
+          <div className="bg-white border border-red-200 rounded-2xl p-5 shadow-sm">
+            <h2 className="font-bold text-slate-800 mb-4">Cele 8 greseli care iti omoara scalarea</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {GRESELI.map((g, i) => (
+                <div key={g.titlu} className="border border-slate-100 rounded-xl p-3 bg-slate-50">
+                  <p className="text-sm font-bold text-slate-800 leading-snug">
+                    <span className="text-red-500">{i + 1}.</span> {g.titlu}
+                  </p>
+                  <p className="text-xs text-slate-500 mt-1 leading-snug">{g.text}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+        </div>
+      )}
+
       {tab === "overview" && (
         <div className="space-y-5">
 
