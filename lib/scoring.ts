@@ -127,46 +127,72 @@ export function oferta(s: SemnaleLead): string {
 export interface BriefApel {
   cuvinte_cheie: string[];
   deschidere: string;
+  observatie: string;
+  micro_intrebare: string;
   pitch: string;
+  confirmare: string;
 }
+
+/**
+ * Deschiderea e identica la fiecare apel si nu se improvizeaza.
+ * „Vă prind într-un moment nepotrivit” dă control celuilalt și primește
+ * „nu, spuneți” în ~70% din cazuri; „aveți 2 minute?” primește „nu”.
+ */
+const DESCHIDERE =
+  '„Bună ziua, domnul/doamna [Nume]?” — pauză, aștepți confirmarea — „Sunt Călin de la Nova Visio Tech, din Sibiu. Vă prind într-un moment nepotrivit?”';
+
+/** Nu vinzi site la telefon. Vinzi auditul video de 3 minute. */
+const CTA_AUDIT =
+  '„Uite ce vă propun, fără nicio obligație: îmi iau 15 minute și înregistrez un video de 3 minute în care vă arăt pe ecran exact ce vede un client când intră pe site-ul dumneavoastră, ce se pierde și ce ar schimba cel mai mult. Vi-l trimit pe WhatsApp, îl vedeți când aveți timp. Dacă vi se pare util, vorbim. Dacă nu, l-ați văzut gratis și tot ați aflat ceva. Vă trimit pe numărul ăsta de WhatsApp?”';
+
+const MICRO_INTREBARE =
+  '„Vă întreb un lucru: din clienții care vin la dumneavoastră acum, cam câți vin de pe internet și câți din recomandări?” — ascultă până termină, nu completa tu.';
+
+const CONFIRMARE =
+  '„Perfect. Îl aveți până mâine la ora [oră concretă]. Vă scriu când l-am trimis. Îmi spuneți numele complet, ca să vi-l personalizez?”';
 
 export function genereazaBrief(
   s: SemnaleLead & { nisa?: string }
 ): BriefApel {
   const cuvinte: string[] = [];
-  let deschidere = "";
-  let pitch = "";
+  let observatie = "";
 
+  // Observatia specifica e tot apelul. Fara ea esti al treilea om care suna
+  // azi sa vanda site-uri; cu ea esti singurul care s-a uitat inainte.
+  // Ordinea de mai jos e ordinea in care semnalele conving la telefon.
   if (!s.areWebsite) {
     cuvinte.push("Fara website");
     if (s.reviews > 50) {
-      cuvinte.push("Afacere activa", "Clienti existenti");
-      deschidere = `"Buna ziua, sun de la Nova Visio. Stiu ca aveti ${s.reviews} recenzii pe Google — sunteti activi, dar clientii noi nu va gasesc online."`;
-      pitch = `Cu un site profesional, clientii care cauta ${s.nisa?.toLowerCase() ?? "servicii"} in zona va contacteaza direct. Pot sa va arat cum ar arata in 2 minute?`;
+      cuvinte.push("Afacere activa");
+      observatie = `„...nu am găsit un site al firmei, deși aveți ${s.reviews} recenzii pe Google. Practic aveți clienți mulțumiți, dar cine vă caută acum pe internet nu are unde să ajungă.”`;
     } else {
-      cuvinte.push("Prezenta online");
-      deschidere = `"Buna ziua, sun de la Nova Visio. Am cautat ${s.nisa?.toLowerCase() ?? "afaceri"} in zona si nu am gasit site-ul vostru — vi s-a intamplat sa piardeti clienti din cauza asta?"`;
-      pitch = "Un site simplu si rapid poate aduce cereri noi in fiecare saptamana, fara reclame platite.";
+      observatie = `„...nu am găsit un site al firmei. Când cineva caută ${s.nisa?.toLowerCase() ?? "serviciul"} în zonă, apar concurenții, iar dumneavoastră nu apăreți deloc.”`;
     }
   } else if (s.scorViteza != null && s.scorViteza < 50) {
-    cuvinte.push("Site lent", "Redesign", "Optimizare");
-    deschidere = `"Buna ziua, am testat site-ul vostru si se incarca greu — scor ${s.scorViteza}/100. Clientii inchid paginile lente inainte sa vada ce oferiti."`;
-    pitch = "Putem optimiza site-ul astfel incat sa se incarce in sub 2 secunde si sa converteasca de 2x mai bine.";
+    cuvinte.push("Site lent", "PageSpeed " + s.scorViteza);
+    observatie = `„...pe telefon se încarcă foarte greu — am măsurat ${s.scorViteza} din 100. Google penalizează peste 3 secunde, iar 6 din 10 oameni închid înainte să apuce să vadă ce oferiți.”`;
+  } else if (s.reviews < 10) {
+    cuvinte.push("Putine recenzii", "SEO local");
+    observatie = `„...aveți doar ${s.reviews} recenzii pe Google. La căutare locală ăsta e tot meciul — cine are 100+ apare deasupra dumneavoastră indiferent cât de bine lucrați.”`;
   } else if (s.rating > 0 && s.rating < 4.0) {
-    cuvinte.push("Rating slab", "Reputatie online", "Google Ads");
-    deschidere = `"Buna ziua, sun de la Nova Visio. Ratingul de ${s.rating} pe Google va afecteaza direct — multi clienti filtreaza dupa stele inainte sa sune."`;
-    pitch = "Avem un program de imbunatatire a reputatiei online — clientii nostri cu situatii similare au ajuns la 4.5+ in 3 luni.";
+    cuvinte.push("Rating slab", "Reputatie");
+    observatie = `„...aveți ${s.rating} stele pe Google. Mulți oameni filtrează după stele înainte să sune, deci pierdeți clienți înainte să apucați să vorbiți cu ei.”`;
   } else if (s.reviews > 200) {
-    cuvinte.push("Brand cunoscut", "Scalare", "Publicitate");
-    deschidere = `"Buna ziua, sun de la Nova Visio. Aveti ${s.reviews} recenzii — sunteti un brand cunoscut in zona. Vreau sa va arat cum sa aduceti si mai multi clienti online."`;
-    pitch = "Cu Google Ads si SEO targetat pe zona, puteti dubla numarul de cereri fara sa mariti echipa.";
+    cuvinte.push("Brand cunoscut", "Scalare");
+    observatie = `„...aveți ${s.reviews} recenzii, sunteți clar un nume în zonă. Tocmai de asta m-a mirat ce am văzut pe site — nu lucrează pentru dumneavoastră pe cât ar putea.”`;
   } else {
-    cuvinte.push("Vizibilitate online", "Crestere", "Optimizare");
-    deschidere = `"Buna ziua, sun de la Nova Visio. Lucram cu ${s.nisa?.toLowerCase() ?? "afaceri"} din zona si vreau sa va arat ce rezultate am obtinut pentru clientii nostri."`;
-    pitch = "Facem un audit gratuit al prezentei voastre online si va spunem exact ce oportunitati pierdeti acum.";
+    cuvinte.push("Verifica manual");
+    observatie = `„...[SCRIE OBSERVAȚIA MANUAL — deschide site-ul și găsește un lucru concret. Fără ea nu suni.]”`;
   }
 
-  return { cuvinte_cheie: cuvinte, deschidere, pitch };
+  return {
+    cuvinte_cheie: cuvinte,
+    deschidere: DESCHIDERE,
+    observatie: `„Vă sun direct la obiect. M-am uitat înainte să vă sun pe site-ul firmei și am observat că...” ${observatie}`,
+    micro_intrebare: MICRO_INTREBARE,
+    pitch: CTA_AUDIT,
+    confirmare: CONFIRMARE,
+  };
 }
 
 export interface NevoiMarketing {

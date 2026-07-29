@@ -8,6 +8,7 @@ interface Obiectie {
   intrebare: string;
   raspuns: string;
   tag?: string;
+  nota?: string;
 }
 
 function getObiectiiDinamice(s: SemnaleLead): Obiectie[] {
@@ -48,30 +49,55 @@ function getObiectiiDinamice(s: SemnaleLead): Obiectie[] {
   return obiectii;
 }
 
+// Cele 8 obiectii testate din NVT-Script-Apel-si-Cadenta.html, sectiunea 6.5.
+// Formularea e cea pe care o folosesti la telefon — nu o rescrie in timpul
+// apelului, ai testat-o deja.
 const OBIECTII_STATICE: Obiectie[] = [
   {
-    intrebare: "E prea scump",
-    raspuns: "Inteleg, pretul conteaza. Hai sa ne uitam impreuna: un client nou adus de site sau ads valoreaza cat? Daca serviciile dvs costa 500€, aveti nevoie de 3-4 clienti noi pe luna ca sa recuperati investitia. In zona dvs, asta e realist in prima luna. Dupa, e profit curat.",
+    intrebare: "Avem deja site.",
+    raspuns:
+      "Știu, l-am văzut, de asta v-am sunat. Nu vă sun pentru un site nou. Vă sun pentru că [observația]. Întrebarea reală nu e dacă aveți site, e dacă vă aduce clienți. Câți dintre clienții de luna trecută au venit de pe el?",
   },
   {
-    intrebare: "Nu am timp acum, suna-ma luna viitoare",
-    raspuns: "Exact de asta sun acum — ca sa nu pierdeti o luna de clienti. Nu va cer mai mult de 20 de minute pentru o consultatie completa, la ora convenabila pentru dvs. Cand sunteti liber miercuri sau joi?",
+    intrebare: "Nu ne interesează.",
+    raspuns:
+      "Vă înțeleg perfect, primiți zeci de apeluri de genul. Doar o întrebare și vă las: dacă luna viitoare ar veni 5 clienți în plus de pe internet, ar conta pentru firmă, sau sunteți deja la capacitate maximă?",
+    nota: "Dacă spune „suntem la capacitate” → e lead real, cu timing greșit. NURTURE la 90 de zile, nu PIERDUT.",
   },
   {
-    intrebare: "Am deja un furnizor / agentie",
-    raspuns: "Perfect, asta inseamna ca stiti valoarea acestor servicii. Pot sa va intreb — sunteti multumit de rezultate? Multi clienti ai nostri au venit de la alte agentii tocmai pentru ca nu vedeau rezultate concrete. Va fac o analiza comparativa gratuita, fara nicio obligatie.",
+    intrebare: "Trimite-mi pe mail.",
+    raspuns:
+      "Cu plăcere, dar hai să nu vă trimit un PDF de prezentare pe care nu-l citește nimeni. Vă trimit auditul video de 3 minute, personalizat pe site-ul dumneavoastră — ăla se vede în 3 minute. Pe ce adresă, sau mai bine pe WhatsApp, ca să știu sigur că ajunge?",
+    nota: "Cea mai frecventă obiecție. De fapt înseamnă „lasă-mă în pace”. Nu accepți emailul ca ieșire — îl transformi în WhatsApp.",
   },
   {
-    intrebare: "Trebuie sa ma gandesc / sa discut cu asociatul",
-    raspuns: "Normal, e o decizie de business. Ca sa va ajut sa luati cea mai buna decizie, va trimit un audit detaliat pe email sau WhatsApp — include exact ce am identificat si ce propun concret. Asa aveti ceva in mana cand discutati. Ce numar de WhatsApp folositi?",
+    intrebare: "Cât costă?",
+    raspuns:
+      "Depinde real de ce vă trebuie — între 800 și 1.300 de euro pentru un site de prezentare, de la 1.700 pentru magazin online. Dar nu vreau să vă vând nimic acum. Vă trimit auditul, vedeți dacă are sens, și abia apoi vorbim de bani. E ok?",
+    nota: "Dai întotdeauna un interval concret. „Depinde” fără cifre sună a ascunzi ceva și pierzi apelul.",
   },
   {
-    intrebare: "Trimite-mi ceva pe email, ma uit si revin",
-    raspuns: "Da, va trimit acum un audit personalizat pe afacerea dvs. Va rog sa il deschideti cat suntem la telefon, dureaza 30 de secunde, si imi spuneti daca problemele identificate vi se par reale. Aveti WhatsApp?",
+    intrebare: "E prea scump.",
+    raspuns:
+      "Înțeleg. Ca să vă ajut mai concret: prea scump față de buget, sau prea scump față de ce credeți că v-ar aduce? Sunt două discuții complet diferite.",
+    nota: "Dacă e bugetul → cobori la LAUNCH sau propui plata în 3 tranșe. Nu scazi prețul — scazi scopul. Un site la 350 EUR îți consumă aceleași zile ca unul la 1.290.",
   },
   {
-    intrebare: "Am incercat Google Ads si nu a mers",
-    raspuns: "Asta aud des si aproape intotdeauna motivul e acelasi: campania nu a fost setata corect pentru zona si nisa dvs specifica. Google Ads functioneaza — problema e configuratia. Va pot arata 2-3 exemple de campanii din acelasi domeniu care functioneaza in Romania acum.",
+    intrebare: "Avem deja pe cineva care se ocupă.",
+    raspuns:
+      "Bine, e important să aveți. Vă întreb doar un lucru: primiți raport lunar cu ce s-a făcut și ce rezultate a adus? ... Nu? Atunci probabil aveți pe cineva care menține, nu care crește. Sunt lucruri diferite, și de obicei se vede în trafic.",
+  },
+  {
+    intrebare: "Nu am timp acum.",
+    raspuns:
+      "Sigur. Doar ca să nu vă mai sun degeaba: marți dimineață sau joi după-amiază vă e mai comod pentru 5 minute?",
+    nota: "Nu întrebi „când vă sun”. Dai două opțiuni concrete.",
+  },
+  {
+    intrebare: "Suntem în concediu / e vară.",
+    raspuns:
+      "Perfect timing atunci, pentru că un site durează 3–4 săptămâni. Dacă începem acum, sunteți gata pentru septembrie, când revine lumea. Dacă începeți în septembrie, sunteți gata în octombrie și pierdeți exact luna cea mai bună.",
+    nota: "O vei auzi mult în august. Nu e un „nu”, e un test.",
   },
 ];
 
@@ -112,6 +138,11 @@ function ObiectieCard({ obiectie }: { obiectie: Obiectie }) {
           <p className="text-sm text-slate-700 leading-relaxed pt-3 italic">
             &ldquo;{obiectie.raspuns}&rdquo;
           </p>
+          {obiectie.nota && (
+            <p className="text-xs text-slate-500 mt-2 pl-3 border-l-2 border-slate-300">
+              {obiectie.nota}
+            </p>
+          )}
           <button
             onClick={copiaza}
             className={`mt-3 flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors ${

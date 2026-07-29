@@ -670,15 +670,22 @@ export default function FisaLead() {
           ))}
         </div>
         <div className="space-y-3">
-          <div className="bg-slate-50 rounded-xl p-4 border border-slate-100">
-            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-1.5">Deschidere</p>
-            <p className="text-sm text-slate-700 italic">{brief.deschidere}</p>
-          </div>
-          <div className="bg-blue-50 rounded-xl p-4 border border-blue-100">
-            <p className="text-xs font-semibold text-blue-400 uppercase tracking-wide mb-1.5">Pitch</p>
-            <p className="text-sm text-blue-900">{brief.pitch}</p>
-          </div>
+          {[
+            { t: "1 · Deschidere — 8 sec", v: brief.deschidere, bg: "bg-slate-50 border-slate-100", lbl: "text-slate-400", txt: "text-slate-700 italic" },
+            { t: "2 · Motivul — 15 sec · aici e tot apelul", v: notaPers.trim() ? `„Vă sun direct la obiect. M-am uitat înainte să vă sun pe site-ul ${lead.nume} și am observat că ${notaPers.trim()}”` : brief.observatie, bg: "bg-amber-50 border-amber-200", lbl: "text-amber-600", txt: "text-slate-900 font-medium" },
+            { t: "3 · Micro-întrebare — 10 sec", v: brief.micro_intrebare, bg: "bg-slate-50 border-slate-100", lbl: "text-slate-400", txt: "text-slate-700 italic" },
+            { t: "4 · CTA — nu vinzi site, vinzi auditul", v: brief.pitch, bg: "bg-blue-50 border-blue-100", lbl: "text-blue-400", txt: "text-blue-900" },
+            { t: "5 · Confirmare + ancorare", v: brief.confirmare, bg: "bg-emerald-50 border-emerald-100", lbl: "text-emerald-500", txt: "text-emerald-900" },
+          ].map((sec) => (
+            <div key={sec.t} className={`rounded-xl p-4 border ${sec.bg}`}>
+              <p className={`text-xs font-semibold uppercase tracking-wide mb-1.5 ${sec.lbl}`}>{sec.t}</p>
+              <p className={`text-sm leading-relaxed ${sec.txt}`}>{sec.v}</p>
+            </div>
+          ))}
         </div>
+        <p className="text-xs text-slate-400 mt-4">
+          Nu improviza în primele 300 de apeluri. Dacă nota de personalizare e completată în scanul de 90 sec, pasul 2 o folosește automat.
+        </p>
       </div>
 
       {/* Audit Report */}
