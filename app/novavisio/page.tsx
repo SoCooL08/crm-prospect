@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { MODEL, LUNI, REPERE, SITE, SOCIAL, SCALARE, GRESELI, KPI, DIAGNOSTIC } from "@/lib/sistem";
+import { CALENDAR, FORMATE, PILONI, SPARGERE, FLUX_EXTRAGERE, HOOKURI, STRUCTURA_REEL, REGULI_PRODUCTIE, CANALE, PROTOCOL_CONCURENTA, GRILA_CONCURENTA, STATUSURI_ZI, STATUS_UI, StatusZi } from "@/lib/editorial";
 import { Target, Image, TrendingUp, Users, Zap, Plus, Trash2 } from "lucide-react";
 
 // ── Types ──────────────────────────────────────────────────────────────────
@@ -34,7 +35,7 @@ type PostAgentie = {
   data: string;
 };
 
-type TabNV = "overview" | "sistem" | "setup" | "strategie" | "campanii" | "posturi";
+type TabNV = "overview" | "sistem" | "calendar" | "setup" | "strategie" | "campanii" | "posturi";
 
 type SostacItem = { titlu: string; label: string; color: string; continut: string };
 
@@ -351,6 +352,9 @@ export default function NovaVisioPage() {
   const [sostacOpen, setSostacOpen] = useState<number | null>(0);
   const [sostac, setSostac] = useState<SostacItem[]>(SOSTAC_NV);
   const [checks, setChecks] = useState<Record<string, boolean>>({});
+  const [calendar, setCalendar] = useState<Record<number, StatusZi>>({});
+  const [videouri, setVideouri] = useState<string[]>(["", "", "", ""]);
+  const [concurenta, setConcurenta] = useState<Record<string, string>>({});
 
   useEffect(() => {
     const saved = localStorage.getItem("novavisio_data");
@@ -362,13 +366,16 @@ export default function NovaVisioPage() {
         if (d.buget) setBuget(d.buget);
         if (d.sostac) setSostac(d.sostac);
         if (d.checks) setChecks(d.checks);
+        if (d.calendar) setCalendar(d.calendar);
+        if (d.videouri) setVideouri(d.videouri);
+        if (d.concurenta) setConcurenta(d.concurenta);
       } catch {}
     }
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("novavisio_data", JSON.stringify({ campanii, posturi, buget, sostac, checks }));
-  }, [campanii, posturi, buget, sostac, checks]);
+    localStorage.setItem("novavisio_data", JSON.stringify({ campanii, posturi, buget, sostac, checks, calendar, videouri, concurenta }));
+  }, [campanii, posturi, buget, sostac, checks, calendar, videouri, concurenta]);
 
   function updateCampanie(id: string, patch: Partial<CampaniaAgentie>) {
     setCampanii((prev) => prev.map((c) => c.id === id ? { ...c, ...patch } : c));
@@ -404,6 +411,7 @@ export default function NovaVisioPage() {
   const TABS = [
     { id: "overview" as TabNV, label: "📊 Overview" },
     { id: "sistem" as TabNV, label: "🚀 Sistem" },
+    { id: "calendar" as TabNV, label: "📅 Calendar" },
     { id: "setup" as TabNV, label: "⚙️ Setup Profiluri" },
     { id: "strategie" as TabNV, label: "🎯 SOSTAC + SMM" },
     { id: "campanii" as TabNV, label: "🚀 Campanii Paid" },
@@ -599,6 +607,230 @@ export default function NovaVisioPage() {
 
         </div>
       )}
+
+      {/* -- CALENDAR EDITORIAL --------------------------------------------- */}
+      {tab === "calendar" && (() => {
+        const publicate = CALENDAR.filter((z) => calendar[z.zi] === "publicat").length;
+        const gata = CALENDAR.filter((z) => ["editat", "programat", "publicat"].includes(calendar[z.zi] ?? "")).length;
+        const perPilon = (Object.keys(PILONI) as (keyof typeof PILONI)[]).map((k) => ({
+          k, n: CALENDAR.filter((z) => z.pilon === k).length,
+        }));
+        return (
+        <div className="space-y-5">
+
+          {/* Progres */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+            {[
+              { l: "Zile in calendar", v: String(CALENDAR.length), c: "text-slate-900" },
+              { l: "Pregatite (editat+)", v: `${gata} / 30`, c: "text-blue-600" },
+              { l: "Publicate", v: `${publicate} / 30`, c: "text-emerald-600" },
+              { l: "Oferte directe", v: "2 din 30", c: "text-violet-600" },
+            ].map((x) => (
+              <div key={x.l} className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
+                <p className="text-xs text-slate-400 uppercase tracking-wide">{x.l}</p>
+                <p className={`text-lg font-black mt-0.5 ${x.c}`}>{x.v}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Cele 4 videouri */}
+          <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
+            <h2 className="font-bold text-slate-800 mb-1">Cele 4 video-uri filmate</h2>
+            <p className="text-xs text-slate-400 mb-4">
+              Scrie subiectul fiecaruia si pilonul. Din fiecare video lung scoti ~11 piese &mdash; 4 video-uri acopera luna cu surplus.
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-5">
+              {videouri.map((v, i) => (
+                <div key={i} className="border border-slate-200 rounded-xl p-3 bg-slate-50">
+                  <p className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5">Video {i + 1}</p>
+                  <input
+                    value={v}
+                    onChange={(e) => setVideouri((prev) => prev.map((x, j) => j === i ? e.target.value : x))}
+                    placeholder="Ex: cum arata un site care vinde"
+                    className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              ))}
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <p className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Ce scoti dintr-un video</p>
+                <ul className="space-y-1">
+                  {SPARGERE.map((s) => (
+                    <li key={s.piesa} className="flex justify-between gap-3 text-sm text-slate-600 border-b border-slate-50 py-1">
+                      <span className="leading-snug">{s.piesa}</span>
+                      <span className="font-bold text-slate-900 shrink-0">{s.cantitate}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <p className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Fluxul de extragere</p>
+                <ol className="space-y-1.5">
+                  {FLUX_EXTRAGERE.map((f, i) => (
+                    <li key={f.pas} className="flex gap-2 text-sm">
+                      <span className="font-black text-slate-300 shrink-0">{i + 1}</span>
+                      <span className="leading-snug">
+                        <span className="font-semibold text-slate-800">{f.pas}</span>
+                        <span className="text-xs text-slate-400 block">{f.detaliu}</span>
+                      </span>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          {/* Calendarul */}
+          <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
+            <div className="flex items-start justify-between gap-3 flex-wrap mb-1">
+              <h2 className="font-bold text-slate-800">Calendar 3 august &ndash; 1 septembrie</h2>
+              <div className="flex gap-1.5 flex-wrap">
+                {perPilon.map(({ k, n }) => (
+                  <span key={k} className="text-xs px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 font-medium">
+                    {k} {Math.round((n / CALENDAR.length) * 100)}%
+                    <span className="text-slate-400"> / {PILONI[k].tinta}%</span>
+                  </span>
+                ))}
+              </div>
+            </div>
+            <p className="text-xs text-slate-400 mb-4">
+              Doar 2 postari din 30 sunt oferta directa. Daca vinzi in fiecare postare, nu te mai urmareste nimeni.
+            </p>
+            <div className="space-y-1">
+              {CALENDAR.map((z) => {
+                const st = calendar[z.zi] ?? "de făcut";
+                return (
+                  <div key={z.zi} className={`flex items-start gap-3 px-3 py-2.5 rounded-xl border transition-colors ${
+                    st === "publicat" ? "bg-emerald-50/40 border-emerald-100" : "bg-white border-slate-100"
+                  }`}>
+                    <div className="w-12 shrink-0 text-center">
+                      <p className="text-xs font-bold text-slate-800 leading-none">{z.data}</p>
+                      <p className="text-xs text-slate-400 mt-0.5">{z.ziSapt}</p>
+                    </div>
+                    <span className={`text-xs font-bold px-1.5 py-0.5 rounded shrink-0 ${FORMATE[z.format].culoare}`} title={FORMATE[z.format].nume}>
+                      {z.format}
+                    </span>
+                    <span className="text-xs font-bold text-slate-400 shrink-0 w-6">{z.pilon}</span>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm text-slate-800 leading-snug">{z.titlu}</p>
+                      {z.nota && <p className="text-xs text-slate-400 mt-0.5 leading-snug">{z.nota}</p>}
+                      {z.sursa === "video" && <span className="text-xs text-blue-500">din cele 4 video-uri</span>}
+                      {z.sursa === "muncă" && <span className="text-xs text-emerald-600">din munca ta de saptamana asta</span>}
+                    </div>
+                    <select
+                      value={st}
+                      onChange={(e) => setCalendar((prev) => ({ ...prev, [z.zi]: e.target.value as StatusZi }))}
+                      className={`text-xs font-semibold rounded-md px-2 py-1 border-0 cursor-pointer shrink-0 focus:outline-none focus:ring-2 focus:ring-blue-500 ${STATUS_UI[st]}`}
+                    >
+                      {STATUSURI_ZI.map((s) => <option key={s} value={s}>{s}</option>)}
+                    </select>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Ce functioneaza */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
+              <h2 className="font-bold text-slate-800 mb-1">Structura unui reel care prinde</h2>
+              <p className="text-xs text-slate-400 mb-3">Hook-ul din primele 2 secunde decide totul. Restul clipului doar livreaza.</p>
+              <div className="space-y-2">
+                {STRUCTURA_REEL.map((s) => (
+                  <div key={s.interval} className="flex gap-3 text-sm">
+                    <span className="font-mono text-xs font-bold text-slate-400 shrink-0 w-16 pt-0.5">{s.interval}</span>
+                    <span className="text-slate-600 leading-snug">{s.ce}</span>
+                  </div>
+                ))}
+              </div>
+              <p className="text-xs font-bold text-slate-500 uppercase tracking-wide mt-5 mb-2">Reguli de productie</p>
+              <ul className="space-y-1">
+                {REGULI_PRODUCTIE.map((r) => (
+                  <li key={r} className="text-sm text-slate-600 leading-snug flex gap-2">
+                    <span className="text-slate-300">&bull;</span>{r}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
+              <h2 className="font-bold text-slate-800 mb-1">Banca de hook-uri</h2>
+              <p className="text-xs text-slate-400 mb-3">Testate in romana. Copiaza structura, schimba subiectul.</p>
+              <div className="space-y-2">
+                {HOOKURI.map((h) => (
+                  <div key={h.text} className="border border-slate-100 rounded-lg px-3 py-2 bg-slate-50">
+                    <p className="text-sm text-slate-800 leading-snug">&bdquo;{h.text}&rdquo;</p>
+                    <p className="text-xs text-slate-400 mt-0.5">{h.tip}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Canale */}
+          <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm overflow-x-auto">
+            <h2 className="font-bold text-slate-800 mb-1">Unde publici</h2>
+            <p className="text-xs text-slate-400 mb-4">Nu peste tot. Grupurile de Facebook locale sunt subestimate masiv &mdash; nu spamezi, raspunzi la intrebari.</p>
+            <table className="w-full text-sm min-w-[520px]">
+              <thead>
+                <tr className="text-xs text-slate-400 uppercase tracking-wide">
+                  <th className="text-left pb-2 font-semibold">Canal</th>
+                  <th className="text-left pb-2 font-semibold w-20">Prioritate</th>
+                  <th className="text-left pb-2 font-semibold w-24">Frecventa</th>
+                  <th className="text-left pb-2 font-semibold">De ce</th>
+                </tr>
+              </thead>
+              <tbody>
+                {CANALE.map((c) => (
+                  <tr key={c.canal} className="border-t border-slate-100">
+                    <td className="py-2 font-semibold text-slate-800">{c.canal}</td>
+                    <td className="py-2 text-slate-500">{c.prioritate}</td>
+                    <td className="py-2 text-slate-500">{c.frecventa}</td>
+                    <td className="py-2 text-slate-500 text-xs leading-snug">{c.de_ce}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Analiza concurentei */}
+          <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
+            <h2 className="font-bold text-slate-800 mb-1">Analiza concurentei</h2>
+            <p className="text-xs text-slate-400 mb-4 leading-relaxed">
+              Datele de engagement ale concurentei nu sunt publice si nu se pot citi automat &mdash; nu le pot masura eu din CRM.
+              Ce urmeaza e protocolul de 30 de minute prin care le afli singur, o data, plus grila in care notezi.
+            </p>
+            <ol className="space-y-2 mb-5">
+              {PROTOCOL_CONCURENTA.map((p, i) => (
+                <li key={p.pas} className="flex gap-3 text-sm">
+                  <span className="font-black text-slate-300 shrink-0">{i + 1}</span>
+                  <span className="leading-snug">
+                    <span className="font-semibold text-slate-800">{p.pas}</span>
+                    <span className="text-xs text-slate-500 block leading-snug">{p.detaliu}</span>
+                  </span>
+                </li>
+              ))}
+            </ol>
+            <div className="space-y-2">
+              {GRILA_CONCURENTA.map((g) => (
+                <div key={g.id}>
+                  <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">{g.camp}</label>
+                  <p className="text-xs text-slate-400 mb-1">{g.ajutor}</p>
+                  <textarea
+                    value={concurenta[g.id] ?? ""}
+                    onChange={(e) => setConcurenta((prev) => ({ ...prev, [g.id]: e.target.value }))}
+                    rows={2}
+                    className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+
+        </div>
+        );
+      })()}
 
       {tab === "overview" && (
         <div className="space-y-5">

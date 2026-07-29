@@ -18,6 +18,7 @@ import ServiciiBreakdown from "@/components/ServiciiBreakdown";
 import ObiectiiPanel from "@/components/ObiectiiPanel";
 import GeneratorOferta from "@/components/GeneratorOferta";
 import GeneratorEmail from "@/components/GeneratorEmail";
+import CadentaPanel from "@/components/CadentaPanel";
 
 const STATUSURI = STADII;
 const TIPURI = ["apel", "email", "intalnire", "nota"];
@@ -687,6 +688,19 @@ export default function FisaLead() {
           Nu improviza în primele 300 de apeluri. Dacă nota de personalizare e completată în scanul de 90 sec, pasul 2 o folosește automat.
         </p>
       </div>
+
+      {/* Cadenta de 7 atingeri */}
+      <CadentaPanel
+        ctx={{
+          nume: lead.nume_decident,
+          firma: lead.nume,
+          site: lead.website?.replace(/^https?:\/\//, "").replace(/\/$/, ""),
+          nisa: lead.nisa,
+          oras: lead.oras,
+        }}
+        telefon={lead.telefon}
+        atingereCurenta={lead.nr_atingeri ?? 0}
+      />
 
       {/* Audit Report */}
       <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm mb-4">
