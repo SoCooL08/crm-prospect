@@ -3,16 +3,9 @@
 import { useEffect, useState } from "react";
 import { Loader2, Clock, TrendingUp, Users, AlertCircle, Star, Euro, XCircle } from "lucide-react";
 import Link from "next/link";
+import { STADII, STADII_INCHISE, STADIU_SCURT, uiStadiu } from "@/lib/stadii";
 
-const statusBarColor = (s: string) =>
-  ({
-    Nou: "bg-slate-400",
-    Contactat: "bg-blue-500",
-    Interesat: "bg-violet-500",
-    Oferta: "bg-amber-500",
-    Client: "bg-emerald-500",
-    Pierdut: "bg-red-400",
-  }[s] ?? "bg-slate-400");
+const statusBarColor = (s: string) => uiStadiu(s).dot;
 
 export default function Dashboard() {
   const [leads, setLeads] = useState<any[]>([]);
@@ -49,9 +42,9 @@ export default function Dashboard() {
   const total = leads.length;
   const faraSite = leads.filter((l) => !l.are_website).length;
   const fierbinti = leads.filter((l) => l.scor >= 65).length;
-  const clienti = leads.filter((l) => l.status === "Client").length;
+  const clienti = leads.filter((l) => l.status === "9a CASTIGAT").length;
 
-  const STATUSURI_PIPELINE = ["Nou", "Contactat", "Interesat", "Oferta", "Client", "Pierdut"];
+  const STATUSURI_PIPELINE = STADII;
 
   const peStatus = STATUSURI_PIPELINE.map((s) => {
     const lst = leads.filter((l) => l.status === s);
@@ -60,11 +53,11 @@ export default function Dashboard() {
   });
 
   const valoareTotalaActiva = peStatus
-    .filter((s) => !["Pierdut", "Nou"].includes(s.status))
+    .filter((s) => ![...STADII_INCHISE, "1 LEAD BRUT", "9c NURTURE"].includes(s.status))
     .reduce((sum, s) => sum + s.valoare, 0);
 
   // Motive pierdere
-  const pierdute = leads.filter((l) => l.status === "Pierdut" && l.motiv_pierdere);
+  const pierdute = leads.filter((l) => l.status === "9b PIERDUT" && l.motiv_pierdere);
   const motivCount: Record<string, number> = {};
   pierdute.forEach((l) => {
     motivCount[l.motiv_pierdere] = (motivCount[l.motiv_pierdere] || 0) + 1;
@@ -72,7 +65,7 @@ export default function Dashboard() {
   const motive = Object.entries(motivCount)
     .sort((a, b) => b[1] - a[1])
     .slice(0, 5);
-  const totalPierdute = leads.filter((l) => l.status === "Pierdut").length;
+  const totalPierdute = leads.filter((l) => l.status === "9b PIERDUT").length;
 
   const stats = [
     { label: "Total leaduri", val: total, icon: Users, color: "text-blue-600", bg: "bg-blue-50" },
@@ -116,7 +109,7 @@ export default function Dashboard() {
           <div className="space-y-3">
             {peStatus.map(({ status, nr, valoare }) => (
               <div key={status} className="flex items-center gap-3">
-                <span className="text-sm text-slate-600 w-24 shrink-0">{status}</span>
+                <span className="text-sm text-slate-600 w-32 shrink-0">{STADIU_SCURT[status]}</span>
                 <div className="flex-1 bg-slate-100 rounded-full h-2 overflow-hidden">
                   <div
                     className={`h-full rounded-full transition-all ${statusBarColor(status)}`}

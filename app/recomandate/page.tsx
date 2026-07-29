@@ -7,6 +7,7 @@ import {
   Flame, CheckCircle2,
 } from "lucide-react";
 import { genereazaBrief } from "@/lib/scoring";
+import { zileLucratoare, labelStadiu } from "@/lib/stadii";
 import ServiciiBreakdown from "@/components/ServiciiBreakdown";
 
 const TABS = [
@@ -46,17 +47,20 @@ export default function RecomandatePage() {
     await fetch(`/api/leads/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status: "Contactat" }),
+      body: JSON.stringify({
+        status: "3 IN APELARE",
+        data_urmatoarei_actiuni: zileLucratoare(2).toISOString(),
+      }),
     });
     setMarcand(null);
     incarca();
   }
 
   const afisate = tab === "necontactate"
-    ? leads.filter((l) => l.status === "Nou")
+    ? leads.filter((l) => l.status === "1 LEAD BRUT" || l.status === "2 CALIFICAT")
     : leads;
 
-  const totalNoi = leads.filter((l) => l.status === "Nou").length;
+  const totalNoi = leads.filter((l) => l.status === "1 LEAD BRUT" || l.status === "2 CALIFICAT").length;
 
   return (
     <div className="p-8 max-w-4xl">
@@ -139,7 +143,7 @@ export default function RecomandatePage() {
                     <p className="text-slate-400 text-sm mt-0.5">{l.nisa} · {l.oras}, {l.judet}</p>
                   </div>
 
-                  {l.status === "Nou" ? (
+                  {(l.status === "1 LEAD BRUT" || l.status === "2 CALIFICAT") ? (
                     <button
                       onClick={() => marcaSunat(l.id)}
                       disabled={marcand === l.id}
@@ -152,7 +156,7 @@ export default function RecomandatePage() {
                     </button>
                   ) : (
                     <span className="text-xs bg-blue-50 text-blue-700 border border-blue-200 px-3 py-1.5 rounded-lg font-medium">
-                      {l.status}
+                      {labelStadiu(l.status)}
                     </span>
                   )}
                 </div>

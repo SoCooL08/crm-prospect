@@ -6,11 +6,22 @@ import { Loader2, MapPin } from "lucide-react";
 
 const LeafletMap = dynamic(() => import("@/components/LeafletMap"), { ssr: false });
 
-const STATUSURI = ["Nou", "Contactat", "Interesat", "Oferta", "Client", "Pierdut"];
+import { STADII } from "@/lib/stadii";
+
+const STATUSURI = STADII;
 
 const PIN_COLORS: Record<string, string> = {
-  Client: "#10b981", Oferta: "#f59e0b", Interesat: "#8b5cf6",
-  Contactat: "#3b82f6", Nou: "#94a3b8", Pierdut: "#ef4444",
+  "9a CASTIGAT": "#10b981",
+  "8 NEGOCIERE": "#f97316",
+  "7 OFERTA TRIMISA": "#f59e0b",
+  "6 DISCUTIE PROGRAMATA": "#8b5cf6",
+  "5 AUDIT TRIMIS": "#6366f1",
+  "4 CONTACTAT": "#3b82f6",
+  "3 IN APELARE": "#0ea5e9",
+  "2 CALIFICAT": "#06b6d4",
+  "1 LEAD BRUT": "#94a3b8",
+  "9b PIERDUT": "#ef4444",
+  "9c NURTURE": "#14b8a6",
 };
 
 export default function HartaPage() {

@@ -8,6 +8,7 @@ import {
   Sparkles, Megaphone, Download,
 } from "lucide-react";
 import * as XLSX from "xlsx";
+import { sostacCaText } from "@/lib/sostac";
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
@@ -432,16 +433,45 @@ function TabConcurenti({
 // ── Tab: SOSTAC ────────────────────────────────────────────────────────────
 
 function TabSOSTAC({
-  sostac, onChange,
+  sostac, onChange, lead,
 }: {
   sostac: SOSTACData;
   onChange: (s: SOSTACData) => void;
+  lead: any;
 }) {
+  const areContinut = Object.values(sostac).some((v) => (v ?? "").trim().length > 0);
+
+  function genereaza() {
+    if (!lead) return;
+    if (areContinut && !confirm("Suprascriu ce e scris acum în cele 6 secțiuni?")) return;
+    onChange(
+      sostacCaText({
+        nume: lead.nume,
+        nisa: lead.nisa,
+        oras: lead.oras ?? "",
+        judet: lead.judet ?? "",
+        are_website: !!lead.are_website,
+        rating: lead.rating ?? 0,
+        nr_reviews: lead.nr_reviews ?? 0,
+        scor_viteza: lead.scor_viteza,
+        scor: lead.scor ?? 0,
+      })
+    );
+  }
+
   return (
     <div className="space-y-4">
-      <p className="text-sm text-slate-500 mb-6">
-        Completeaza strategia SOSTAC pentru acest business. Fiecare sectiune ghideaza planul de actiune digital.
-      </p>
+      <div className="flex items-start justify-between gap-4 flex-wrap mb-6">
+        <p className="text-sm text-slate-500 max-w-lg">
+          Strategia SOSTAC pentru acest business. O generezi din semnalele lui, apoi o editezi — se salvează automat pe business, nu în browser.
+        </p>
+        <button
+          onClick={genereaza}
+          className="shrink-0 flex items-center gap-2 bg-violet-600 hover:bg-violet-700 text-white rounded-lg px-4 py-2 text-sm font-semibold transition-colors"
+        >
+          <Sparkles className="w-4 h-4" /> Generează din semnale
+        </button>
+      </div>
       {SOSTAC_SECTIUNI.map(({ key, label, color, labelColor, placeholder }) => (
         <div key={key} className={`border rounded-xl p-5 ${color}`}>
           <p className={`text-sm font-bold uppercase tracking-wide mb-3 ${labelColor}`}>{label}</p>
@@ -915,7 +945,7 @@ export default function StrategiePage() {
         <TabConcurenti concurenti={concurenti} onChange={(c) => { setConcurenti(c); }} />
       )}
       {tab === "sostac" && (
-        <TabSOSTAC sostac={sostac} onChange={(s) => { setSOSTAC(s); }} />
+        <TabSOSTAC sostac={sostac} lead={lead} onChange={(s) => { setSOSTAC(s); }} />
       )}
       {tab === "ads" && (
         <TabAds ads={ads} />

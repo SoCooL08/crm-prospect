@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
         lat: p.location?.latitude || null,
         lng: p.location?.longitude || null,
         scor: calculScor({ areWebsite, rating, reviews }),
-        status: "Nou",
+        status: "1 LEAD BRUT",
       };
     });
 

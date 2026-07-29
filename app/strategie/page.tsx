@@ -3,16 +3,9 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Loader2, LayoutTemplate, ExternalLink, Search } from "lucide-react";
+import { uiStadiu, labelStadiu } from "@/lib/stadii";
 
-const statusColor = (s: string) =>
-  ({
-    Nou: "bg-slate-100 text-slate-600",
-    Contactat: "bg-blue-100 text-blue-700",
-    Interesat: "bg-violet-100 text-violet-700",
-    Oferta: "bg-amber-100 text-amber-700",
-    Client: "bg-emerald-100 text-emerald-700",
-    Pierdut: "bg-red-100 text-red-700",
-  }[s] ?? "bg-slate-100 text-slate-600");
+const statusColor = (s: string) => uiStadiu(s).badge;
 
 export default function StrategiiIndex() {
   const [leads, setLeads] = useState<any[]>([]);
@@ -74,7 +67,7 @@ export default function StrategiiIndex() {
                 </p>
               </div>
               <span className={`text-xs px-2.5 py-1 rounded-md font-medium shrink-0 ${statusColor(l.status)}`}>
-                {l.status}
+                {labelStadiu(l.status)}
               </span>
               <Link
                 href={`/strategie/${l.id}`}

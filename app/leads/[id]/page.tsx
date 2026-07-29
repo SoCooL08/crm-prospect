@@ -6,33 +6,29 @@ import Link from "next/link";
 import {
   Phone, Globe, Globe2, Star, MapPin, Gauge,
   Loader2, Plus, ArrowLeft, ExternalLink, MessageSquare,
-  Link2, CheckCheck, AlertTriangle, LayoutTemplate,
+  Link2, CheckCheck, AlertTriangle, LayoutTemplate, ScanSearch, CalendarClock,
 } from "lucide-react";
 import { etichetaScor, genereazaBrief } from "@/lib/scoring";
+import {
+  STADII, STADIU_LABEL, uiStadiu, cereNextAction, zileLucratoare,
+  SEMNALE_AUDIT, SemnaleAudit, calculScorAudit, prioritateAudit,
+  PRIORITATE_UI, SCOR_AUDIT_MAX, MOTIVE_PIERDERE as MOTIVE, FUNCTII,
+} from "@/lib/stadii";
 import ServiciiBreakdown from "@/components/ServiciiBreakdown";
 import ObiectiiPanel from "@/components/ObiectiiPanel";
 import GeneratorOferta from "@/components/GeneratorOferta";
 import GeneratorEmail from "@/components/GeneratorEmail";
 
-const STATUSURI = ["Nou", "Contactat", "Interesat", "Oferta", "Client", "Pierdut"];
+const STATUSURI = STADII;
 const TIPURI = ["apel", "email", "intalnire", "nota"];
-const MOTIVE_PIERDERE = [
-  "Pret prea mare",
-  "Nu era momentul",
-  "A ales concurenta",
-  "Nu raspunde",
-  "Alt motiv",
-];
+const MOTIVE_PIERDERE = MOTIVE;
 
-const statusColor = (s: string) =>
-  ({
-    Nou: "bg-slate-100 text-slate-700",
-    Contactat: "bg-blue-100 text-blue-700",
-    Interesat: "bg-violet-100 text-violet-700",
-    Oferta: "bg-amber-100 text-amber-700",
-    Client: "bg-emerald-100 text-emerald-700",
-    Pierdut: "bg-red-100 text-red-700",
-  }[s] ?? "bg-slate-100 text-slate-700");
+const statusColor = (s: string) => uiStadiu(s).badge;
+
+function inputDateTime(d: Date): string {
+  const p = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`;
+}
 
 const scorBadge = (et: string) =>
   ({
@@ -69,7 +65,20 @@ export default function FisaLead() {
 
   // Motiv pierdere
   const [motivModal, setMotivModal] = useState(false);
-  const [motivSelectat, setMotivSelectat] = useState(MOTIVE_PIERDERE[0]);
+  const [motivSelectat, setMotivSelectat] = useState<string>(MOTIVE_PIERDERE[0]);
+
+  // Scan 90 sec (3.2) + next action (5.4 #2)
+  const [semnale, setSemnale] = useState<SemnaleAudit>({});
+  const [notaPers, setNotaPers] = useState("");
+  const [decident, setDecident] = useState("");
+  const [functie, setFunctie] = useState("");
+  const [nextAction, setNextAction] = useState("");
+  const [salvandAudit, setSalvandAudit] = useState(false);
+  const [salvatAudit, setSalvatAudit] = useState(false);
+
+  // Cerere de next action la schimbarea stadiului
+  const [nextModal, setNextModal] = useState<string | null>(null);
+  const [nextModalData, setNextModalData] = useState("");
 
   async function incarca() {
     const [resLead, resAct] = await Promise.all([
@@ -81,6 +90,15 @@ export default function FisaLead() {
     if (leadData.error) { setEroare(leadData.error); setLoading(false); return; }
     setLead(leadData);
     setValoare(leadData.valoare_estimata ? String(leadData.valoare_estimata) : "");
+    setSemnale(leadData.audit_semnale ?? {});
+    setNotaPers(leadData.nota_personalizare ?? "");
+    setDecident(leadData.nume_decident ?? "");
+    setFunctie(leadData.functie_decident ?? "");
+    setNextAction(
+      leadData.data_urmatoarei_actiuni
+        ? inputDateTime(new Date(leadData.data_urmatoarei_actiuni))
+        : ""
+    );
     setActivitati(Array.isArray(actData) ? actData : []);
     setLoading(false);
   }
@@ -107,8 +125,14 @@ export default function FisaLead() {
   }
 
   async function schimbaStatus(status: string) {
-    if (status === "Pierdut") {
+    if (status === "9b PIERDUT") {
       setMotivModal(true);
+      return;
+    }
+    // 5.4 #2 — un lead atins nu poate ramane fara data urmatoarei actiuni.
+    if (cereNextAction(status) && !lead?.data_urmatoarei_actiuni) {
+      setNextModalData(inputDateTime(zileLucratoare(2)));
+      setNextModal(status);
       return;
     }
     await fetch(`/api/leads/${id}`, {
@@ -119,14 +143,62 @@ export default function FisaLead() {
     incarca();
   }
 
+  async function confirmaNextAction() {
+    if (!nextModal || !nextModalData) return;
+    await fetch(`/api/leads/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        status: nextModal,
+        data_urmatoarei_actiuni: new Date(nextModalData).toISOString(),
+      }),
+    });
+    setNextModal(null);
+    incarca();
+  }
+
   async function confirmaPierdut() {
     await fetch(`/api/leads/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status: "Pierdut", motiv_pierdere: motivSelectat }),
+      body: JSON.stringify({
+        status: "9b PIERDUT",
+        motiv_pierdere: motivSelectat,
+        data_urmatoarei_actiuni: null,
+      }),
     });
     setMotivModal(false);
     incarca();
+  }
+
+  async function salveazaAudit() {
+    setSalvandAudit(true);
+    const patch: Record<string, unknown> = {
+      audit_semnale: semnale,
+      nota_personalizare: notaPers.trim() || null,
+      nume_decident: decident.trim() || null,
+      functie_decident: functie || null,
+    };
+    if (nextAction) patch.data_urmatoarei_actiuni = new Date(nextAction).toISOString();
+
+    // Scanul e facut si scorul trece pragul -> lead-ul devine CALIFICAT si
+    // intra automat in coada de apelare (5.2, stadiul 2).
+    const scor = calculScorAudit(semnale);
+    if (lead?.status === "1 LEAD BRUT" && scor >= 8 && notaPers.trim()) {
+      patch.status = "2 CALIFICAT";
+    }
+
+    const r = await fetch(`/api/leads/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(patch),
+    });
+    setSalvandAudit(false);
+    if (r.ok) {
+      setSalvatAudit(true);
+      setTimeout(() => setSalvatAudit(false), 2500);
+      incarca();
+    }
   }
 
   async function verificaSocial() {
@@ -169,6 +241,9 @@ export default function FisaLead() {
     );
 
   const et = etichetaScor(lead.scor);
+  const scorAudit = calculScorAudit(semnale);
+  const prioritate = prioritateAudit(scorAudit);
+  const nextActionLipsa = cereNextAction(lead.status) && !lead.data_urmatoarei_actiuni;
   const brief = genereazaBrief({
     areWebsite: lead.are_website,
     rating: lead.rating,
@@ -230,6 +305,72 @@ export default function FisaLead() {
         </div>
       )}
 
+      {/* Modal next action obligatoriu */}
+      {nextModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-sm mx-4">
+            <div className="flex items-center gap-2 mb-2">
+              <CalendarClock className="w-5 h-5 text-amber-500" />
+              <h3 className="font-semibold text-slate-900">Când revii la el?</h3>
+            </div>
+            <p className="text-sm text-slate-500 mb-4">
+              Stadiul „{STADIU_LABEL[nextModal as keyof typeof STADIU_LABEL]}” nu se poate salva fără dată de follow-up.
+              Un lead fără next action e un lead mort.
+            </p>
+            <input
+              type="datetime-local"
+              value={nextModalData}
+              onChange={(e) => setNextModalData(e.target.value)}
+              className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm mb-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <div className="flex gap-2 mb-5">
+              {[
+                { l: "+2 zile", z: 2 },
+                { l: "+5 zile", z: 5 },
+                { l: "+9 zile", z: 9 },
+                { l: "+25 zile", z: 25 },
+              ].map((o) => (
+                <button
+                  key={o.l}
+                  onClick={() => setNextModalData(inputDateTime(zileLucratoare(o.z)))}
+                  className="text-xs px-2.5 py-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors"
+                >
+                  {o.l}
+                </button>
+              ))}
+            </div>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setNextModal(null)}
+                className="flex-1 px-4 py-2 rounded-lg text-sm font-medium bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors"
+              >
+                Anuleaza
+              </button>
+              <button
+                onClick={confirmaNextAction}
+                disabled={!nextModalData}
+                className="flex-1 px-4 py-2 rounded-lg text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 transition-colors"
+              >
+                Salveaza
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Alerta next action lipsa */}
+      {nextActionLipsa && (
+        <div className="mb-4 bg-red-50 border border-red-200 rounded-2xl px-5 py-4 flex items-center gap-3">
+          <AlertTriangle className="w-5 h-5 text-red-500 shrink-0" />
+          <div className="flex-1">
+            <p className="font-semibold text-red-800 text-sm">Lead fără next action.</p>
+            <p className="text-xs text-red-700">
+              E în „{STADIU_LABEL[lead.status as keyof typeof STADIU_LABEL] ?? lead.status}” dar n-are dată de follow-up. Pune una în blocul de mai jos.
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Fisa */}
       <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm mb-4">
         <div className="flex justify-between items-start gap-4 flex-wrap mb-5">
@@ -254,13 +395,13 @@ export default function FisaLead() {
               onChange={(e) => schimbaStatus(e.target.value)}
               className={`text-sm rounded-lg px-3 py-1.5 font-medium border-0 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 ${statusColor(lead.status)}`}
             >
-              {STATUSURI.map((s) => <option key={s}>{s}</option>)}
+              {STATUSURI.map((s) => <option key={s} value={s}>{STADIU_LABEL[s]}</option>)}
             </select>
           </div>
         </div>
 
         {/* Motiv pierdere afisat */}
-        {lead.status === "Pierdut" && lead.motiv_pierdere && (
+        {lead.status === "9b PIERDUT" && lead.motiv_pierdere && (
           <div className="mb-4 px-4 py-2.5 bg-red-50 border border-red-100 rounded-xl text-sm text-red-700 flex items-center gap-2">
             <AlertTriangle className="w-4 h-4 shrink-0" />
             Motiv pierdere: <span className="font-semibold">{lead.motiv_pierdere}</span>
@@ -380,6 +521,111 @@ export default function FisaLead() {
               )}
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Scan 90 sec — alimenteaza coada de apelare */}
+      <div className="bg-white border-2 border-amber-200 rounded-2xl p-6 shadow-sm mb-4">
+        <div className="flex items-center justify-between gap-3 flex-wrap mb-1">
+          <h2 className="font-semibold text-slate-900 flex items-center gap-2">
+            <ScanSearch className="w-4 h-4 text-amber-500" /> Scan 90 secunde
+          </h2>
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-slate-900 text-white">
+              {scorAudit}/{SCOR_AUDIT_MAX}
+            </span>
+            <span className={`text-xs font-black px-3 py-1.5 rounded-lg ${PRIORITATE_UI[prioritate]}`}>
+              {prioritate === "MAX" ? "SUNĂ PRIMUL" : prioritate}
+            </span>
+          </div>
+        </div>
+        <p className="text-xs text-slate-400 mb-5">
+          Bifezi ce vezi în 90 de secunde. Scor 8+ → suni. 12+ → suni primul. Lead-urile calificate intră automat în coada de apelare.
+        </p>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 mb-5">
+          {SEMNALE_AUDIT.map((s) => (
+            <label
+              key={s.cheie}
+              className={`flex items-start gap-2.5 px-3 py-2.5 rounded-xl border cursor-pointer transition-colors ${
+                semnale[s.cheie]
+                  ? "bg-amber-50 border-amber-200"
+                  : "bg-slate-50 border-slate-200 hover:bg-slate-100"
+              }`}
+            >
+              <input
+                type="checkbox"
+                checked={!!semnale[s.cheie]}
+                onChange={(e) => setSemnale((p) => ({ ...p, [s.cheie]: e.target.checked }))}
+                className="w-4 h-4 mt-0.5 accent-amber-500 shrink-0"
+              />
+              <span className="min-w-0">
+                <span className="text-sm text-slate-800 leading-snug block">{s.label}</span>
+                <span className="text-xs text-slate-400">{s.cum} · +{s.puncte}</span>
+              </span>
+            </label>
+          ))}
+        </div>
+
+        <label className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">
+          Nota de personalizare — o propoziție, o spui la telefon
+        </label>
+        <textarea
+          value={notaPers}
+          onChange={(e) => setNotaPers(e.target.value)}
+          placeholder="Ex: site din 2015, PageSpeed mobil 23, rulează Meta Ads către homepage, 7 recenzii față de 180 la concurentul de pe Turnului."
+          className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm h-20 focus:outline-none focus:ring-2 focus:ring-amber-500 resize-none mb-4"
+        />
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
+          <div>
+            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5">Decident</label>
+            <input
+              value={decident}
+              onChange={(e) => setDecident(e.target.value)}
+              placeholder="Nume complet"
+              className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5">Funcție</label>
+            <select
+              value={functie}
+              onChange={(e) => setFunctie(e.target.value)}
+              className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">—</option>
+              {FUNCTII.map((f) => <option key={f}>{f}</option>)}
+            </select>
+          </div>
+          <div>
+            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5">
+              Next action {cereNextAction(lead.status) && <span className="text-red-500">*</span>}
+            </label>
+            <input
+              type="datetime-local"
+              value={nextAction}
+              onChange={(e) => setNextAction(e.target.value)}
+              className={`w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                nextActionLipsa ? "border-red-300 bg-red-50" : "border-slate-200"
+              }`}
+            />
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <button
+            onClick={salveazaAudit}
+            disabled={salvandAudit || (cereNextAction(lead.status) && !nextAction)}
+            className="bg-amber-500 hover:bg-amber-600 text-white rounded-lg px-4 py-2 text-sm font-semibold flex items-center gap-2 disabled:opacity-50 transition-colors"
+          >
+            {salvandAudit ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCheck className="w-4 h-4" />}
+            Salvează scanul
+          </button>
+          {salvatAudit && <span className="text-sm text-emerald-600 font-medium">Salvat.</span>}
+          {cereNextAction(lead.status) && !nextAction && (
+            <span className="text-xs text-red-600">Pune o dată de next action ca să poți salva.</span>
+          )}
         </div>
       </div>
 

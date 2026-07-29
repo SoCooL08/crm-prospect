@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Phone, Clock, AlertCircle, CalendarClock, Loader2, CheckCircle2, ArrowRight } from "lucide-react";
+import { uiStadiu, labelStadiu } from "@/lib/stadii";
 
 type Followup = {
   id: string;
@@ -62,14 +63,7 @@ const tipColor: Record<string, string> = {
   nota: "bg-slate-100 text-slate-600",
 };
 
-const statusColor: Record<string, string> = {
-  Nou: "text-slate-400",
-  Contactat: "text-blue-500",
-  Interesat: "text-violet-500",
-  Oferta: "text-amber-500",
-  Client: "text-emerald-500",
-  Pierdut: "text-red-400",
-};
+
 
 function FollowupCard({ f, grup }: { f: Followup; grup: Grup }) {
   const lead = f.leads;
@@ -93,8 +87,8 @@ function FollowupCard({ f, grup }: { f: Followup; grup: Grup }) {
             >
               {lead.nume}
             </Link>
-            <span className={`text-xs font-medium ${statusColor[lead.status] ?? "text-slate-400"}`}>
-              {lead.status}
+            <span className={`text-xs font-medium ${uiStadiu(lead.status).text}`}>
+              {labelStadiu(lead.status)}
             </span>
           </div>
           <p className="text-xs text-slate-500 mt-0.5">{lead.nisa} · {lead.oras}</p>

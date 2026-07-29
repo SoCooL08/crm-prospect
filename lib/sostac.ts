@@ -511,3 +511,51 @@ function genereazaAudienta(cat: NisaCategory, oras: string, reviews: number): st
     }`
   );
 }
+
+// ─── Punte catre fisa business-ului ──────────────────────────────────────────
+
+/**
+ * Aplatizeaza SOSTAC-ul generat in cele 6 campuri text din fisa business-ului
+ * (/strategie/[id]). Inainte, generatorul traia intr-o pagina separata si
+ * salva in localStorage — deci nu ajungea niciodata la business-ul respectiv.
+ */
+export function sostacCaText(lead: LeadSOSTACInput): {
+  situatie: string; obiective: string; strategie: string;
+  tactici: string; actiuni: string; control: string;
+} {
+  const d = genereazaSOSTAC(lead);
+  const { keywords: k, mesaje: m, campanie: c, audienta } = d.tactici;
+
+  const lista = (titlu: string, items: string[]) =>
+    items.length ? `${titlu}: ${items.join(", ")}` : "";
+
+  const tactici = [
+    "AUDIENTA",
+    audienta,
+    "",
+    "CUVINTE CHEIE",
+    lista("Principale (broad)", k.principale),
+    lista("Cu intentie (phrase/exact)", k.cuIntentie),
+    lista("Long tail (exact)", k.longTail),
+    lista("Negative", k.negative),
+    "",
+    "MESAJE",
+    lista("Titluri", m.titluri),
+    lista("Descrieri", m.descrieri),
+    `CTA: ${m.cta}`,
+    "",
+    "CAMPANIE",
+    `${c.tip} · buget ${c.bugetZiMin}-${c.bugetZiMax} EUR/zi · ${c.bidStrategy}`,
+    lista("Extensii", c.extensii),
+    `De ce: ${c.motiv}`,
+  ].filter((r) => r !== "").join("\n");
+
+  return {
+    situatie: d.situatie,
+    obiective: d.obiective,
+    strategie: d.strategie,
+    tactici,
+    actiuni: d.actiuni,
+    control: d.control,
+  };
+}

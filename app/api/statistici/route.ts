@@ -28,8 +28,8 @@ export async function GET() {
     }
     const n = map[nisa];
     n.total++;
-    if (lead.status === "Client") { n.clienti++; n.valoare += lead.valoare_estimata || 0; }
-    else if (lead.status === "Pierdut") {
+    if (lead.status === "9a CASTIGAT") { n.clienti++; n.valoare += lead.valoare_estimata || 0; }
+    else if (lead.status === "9b PIERDUT") {
       n.pierduti++;
       if (lead.motiv_pierdere) n.motive[lead.motiv_pierdere] = (n.motive[lead.motiv_pierdere] || 0) + 1;
     } else {
@@ -57,11 +57,11 @@ export async function GET() {
 
   const totale = {
     leads: leads.length,
-    clienti: leads.filter((l) => l.status === "Client").length,
-    pierduti: leads.filter((l) => l.status === "Pierdut").length,
-    pipeline: leads.filter((l) => !["Client", "Pierdut"].includes(l.status)).length,
+    clienti: leads.filter((l) => l.status === "9a CASTIGAT").length,
+    pierduti: leads.filter((l) => l.status === "9b PIERDUT").length,
+    pipeline: leads.filter((l) => !["9a CASTIGAT", "9b PIERDUT"].includes(l.status)).length,
     nise_unice: Object.keys(map).length,
-    conversie: Math.round((leads.filter((l) => l.status === "Client").length / leads.length) * 100),
+    conversie: Math.round((leads.filter((l) => l.status === "9a CASTIGAT").length / leads.length) * 100),
   };
 
   return NextResponse.json({ nise, totale });

@@ -5,18 +5,11 @@ import Link from "next/link";
 import { Phone, Globe2, Gauge, Loader2, Search, Star, MessageSquare, Download } from "lucide-react";
 import { etichetaScor } from "@/lib/scoring";
 import ServiciiBreakdown from "@/components/ServiciiBreakdown";
+import { STADII, STADIU_LABEL, STADIU_SCURT, uiStadiu, cereNextAction, zileLucratoare } from "@/lib/stadii";
 
-const STATUSURI = ["Nou", "Contactat", "Interesat", "Oferta", "Client", "Pierdut"];
+const STATUSURI = STADII;
 
-const statusColor = (s: string) =>
-  ({
-    Nou: "bg-slate-100 text-slate-700",
-    Contactat: "bg-blue-100 text-blue-700",
-    Interesat: "bg-violet-100 text-violet-700",
-    Oferta: "bg-amber-100 text-amber-700",
-    Client: "bg-emerald-100 text-emerald-700",
-    Pierdut: "bg-red-100 text-red-700",
-  }[s] ?? "bg-slate-100 text-slate-700");
+const statusColor = (s: string) => uiStadiu(s).badge;
 
 const scorBadge = (et: string) =>
   ({
@@ -56,11 +49,22 @@ export default function LeadsPage() {
   useEffect(() => { incarca(); }, [filtruFaraSite, filtruStatus]);
 
   async function schimbaStatus(id: string, status: string) {
-    await fetch(`/api/leads/${id}`, {
+    const lead = leads.find((l: any) => l.id === id);
+    const patch: Record<string, unknown> = { status };
+    // 5.4 #2 — stadiile active nu se pot salva fara next action.
+    if (cereNextAction(status) && !lead?.data_urmatoarei_actiuni) {
+      patch.data_urmatoarei_actiuni = zileLucratoare(2).toISOString();
+    }
+    const r = await fetch(`/api/leads/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status }),
+      body: JSON.stringify(patch),
     });
+    if (!r.ok) {
+      const d = await r.json().catch(() => ({}));
+      setEroare(d.mesaj || d.error || "Nu am putut schimba stadiul.");
+      return;
+    }
     incarca();
   }
 
@@ -138,8 +142,8 @@ export default function LeadsPage() {
           onChange={(e) => setFiltruStatus(e.target.value)}
           className="border border-slate-200 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
-          <option value="">Toate statusurile</option>
-          {STATUSURI.map((s) => <option key={s}>{s}</option>)}
+          <option value="">Toate stadiile</option>
+          {STATUSURI.map((s) => <option key={s} value={s}>{STADIU_LABEL[s]}</option>)}
         </select>
         <label className="flex items-center gap-2 text-sm text-slate-600 cursor-pointer select-none">
           <input
@@ -230,7 +234,7 @@ export default function LeadsPage() {
                       onChange={(e) => schimbaStatus(l.id, e.target.value)}
                       className={`text-xs rounded-md px-2.5 py-1 font-medium border-0 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 ${statusColor(l.status)}`}
                     >
-                      {STATUSURI.map((s) => <option key={s}>{s}</option>)}
+                      {STATUSURI.map((s) => <option key={s} value={s}>{STADIU_SCURT[s]}</option>)}
                     </select>
                   </div>
                 </div>
