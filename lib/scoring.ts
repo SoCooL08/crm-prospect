@@ -128,9 +128,69 @@ export interface BriefApel {
   cuvinte_cheie: string[];
   deschidere: string;
   observatie: string;
+  observatii: string[];
+  dovadaNisa: string | null;
   micro_intrebare: string;
   pitch: string;
   confirmare: string;
+}
+
+/** Semnalele de audit (cheile din lib/stadii.ts SEMNALE_AUDIT), optionale. */
+export type SemnaleAuditPartial = Partial<Record<string, boolean>>;
+
+/**
+ * Dovada de nisa — singurele doua case study-uri reale documentate
+ * (memory/business.md, sectiunea ICP). Nu se inventeaza altele: fara dovada
+ * in nisa, linia se omite, nu se completeaza generic.
+ */
+function dovadaDinNisa(nisa?: string): string | null {
+  if (!nisa) return null;
+  const n = nisa.toLowerCase();
+  if (/auto|service|dealer|piese|vulcaniz/i.test(n)) {
+    return "Am mai livrat recent pentru un dealer auto din zonă — știu exact ce contează la o firmă din nișa asta.";
+  }
+  if (/confec|metal|utilaj|industria|ambalaj|tamplarie|componente/i.test(n)) {
+    return "Am mai livrat recent pentru un producător industrial din zonă (utilaje grele) — nu vin dintr-o nișă complet străină.";
+  }
+  return null;
+}
+
+/**
+ * Observatii concrete pe baza semnalelor REALE de audit (nu doar are_website).
+ * Ordinea e ordinea din SEMNALE_AUDIT (lib/stadii.ts) — cele mai puternice
+ * semnale de durere primele. Returneaza max 2, ca la telefon: prea multe
+ * probleme deodata paralizeaza, nu conving.
+ */
+function observatiiDinAuditSemnale(
+  audit: SemnaleAuditPartial | undefined,
+  s: SemnaleLead
+): string[] {
+  const out: string[] = [];
+  if (!audit) return out;
+
+  if (audit.fara_site) {
+    out.push(
+      s.reviews > 50
+        ? `nu am găsit un site al firmei, deși aveți ${s.reviews} recenzii pe Google — aveți clienți, dar cine vă caută acum pe internet nu are unde ajunge`
+        : `nu am găsit un site al firmei — când cineva caută ${s.nisa?.toLowerCase() ?? "serviciul"} în zonă, apar concurenții, dumneavoastră nu apăreți deloc`
+    );
+  }
+  if (audit.design_vechi && out.length < 2) {
+    out.push("site-ul arată vizibil vechi — genul de design pe care Google îl arată tot mai jos cu timpul");
+  }
+  if (audit.fara_cta && out.length < 2) {
+    out.push("pe site nu am găsit niciun formular de contact, doar un telefon — dacă cineva vă caută seara, n-are cum să vă lase un mesaj");
+  }
+  if (audit.pagespeed_sub_50 && out.length < 2) {
+    out.push("site-ul se încarcă foarte greu pe telefon — Google penalizează asta, iar 6 din 10 oameni închid înainte să apuce să vadă ce oferiți");
+  }
+  if (audit.fara_gbp && out.length < 2) {
+    out.push(`aveți doar ${s.reviews} recenzii pe Google — la căutare locală ăsta e tot meciul, cine are 100+ apare deasupra indiferent cât de bine lucrați`);
+  }
+  if (audit.nu_e_top10 && out.length < 2) {
+    out.push(`nu apăreți în primele rezultate pe "${s.nisa?.toLowerCase() ?? "serviciul dvs"} + orașul" — apar doar concurenții`);
+  }
+  return out;
 }
 
 /**
@@ -152,43 +212,59 @@ const CONFIRMARE =
   '„Perfect. Îl aveți până mâine la ora [oră concretă]. Vă scriu când l-am trimis. Îmi spuneți numele complet, ca să vi-l personalizez?”';
 
 export function genereazaBrief(
-  s: SemnaleLead & { nisa?: string }
+  s: SemnaleLead & { nisa?: string },
+  auditSemnale?: SemnaleAuditPartial
 ): BriefApel {
   const cuvinte: string[] = [];
-  let observatie = "";
+  let observatii: string[] = [];
 
-  // Observatia specifica e tot apelul. Fara ea esti al treilea om care suna
-  // azi sa vanda site-uri; cu ea esti singurul care s-a uitat inainte.
-  // Ordinea de mai jos e ordinea in care semnalele conving la telefon.
-  if (!s.areWebsite) {
-    cuvinte.push("Fara website");
-    if (s.reviews > 50) {
-      cuvinte.push("Afacere activa");
-      observatie = `„...nu am găsit un site al firmei, deși aveți ${s.reviews} recenzii pe Google. Practic aveți clienți mulțumiți, dar cine vă caută acum pe internet nu are unde să ajungă.”`;
+  // Prioritate 1: semnale REALE de audit (verificate, nu presupuse) — daca
+  // exista, ele bat orice presupunere facuta doar din areWebsite/rating.
+  observatii = observatiiDinAuditSemnale(auditSemnale, s);
+  if (auditSemnale?.fara_site) cuvinte.push("Fara website");
+  if (auditSemnale?.design_vechi) cuvinte.push("Design vechi");
+  if (auditSemnale?.fara_cta) cuvinte.push("Fara CTA");
+  if (auditSemnale?.pagespeed_sub_50) cuvinte.push("Site lent");
+  if (auditSemnale?.fara_gbp) cuvinte.push("Putine recenzii");
+  if (auditSemnale?.nu_e_top10) cuvinte.push("Nu e in top 10");
+
+  // Fallback: fara audit real, foloseste semnalele de baza (Google Places) —
+  // acelasi comportament ca inainte, pentru leaduri nescanate inca.
+  if (observatii.length === 0) {
+    if (!s.areWebsite) {
+      cuvinte.push("Fara website");
+      observatii.push(
+        s.reviews > 50
+          ? `nu am găsit un site al firmei, deși aveți ${s.reviews} recenzii pe Google. Practic aveți clienți mulțumiți, dar cine vă caută acum pe internet nu are unde să ajungă`
+          : `nu am găsit un site al firmei. Când cineva caută ${s.nisa?.toLowerCase() ?? "serviciul"} în zonă, apar concurenții, iar dumneavoastră nu apăreți deloc`
+      );
+    } else if (s.scorViteza != null && s.scorViteza < 50) {
+      cuvinte.push("Site lent", "PageSpeed " + s.scorViteza);
+      observatii.push(`pe telefon se încarcă foarte greu — am măsurat ${s.scorViteza} din 100. Google penalizează peste 3 secunde, iar 6 din 10 oameni închid înainte să apuce să vadă ce oferiți`);
+    } else if (s.reviews < 10) {
+      cuvinte.push("Putine recenzii", "SEO local");
+      observatii.push(`aveți doar ${s.reviews} recenzii pe Google. La căutare locală ăsta e tot meciul — cine are 100+ apare deasupra dumneavoastră indiferent cât de bine lucrați`);
+    } else if (s.rating > 0 && s.rating < 4.0) {
+      cuvinte.push("Rating slab", "Reputatie");
+      observatii.push(`aveți ${s.rating} stele pe Google. Mulți oameni filtrează după stele înainte să sune, deci pierdeți clienți înainte să apucați să vorbiți cu ei`);
+    } else if (s.reviews > 200) {
+      cuvinte.push("Brand cunoscut", "Scalare");
+      observatii.push(`aveți ${s.reviews} recenzii, sunteți clar un nume în zonă. Tocmai de asta m-a mirat ce am văzut pe site — nu lucrează pentru dumneavoastră pe cât ar putea`);
     } else {
-      observatie = `„...nu am găsit un site al firmei. Când cineva caută ${s.nisa?.toLowerCase() ?? "serviciul"} în zonă, apar concurenții, iar dumneavoastră nu apăreți deloc.”`;
+      cuvinte.push("Verifica manual");
+      observatii.push(`[SCRIE OBSERVAȚIA MANUAL — deschide site-ul și găsește un lucru concret. Fără ea nu suni.]`);
     }
-  } else if (s.scorViteza != null && s.scorViteza < 50) {
-    cuvinte.push("Site lent", "PageSpeed " + s.scorViteza);
-    observatie = `„...pe telefon se încarcă foarte greu — am măsurat ${s.scorViteza} din 100. Google penalizează peste 3 secunde, iar 6 din 10 oameni închid înainte să apuce să vadă ce oferiți.”`;
-  } else if (s.reviews < 10) {
-    cuvinte.push("Putine recenzii", "SEO local");
-    observatie = `„...aveți doar ${s.reviews} recenzii pe Google. La căutare locală ăsta e tot meciul — cine are 100+ apare deasupra dumneavoastră indiferent cât de bine lucrați.”`;
-  } else if (s.rating > 0 && s.rating < 4.0) {
-    cuvinte.push("Rating slab", "Reputatie");
-    observatie = `„...aveți ${s.rating} stele pe Google. Mulți oameni filtrează după stele înainte să sune, deci pierdeți clienți înainte să apucați să vorbiți cu ei.”`;
-  } else if (s.reviews > 200) {
-    cuvinte.push("Brand cunoscut", "Scalare");
-    observatie = `„...aveți ${s.reviews} recenzii, sunteți clar un nume în zonă. Tocmai de asta m-a mirat ce am văzut pe site — nu lucrează pentru dumneavoastră pe cât ar putea.”`;
-  } else {
-    cuvinte.push("Verifica manual");
-    observatie = `„...[SCRIE OBSERVAȚIA MANUAL — deschide site-ul și găsește un lucru concret. Fără ea nu suni.]”`;
   }
+
+  const observatieText = observatii.join(". De asemenea, ") + ".";
+  const dovadaNisa = dovadaDinNisa(s.nisa);
 
   return {
     cuvinte_cheie: cuvinte,
     deschidere: DESCHIDERE,
-    observatie: `„Vă sun direct la obiect. M-am uitat înainte să vă sun pe site-ul firmei și am observat că...” ${observatie}`,
+    observatie: `„Vă sun direct la obiect. M-am uitat înainte să vă sun pe site-ul firmei și am observat că...” „...${observatieText}”`,
+    observatii,
+    dovadaNisa,
     micro_intrebare: MICRO_INTREBARE,
     pitch: CTA_AUDIT,
     confirmare: CONFIRMARE,

@@ -245,13 +245,16 @@ export default function FisaLead() {
   const scorAudit = calculScorAudit(semnale);
   const prioritate = prioritateAudit(scorAudit);
   const nextActionLipsa = cereNextAction(lead.status) && !lead.data_urmatoarei_actiuni;
-  const brief = genereazaBrief({
-    areWebsite: lead.are_website,
-    rating: lead.rating,
-    reviews: lead.nr_reviews,
-    scorViteza: lead.scor_viteza,
-    nisa: lead.nisa,
-  });
+  const brief = genereazaBrief(
+    {
+      areWebsite: lead.are_website,
+      rating: lead.rating,
+      reviews: lead.nr_reviews,
+      scorViteza: lead.scor_viteza,
+      nisa: lead.nisa,
+    },
+    semnale
+  );
 
   return (
     <div className="p-8 max-w-3xl">
@@ -675,6 +678,9 @@ export default function FisaLead() {
             { t: "1 · Deschidere — 8 sec", v: brief.deschidere, bg: "bg-slate-50 border-slate-100", lbl: "text-slate-400", txt: "text-slate-700 italic" },
             { t: "2 · Motivul — 15 sec · aici e tot apelul", v: notaPers.trim() ? `„Vă sun direct la obiect. M-am uitat înainte să vă sun pe site-ul ${lead.nume} și am observat că ${notaPers.trim()}”` : brief.observatie, bg: "bg-amber-50 border-amber-200", lbl: "text-amber-600", txt: "text-slate-900 font-medium" },
             { t: "3 · Micro-întrebare — 10 sec", v: brief.micro_intrebare, bg: "bg-slate-50 border-slate-100", lbl: "text-slate-400", txt: "text-slate-700 italic" },
+            ...(brief.dovadaNisa
+              ? [{ t: "3.5 · Dovadă de nișă — dacă întreabă „mai ați lucrat cu cineva ca noi?”", v: brief.dovadaNisa, bg: "bg-violet-50 border-violet-100", lbl: "text-violet-500", txt: "text-violet-900" }]
+              : []),
             { t: "4 · CTA — nu vinzi site, vinzi auditul", v: brief.pitch, bg: "bg-blue-50 border-blue-100", lbl: "text-blue-400", txt: "text-blue-900" },
             { t: "5 · Confirmare + ancorare", v: brief.confirmare, bg: "bg-emerald-50 border-emerald-100", lbl: "text-emerald-500", txt: "text-emerald-900" },
           ].map((sec) => (

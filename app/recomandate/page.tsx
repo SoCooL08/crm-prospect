@@ -119,7 +119,7 @@ export default function RecomandatePage() {
               reviews: l.nr_reviews,
               scorViteza: l.scor_viteza,
             };
-            const brief = genereazaBrief({ ...semnale, nisa: l.nisa });
+            const brief = genereazaBrief({ ...semnale, nisa: l.nisa }, l.audit_semnale);
 
             return (
               <div

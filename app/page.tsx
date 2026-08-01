@@ -47,13 +47,16 @@ const reviewsColor = (nr: number) => {
 
 function BriefCard({ lead }: { lead: any }) {
   const [deschis, setDeschis] = useState(false);
-  const brief = genereazaBrief({
-    areWebsite: lead.are_website,
-    rating: lead.rating,
-    reviews: lead.nr_reviews,
-    scorViteza: lead.scor_viteza,
-    nisa: lead.nisa,
-  });
+  const brief = genereazaBrief(
+    {
+      areWebsite: lead.are_website,
+      rating: lead.rating,
+      reviews: lead.nr_reviews,
+      scorViteza: lead.scor_viteza,
+      nisa: lead.nisa,
+    },
+    lead.audit_semnale
+  );
 
   return (
     <div className="mt-3 border-t border-slate-100 pt-3">

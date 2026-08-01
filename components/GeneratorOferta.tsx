@@ -33,20 +33,13 @@ export default function GeneratorOferta({
   const scenariuLabel = etichetaScenariu(semnale);
 
   function textPachet(p: typeof pachete[0]): string {
-    const pret = p.lunar
-      ? `${p.pret.toLocaleString("ro-RO")} €/luna`
-      : `${p.pret.toLocaleString("ro-RO")} €`;
+    const pret = `${p.pret.toLocaleString("ro-RO")} €/luna`;
+    const setup = `+ ${p.setupFee.toLocaleString("ro-RO")} € setup (o singură dată, la semnare)`;
     const items = p.items
       .filter((i) => i.inclus)
       .map((i) => `  ✅ ${i.label}`)
       .join("\n");
-    // Regula 1:1 — retainerul face parte din oferta, nu e o optiune separata.
-    const retainere = p.retainere
-      .map((r) => `\n  ➕ *${r.nume}* — ${r.pret} €/luna${r.nota ? ` (${r.nota})` : ""}`)
-      .join("");
-    const totalLunar = p.retainere.reduce((s, r) => s + r.pret, 0);
-    const total = p.retainere.length > 1 ? `\n  = *${totalLunar} €/luna* recurent` : "";
-    return `📦 *${p.eticheta}: ${p.nume}* — ${pret}${retainere}${total}\n${items}`;
+    return `📦 *${p.eticheta}: ${p.nume}* — ${pret}\n  ${setup}\n${items}`;
   }
 
   function copiazaPachet(idx: number) {
@@ -174,29 +167,16 @@ export default function GeneratorOferta({
                       </button>
                     )}
                     <span className={`text-sm font-semibold ${p.accentText}`}>
-                      €{p.lunar ? "/lună" : ""}
+                      €/lună
                     </span>
                   </div>
 
-                  {/* Retainerele atasate — regula 1:1 din sectiunea 2.3 */}
-                  {p.retainere.length > 0 && (
-                    <div className="mb-4 -mt-2 space-y-0.5">
-                      {p.retainere.map((r) => (
-                        <div key={r.nume} className="flex items-baseline gap-1.5 flex-wrap">
-                          <span className="text-slate-400 text-sm">+</span>
-                          <span className={`text-base font-bold ${p.accentText}`}>
-                            {r.nume} {r.pret} €/lună
-                          </span>
-                          {r.nota && <span className="text-xs text-slate-400">({r.nota})</span>}
-                        </div>
-                      ))}
-                      {p.retainere.length > 1 && (
-                        <p className="text-xs font-semibold text-slate-500 pt-0.5">
-                          = {p.retainere.reduce((s, r) => s + r.pret, 0)} €/lună recurent
-                        </p>
-                      )}
-                    </div>
-                  )}
+                  {/* Setup obligatoriu — o singura data, la semnare (business.md) */}
+                  <div className="mb-4 -mt-2">
+                    <span className="text-xs font-semibold text-slate-500">
+                      + {p.setupFee.toLocaleString("ro-RO")} € setup, o singură dată
+                    </span>
+                  </div>
 
                   {/* Items */}
                   <ul className="space-y-1.5 mb-4">
