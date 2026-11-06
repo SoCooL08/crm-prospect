@@ -68,7 +68,7 @@ DACĂ NU → „E în regulă. Când vă prind mai bine, azi după-amiază sau m
     text:
 `Bună ziua, nu vă deranjez cu vânzare.
 
-Mi-am amintit de discuția noastră și am căutat pe Google, în {oras}, ca un client care are nevoie de {nisa}. Am văzut că [ce ai văzut concret azi].
+Mi-am amintit de discuția noastră și am căutat pe Google „{nisa} {oras}”, ca un client. Am văzut că [ce ai văzut concret azi].
 
 Atât voiam să vă arăt.`,
     nota: "Scrie doar ce ai văzut tu în ziua aia, fără cifre inventate. Fără întrebare la final: mesajul nu cere nimic.",
