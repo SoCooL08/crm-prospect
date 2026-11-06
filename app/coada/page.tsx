@@ -96,7 +96,13 @@ function ghidAtingere(nr: number): string | null {
 
 function StripScript({ lead }: { lead: LeadCoada }) {
   const [open, setOpen] = useState(false);
-  const nume = lead.nume_decident || "domnul/doamna [nume]";
+  const sala = lead.nisa === "Sala de sport";
+  const urgente = lead.nisa === "Instalator" || /deblo|interven|non stop/i.test(lead.nume);
+  const nota = lead.nota_personalizare ?? "";
+  // Unic Gym, Power Kick: site bun, deci nu li se propune pagina.
+  const faraPagina = /^NU /.test(nota);
+  const oferta = nota.match(/Ofertă:\s*(.+?)\.?\s*$/)?.[1] ?? null;
+  const siteStart = !!oferta && oferta.startsWith("Site Start");
 
   return (
     <div className="border-t border-slate-800 bg-slate-900 text-slate-300 shrink-0">
@@ -112,22 +118,72 @@ function StripScript({ lead }: { lead: LeadCoada }) {
         </span>
       </button>
       {open && (
-        <div className="px-6 pb-5 grid grid-cols-1 md:grid-cols-4 gap-3 text-xs leading-relaxed">
+        <div className="px-6 pb-5 grid grid-cols-1 md:grid-cols-4 gap-3 text-xs leading-relaxed max-h-[50vh] overflow-y-auto">
           <div className="bg-slate-800/60 rounded-xl p-3">
-            <p className="text-slate-500 font-semibold uppercase mb-1.5">Deschidere · 8 sec</p>
-            <p>„Bună ziua, {nume}?” <span className="text-slate-500">(pauză)</span> „Sunt Călin de la Nova Visio Tech, din Sibiu. <b className="text-white">Vă prind într-un moment nepotrivit?</b>”</p>
+            <p className="text-slate-500 font-semibold uppercase mb-1.5">1. Deschidere</p>
+            {sala ? (
+              <p>„Bună ziua, sunt Șerban de la Nova Visio Tech, tot din Sibiu. <b className="text-white">Vorbesc cu cine se ocupă de sală?</b> Vă rețin un minut.”</p>
+            ) : (
+              <p>„Bună ziua, sunt Șerban de la Nova Visio Tech, din Sibiu. Fac site-uri pentru firme mici. <b className="text-white">Vă rețin un minut?</b>”</p>
+            )}
+            <p className="mt-1.5 text-amber-300">Apoi spui observația de mai sus.</p>
           </div>
           <div className="bg-slate-800/60 rounded-xl p-3">
-            <p className="text-slate-500 font-semibold uppercase mb-1.5">Motivul · 15 sec</p>
-            <p>„Vă sun direct la obiect. M-am uitat înainte să vă sun pe site-ul {lead.nume} și am observat că <b className="text-amber-300">[observația de mai sus]</b>.”</p>
+            <p className="text-slate-500 font-semibold uppercase mb-1.5">2. {sala ? "Întrebarea" : "Problema"}</p>
+            {faraPagina ? (
+              <p className="text-slate-400">Sari peste. Observația de mai sus e deja propunerea.</p>
+            ) : sala ? (
+              <p>„De unde vin acum cei mai mulți membri noi: recomandări, Facebook sau Google?” <span className="text-slate-500">(îl lași să răspundă)</span></p>
+            ) : urgente ? (
+              <p>„La urgențe omul sună primul număr care îi inspiră încredere. O pagină cu poze, zonele unde ajungeți și un buton mare de apel face diferența.”</p>
+            ) : (
+              <p>„Cine compară trei firme caută poze, ce faceți, prețuri. Dacă nu le găsește la voi, sună la următorul.”</p>
+            )}
           </div>
           <div className="bg-slate-800/60 rounded-xl p-3">
-            <p className="text-slate-500 font-semibold uppercase mb-1.5">Micro-întrebare · 10 sec</p>
-            <p>„Din clienții care vin la dumneavoastră acum, cam câți vin de pe internet și câți din recomandări?” <span className="text-slate-500">(ascultă)</span></p>
+            <p className="text-slate-500 font-semibold uppercase mb-1.5">3. Oferta</p>
+            {faraPagina ? (
+              <p className="text-slate-400">Nu propui pagina.</p>
+            ) : siteStart ? (
+              <p>„Vă propun Site Start, 550 €, în 3 tranșe. Păstrăm conținutul bun pe care îl aveți.”</p>
+            ) : sala ? (
+              <p>„Fac o pagină simplă: abonamente, program, poze cu sala, buton de apel și WhatsApp, harta. Pornește de la 260 €.”</p>
+            ) : (
+              <p>„Fac o pagină simplă: ce faceți, poze, prețuri orientative, buton de apel și WhatsApp, harta. Pornește de la 260 €.”</p>
+            )}
+            {oferta && <p className="mt-1.5 text-amber-300">Pentru firma asta: {oferta}.</p>}
           </div>
           <div className="bg-slate-800/60 rounded-xl p-3">
-            <p className="text-slate-500 font-semibold uppercase mb-1.5">CTA · 15 sec</p>
-            <p>„Îmi iau 15 minute și înregistrez un video de 3 minute în care vă arăt ce vede un client când intră pe site. Vi-l trimit pe WhatsApp. Dacă vi se pare util, vorbim. <b className="text-white">Vă trimit pe numărul ăsta?</b>”</p>
+            <p className="text-slate-500 font-semibold uppercase mb-1.5">4. Închidere</p>
+            {sala ? (
+              <>
+                {faraPagina && <p className="text-slate-400 mb-1.5">Doar dacă sunt interesați:</p>}
+                <p>„Sunt din Sibiu. Pot trece pe la sală 10 minute săptămâna viitoare, să vă arăt pe telefon. <b className="text-white">Marți sau joi vă e mai bine?</b>”</p>
+              </>
+            ) : (
+              <>
+                <p>„<b className="text-white">Vă trimit pe WhatsApp două exemple, să vedeți cum arată?</b>”</p>
+                <p className="mt-1.5 text-slate-400">Dacă întreabă cum lucrezi: „Lucrez de la distanță: totul se face pe WhatsApp și la telefon. Pozele le faceți cu telefonul, vă spun eu ce să pozați.”</p>
+              </>
+            )}
+          </div>
+          <div className="bg-slate-800/60 rounded-xl p-3 md:col-span-3">
+            <p className="text-slate-500 font-semibold uppercase mb-1.5">Obiecții</p>
+            <p><b className="text-white">„E scump.”</b> „Pagina se plătește o singură dată. Se poate și în 2 rate, 130 € + 130 €. Dacă vreți să începem mai mic, profilul de Google e 149 €.”</p>
+            <p className="mt-1"><b className="text-white">„Avem Facebook.”</b> „Pe Facebook vă găsesc cei care vă știu deja. Pe Google vă caută cei care încă nu vă știu.”</p>
+            <p className="mt-1"><b className="text-white">{sala ? "„Avem destui membri.”" : "„Avem destui clienți.”"}</b> {sala ? "„Foarte bine. Atunci rămâne pentru perioadele mai slabe, vara de exemplu. Vă las numărul?”" : "„Foarte bine. Atunci rămâne pentru când vreți să alegeți voi lucrările. Vă las numărul pe WhatsApp?”"}</p>
+            <p className="mt-1"><b className="text-white">„Avem pe cineva pentru site.”</b> „Perfect, nu încerc să-l înlocuiesc. Vă pot trimite ce am observat, ca să-i transmiteți.”</p>
+            <p className="mt-1"><b className="text-white">„Trimiteți mail.”</b> „Sigur. Pe ce adresă? Vă trimit azi o pagină cu ce am văzut și prețul.”</p>
+            <p className="mt-1"><b className="text-white">„N-am timp.”</b> „Când vă prind mai bine, azi după-amiază sau mâine dimineață?”</p>
+            {sala && <p className="mt-1"><b className="text-white">„Vrem mai multe pagini.”</b> „Pentru primele 3 săli din Sibiu fac 3 pagini la 390 €, în loc de 550 €, în 3 rate: 150 + 120 + 120.”</p>}
+          </div>
+          <div className="bg-slate-800/60 rounded-xl p-3">
+            <p className="text-slate-500 font-semibold uppercase mb-1.5">Prețuri</p>
+            <p>Pagină: <b className="text-white">260 €</b> (130 + 130)</p>
+            <p>Site Start: <b className="text-white">550 €</b> (250 + 150 + 150)</p>
+            <p>Profil Google: <b className="text-white">149 €</b></p>
+            <p>Mentenanță: <b className="text-white">49 €/lună</b></p>
+            <p className="mt-1.5 text-slate-400">Nu promite locul 1 pe Google, rezultate în bani sau termene sub 5 zile lucrătoare.</p>
           </div>
         </div>
       )}

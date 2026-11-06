@@ -36,7 +36,7 @@ export const CADENTA: MesajCadenta[] = [
     cand: "ziua 0 — imediat după apel",
     canal: "WhatsApp",
     text:
-`Bună ziua, domnule {nume}. Sunt Călin de la Nova Visio Tech, am vorbit acum câteva minute la telefon.
+`Bună ziua, domnule {nume}. Sunt Șerban de la Nova Visio Tech, am vorbit acum câteva minute la telefon.
 
 V-am pregătit auditul promis — 3 minute, vă arăt pe ecran ce vede un client când intră pe {site}:
 {link}
@@ -51,7 +51,7 @@ Nu e o prezentare de vânzare, e strict ce am găsit. Dacă vi se pare util, îm
     cand: "+2 zile",
     canal: "Apel",
     text:
-`„Bună ziua, domnule {nume}, Călin de la Nova Visio Tech. V-am trimis auditul pe WhatsApp — ați apucat să vă uitați la el?”
+`„Bună ziua, domnule {nume}, Șerban de la Nova Visio Tech. V-am trimis auditul pe WhatsApp — ați apucat să vă uitați la el?”
 
 DACĂ DA → „Ce v-a atras atenția cel mai mult?”
    (taci și ascultă — răspunsul lui e oferta ta)
@@ -81,7 +81,7 @@ V-am zis că problema de pe site-ul dumneavoastră e aceeași. Atât voiam să v
     cand: "+9 zile",
     canal: "Apel",
     text:
-`„Domnule {nume}, Călin de la Nova Visio Tech. Vă sun cu altceva decât data trecută.
+`„Domnule {nume}, Șerban de la Nova Visio Tech. Vă sun cu altceva decât data trecută.
 
 M-am uitat din nou și am observat că [AL DOILEA semnal din audit]. Asta e de fapt mai urgentă decât ce v-am arătat în video, pentru că [motiv concret].
 
@@ -107,7 +107,7 @@ Punctul 4 e cel pe care îl ratează aproape toată lumea și e și cel mai scum
 Dacă aveți întrebări pe vreunul dintre ele, răspundeți la mail și vă spun ce știu, fără obligații.
 
 Numai bine,
-Călin — Nova Visio Tech, Sibiu
+Șerban — Nova Visio Tech, Sibiu
 novavisiotech.ro
 
 —
@@ -140,7 +140,7 @@ export const MESAJE_EXTRA: MesajCadenta[] = [
     cand: "banii cei mai rapizi din tot planul",
     canal: "Apel",
     text:
-`„Bună ziua, domnule {nume}, Călin de la Nova Visio Tech. Nu vă sun cu vreo problemă — vă sun să vă întreb cum merge site-ul de când l-am făcut.”
+`„Bună ziua, domnule {nume}, Șerban de la Nova Visio Tech. Nu vă sun cu vreo problemă — vă sun să vă întreb cum merge site-ul de când l-am făcut.”
 
 (ascultă)
 

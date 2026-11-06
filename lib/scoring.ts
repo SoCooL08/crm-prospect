@@ -199,7 +199,7 @@ function observatiiDinAuditSemnale(
  * „nu, spuneți” în ~70% din cazuri; „aveți 2 minute?” primește „nu”.
  */
 const DESCHIDERE =
-  '„Bună ziua, domnul/doamna [Nume]?” — pauză, aștepți confirmarea — „Sunt Călin de la Nova Visio Tech, din Sibiu. Vă prind într-un moment nepotrivit?”';
+  '„Bună ziua, domnul/doamna [Nume]?” — pauză, aștepți confirmarea — „Sunt Șerban de la Nova Visio Tech, din Sibiu. Vă prind într-un moment nepotrivit?”';
 
 /** Nu vinzi site la telefon. Vinzi auditul video de 3 minute. */
 const CTA_AUDIT =
