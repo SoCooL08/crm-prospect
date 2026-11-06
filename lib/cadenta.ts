@@ -26,7 +26,7 @@ export const CADENTA: MesajCadenta[] = [
     titlu: "Apelul principal",
     cand: "ziua 0",
     canal: "Apel",
-    text: "Scriptul principal: deschidere, observația de pe card, întrebarea, oferta. Îl ai în ecranul Apelare, la „Scriptul”.",
+    text: "Scriptul principal: deschidere, observația de pe card, întrebarea, oferta. Îl ai pe cardul firmei, în ecranul Apelare.",
     nota: "Vinzi pagina simplă, de la 260 €. La sălile din Sibiu ceri o vizită de 10 minute.",
   },
   {
