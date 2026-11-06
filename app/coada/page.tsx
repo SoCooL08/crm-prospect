@@ -81,11 +81,11 @@ function cronometru(secunde: number): string {
 /** Cadenta de 7 atingeri (sectiunea 6.6) — ce spui la atingerea curenta. */
 function ghidAtingere(nr: number): string | null {
   switch (nr) {
-    case 1: return "Atingerea 1 — scriptul principal. Deschidere, observația din audit, micro-întrebarea, CTA pe auditul video.";
+    case 1: return "Atingerea 1 — scriptul principal. Deschidere, observația de mai sus, întrebarea, oferta. Le ai jos, la „Scriptul”.";
     case 2:
-    case 3: return "Atingerea 3 — „Ați reușit să vedeți videoclipul? Ce v-a atras atenția?”";
+    case 3: return "Atingerea 3 — „V-am trimis pe WhatsApp exemplul și prețurile. Ați apucat să vă uitați? Ce v-a atras atenția?”";
     case 4:
-    case 5: return "Atingerea 5 — unghi nou: alt semnal din audit, sau ceva de sezon (Black Friday, sezonalitate).";
+    case 5: return "Atingerea 5 — unghi nou: alt lucru observat pe profilul lor, sau profilul de Google, 149 €.";
     case 6:
     case 7: return "Atingerea 7 — „Închid dosarul”. Presiunea dispare, aici sunt cele mai mari rate de răspuns.";
     default: return nr > 7 ? "Peste 7 atingeri — mută-l în Nurture și revii în 90 de zile." : null;
@@ -295,7 +295,7 @@ function DialogRezultat({
               value={nota}
               onChange={(e) => setNota(e.target.value)}
               onKeyDown={(e) => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) confirma(); }}
-              placeholder="Ex: a zis că are deja pe cineva, dar nu primește raport lunar. Trimit audit video."
+              placeholder="Ex: a zis că are deja pe cineva, dar nu primește raport lunar. Trimit exemplul pe WhatsApp."
               className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm h-24 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
             />
           </div>
