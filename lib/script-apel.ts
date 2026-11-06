@@ -53,8 +53,9 @@ const SALI: { potrivire: RegExp; script: string[] }[] = [
     potrivire: /terrasportika/i,
     script: [
       "Bună ziua, sunt Șerban de la Nova Visio Tech, tot din Sibiu. Vorbesc cu cine se ocupă de club? Vă rețin un minut.",
-      `Aveți nota 5,0. Părinții care caută karate pentru copil se uită de pe telefon, între două treburi. Pe prima pagină nu găsesc rapid numărul, prețul sau cum se înscriu la o ședință de probă. ${INTREBARE_SALA}`,
-      "Fac o pagină „Karate copii”, cu program, preț, buton de apel și înscriere la ședința de probă, la 260 €. Sunt din Sibiu, pot trece pe la club 10 minute săptămâna viitoare, să vă arăt pe telefon. Marți sau joi vă e mai bine?",
+      "Aveți nota 5,0 pe Google și clubul merge din 2005, cu medalii la campionate, deci munca se vede. Am intrat pe site de pe telefon, ca un părinte care caută karate pentru copil. Programul e o poză care iese foarte mică, numărul e doar la Contact și nu se poate apăsa, iar prețul sau cum se înscrie copilul nu le-am găsit. De unde vin acum cei mai mulți copii noi: recomandări sau internet?",
+      "Aveți ședință de probă?",
+      "Vă pot face o pagină „Karate copii”, gândită pentru telefon: program ușor de citit, preț, buton de apel și WhatsApp, și înscriere la ședința de probă. Costă 260 €, o singură plată, și nu trebuie să renunțați la site-ul pe care îl aveți. Sunt din Sibiu, pot trece pe la club 10 minute săptămâna viitoare, să vă arăt pe telefon. Marți sau joi vă e mai bine?",
     ],
   },
   {
