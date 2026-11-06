@@ -1,6 +1,6 @@
 // Cadenta de 7 atingeri (sectiunea 6.6) + mesajele de care ai nevoie in prima
-// saptamana. Formularea e cea din NVT-Script-Apel-si-Cadenta.html — testata,
-// nu o rescrie in timpul apelului.
+// saptamana. Actualizata pe 6 nov 2026 pe oferta curenta: pagina de la 260 €,
+// fara auditul video. Mesajele nu cer numele, fiindca lead-urile noi nu il au.
 //
 // 80% din vanzarile din cold calling se inchid intre atingerea 4 si 8.
 // Majoritatea celor care fac cold calling se opresc la 2. De asta cadenta e
@@ -26,53 +26,52 @@ export const CADENTA: MesajCadenta[] = [
     titlu: "Apelul principal",
     cand: "ziua 0",
     canal: "Apel",
-    text: "Scriptul principal — deschidere, observația din audit, micro-întrebarea, CTA pe auditul video. Îl ai în fișa lead-ului, la „Brief cold calling”.",
-    nota: "Nu vinzi site. Vinzi auditul video de 3 minute.",
+    text: "Scriptul principal: deschidere, observația de pe card, întrebarea, oferta. Îl ai în ecranul Apelare, la „Scriptul”.",
+    nota: "Vinzi pagina simplă, de la 260 €. La sălile din Sibiu ceri o vizită de 10 minute.",
   },
   {
     id: "a2",
     atingere: 2,
-    titlu: "Auditul promis",
-    cand: "ziua 0 — imediat după apel",
+    titlu: "Exemplul și prețurile",
+    cand: "ziua 0, imediat după apel",
     canal: "WhatsApp",
     text:
-`Bună ziua, domnule {nume}. Sunt Șerban de la Nova Visio Tech, am vorbit acum câteva minute la telefon.
+`Bună ziua, sunt Șerban Hila de la Nova Visio Tech, cum am vorbit la telefon. Așa arată o pagină făcută de mine:
+https://demo.novavisiotech.ro/denttara-vut22/
 
-V-am pregătit auditul promis — 3 minute, vă arăt pe ecran ce vede un client când intră pe {site}:
-{link}
+Prețurile sunt aici:
+https://novavisiotech.ro/preturi/
 
-Nu e o prezentare de vânzare, e strict ce am găsit. Dacă vi se pare util, îmi scrieți. Dacă nu, rămâne al dumneavoastră.`,
-    nota: "Trimite-l în aceeași zi, cât ești proaspăt în mintea lui. Promisiunea din apel era „până mâine la ora X” — livrează mai devreme.",
+Dacă vă place, vă spun ce am nevoie ca să pornim.`,
+    nota: "Trimite doar dacă ți-au spus la telefon că pot primi mesajul.",
   },
   {
     id: "a3",
     atingere: 3,
-    titlu: "Ai apucat să te uiți?",
+    titlu: "Ați apucat să vă uitați?",
     cand: "+2 zile",
     canal: "Apel",
     text:
-`„Bună ziua, domnule {nume}, Șerban de la Nova Visio Tech. V-am trimis auditul pe WhatsApp — ați apucat să vă uitați la el?”
+`„Bună ziua, Șerban de la Nova Visio Tech. V-am trimis pe WhatsApp exemplul și prețurile. Ați apucat să vă uitați?”
 
 DACĂ DA → „Ce v-a atras atenția cel mai mult?”
-   (taci și ascultă — răspunsul lui e oferta ta)
+   (taci și ascultă, răspunsul îți spune ce să propui)
 
-DACĂ NU → „E ok, aveți 3 minute oricând. Vă sun eu joi dimineață să văd ce părere aveți, e bine?”`,
+DACĂ NU → „E în regulă. Când vă prind mai bine, azi după-amiază sau mâine dimineață?”`,
   },
   {
     id: "a4",
     atingere: 4,
-    titlu: "Dovadă, nu vânzare",
+    titlu: "Ce am mai văzut",
     cand: "+5 zile",
     canal: "WhatsApp",
     text:
-`Domnule {nume}, nu vă deranjez cu vânzare.
+`Bună ziua, nu vă deranjez cu vânzare.
 
-Mi-am amintit de discuția noastră când am văzut asta: e o firmă de {nisa} din {oras}, la 60 de zile după ce am schimbat exact lucrul de care vă spuneam.
+Mi-am amintit de discuția noastră și am căutat pe Google, în {oras}, ca un client care are nevoie de {nisa}. Am văzut că [ce ai văzut concret azi].
 
-[atașezi screenshot cu cifra]
-
-V-am zis că problema de pe site-ul dumneavoastră e aceeași. Atât voiam să vă arăt.`,
-    nota: "Fără întrebare la final. Mesajul care nu cere nimic primește cele mai multe răspunsuri.",
+Atât voiam să vă arăt.`,
+    nota: "Scrie doar ce ai văzut tu în ziua aia, fără cifre inventate. Fără întrebare la final: mesajul nu cere nimic.",
   },
   {
     id: "a5",
@@ -81,12 +80,12 @@ V-am zis că problema de pe site-ul dumneavoastră e aceeași. Atât voiam să v
     cand: "+9 zile",
     canal: "Apel",
     text:
-`„Domnule {nume}, Șerban de la Nova Visio Tech. Vă sun cu altceva decât data trecută.
+`„Bună ziua, Șerban de la Nova Visio Tech. Vă sun cu altceva decât data trecută.
 
-M-am uitat din nou și am observat că [AL DOILEA semnal din audit]. Asta e de fapt mai urgentă decât ce v-am arătat în video, pentru că [motiv concret].
+M-am uitat din nou și am observat că [alt lucru, pe care nu l-ai spus la primul apel]. Asta e de fapt mai urgent decât ce v-am spus data trecută, pentru că [motiv concret].
 
 Vă fur 3 minute să vă explic sau vă trimit tot pe WhatsApp?”`,
-    nota: "Al doilea semnal îl ai bifat în scanul de 90 sec. Nu repeta primul — pare că n-ai nimic nou.",
+    nota: "Uită-te din nou pe profilul lor înainte să suni și nu repeta prima observație. Dacă pagina li s-a părut mult, propui profilul de Google, 149 €.",
   },
   {
     id: "a6",
@@ -96,7 +95,7 @@ Vă fur 3 minute să vă explic sau vă trimit tot pe WhatsApp?”`,
     canal: "Email",
     subiect: "12 lucruri de verificat pe site înainte de Black Friday",
     text:
-`Bună ziua, domnule {nume},
+`Bună ziua,
 
 Nu vă scriu ca să vă vând ceva. Am făcut un checklist pe care îl folosesc când pregătesc un magazin sau un site de firmă pentru sezonul de final de an. Sunt 12 puncte, le puteți verifica singur în 20 de minute sau le poate verifica cine se ocupă de site la dumneavoastră:
 
@@ -121,11 +120,11 @@ Dacă preferați să nu mai primiți mesaje de la mine, răspundeți cu „STOP�
     cand: "+25 zile",
     canal: "WhatsApp",
     text:
-`Domnule {nume},
+`Bună ziua,
 
-V-am căutat de câteva ori și nu am reușit să vorbim — probabil nu e momentul, ceea ce e absolut ok. Închid subiectul din partea mea și nu vă mai deranjez.
+V-am căutat de câteva ori și nu am reușit să vorbim. Probabil nu e momentul, ceea ce e absolut în regulă. Închid subiectul din partea mea și nu vă mai deranjez.
 
-Auditul rămâne al dumneavoastră, folosiți-l cu oricine. Dacă vreodată devine relevant, aveți numărul meu.
+Dacă vreodată devine relevant, aveți numărul meu.
 
 Toate bune!`,
     nota: "Cele mai mari rate de răspuns din toată cadența. Oamenii răspund când presiunea dispare. Dacă tot nimic → NURTURE, revii în 90 de zile.",
