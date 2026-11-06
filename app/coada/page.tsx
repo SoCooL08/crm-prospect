@@ -12,6 +12,7 @@ import {
   calculScorAudit, semnaleBifate, prioritateAudit, PRIORITATE_UI,
   labelStadiu, uiStadiu, SCOR_AUDIT_MAX,
 } from "@/lib/stadii";
+import { scriptApel } from "@/lib/script-apel";
 
 // ─── Tipuri ──────────────────────────────────────────────────────────────────
 
@@ -81,7 +82,7 @@ function cronometru(secunde: number): string {
 /** Cadenta de 7 atingeri (sectiunea 6.6) — ce spui la atingerea curenta. */
 function ghidAtingere(nr: number): string | null {
   switch (nr) {
-    case 1: return "Atingerea 1 — scriptul principal. Deschidere, observația de mai sus, întrebarea, oferta. Le ai jos, la „Scriptul”.";
+    case 1: return "Atingerea 1 — primul apel. Citești scriptul de mai jos.";
     case 2:
     case 3: return "Atingerea 3 — „V-am trimis pe WhatsApp exemplul și prețurile. Ați apucat să vă uitați? Ce v-a atras atenția?”";
     case 4:
@@ -97,12 +98,6 @@ function ghidAtingere(nr: number): string | null {
 function StripScript({ lead }: { lead: LeadCoada }) {
   const [open, setOpen] = useState(false);
   const sala = lead.nisa === "Sala de sport";
-  const urgente = lead.nisa === "Instalator" || /deblo|interven|non stop/i.test(lead.nume);
-  const nota = lead.nota_personalizare ?? "";
-  // Unic Gym, Power Kick: site bun, deci nu li se propune pagina.
-  const faraPagina = /^NU /.test(nota);
-  const oferta = nota.match(/Ofertă:\s*(.+?)\.?\s*$/)?.[1] ?? null;
-  const siteStart = !!oferta && oferta.startsWith("Site Start");
 
   return (
     <div className="border-t border-slate-800 bg-slate-900 text-slate-300 shrink-0">
@@ -111,7 +106,7 @@ function StripScript({ lead }: { lead: LeadCoada }) {
         className="w-full flex items-center gap-2 px-6 py-2.5 text-xs font-semibold uppercase tracking-wide hover:bg-slate-800 transition-colors"
       >
         <BookOpen className="w-3.5 h-3.5" />
-        Scriptul
+        Obiecții și prețuri
         <ChevronDown className={`w-3.5 h-3.5 transition-transform ${open ? "rotate-180" : ""}`} />
         <span className="ml-auto font-normal normal-case tracking-normal text-slate-500">
           stai în picioare · nu ești „gata” niciodată
@@ -119,56 +114,9 @@ function StripScript({ lead }: { lead: LeadCoada }) {
       </button>
       {open && (
         <div className="px-6 pb-5 grid grid-cols-1 md:grid-cols-4 gap-3 text-xs leading-relaxed max-h-[50vh] overflow-y-auto">
-          <div className="bg-slate-800/60 rounded-xl p-3">
-            <p className="text-slate-500 font-semibold uppercase mb-1.5">1. Deschidere</p>
-            {sala ? (
-              <p>„Bună ziua, sunt Șerban de la Nova Visio Tech, tot din Sibiu. <b className="text-white">Vorbesc cu cine se ocupă de sală?</b> Vă rețin un minut.”</p>
-            ) : (
-              <p>„Bună ziua, sunt Șerban de la Nova Visio Tech, din Sibiu. Fac site-uri pentru firme mici. <b className="text-white">Vă rețin un minut?</b>”</p>
-            )}
-            <p className="mt-1.5 text-amber-300">Apoi spui observația de mai sus.</p>
-          </div>
-          <div className="bg-slate-800/60 rounded-xl p-3">
-            <p className="text-slate-500 font-semibold uppercase mb-1.5">2. {sala ? "Întrebarea" : "Problema"}</p>
-            {faraPagina ? (
-              <p className="text-slate-400">Sari peste. Observația de mai sus e deja propunerea.</p>
-            ) : sala ? (
-              <p>„De unde vin acum cei mai mulți membri noi: recomandări, Facebook sau Google?” <span className="text-slate-500">(îl lași să răspundă)</span></p>
-            ) : urgente ? (
-              <p>„La urgențe omul sună primul număr care îi inspiră încredere. O pagină cu poze, zonele unde ajungeți și un buton mare de apel face diferența.”</p>
-            ) : (
-              <p>„Cine compară trei firme caută poze, ce faceți, prețuri. Dacă nu le găsește la voi, sună la următorul.”</p>
-            )}
-          </div>
-          <div className="bg-slate-800/60 rounded-xl p-3">
-            <p className="text-slate-500 font-semibold uppercase mb-1.5">3. Oferta</p>
-            {faraPagina ? (
-              <p className="text-slate-400">Nu propui pagina.</p>
-            ) : siteStart ? (
-              <p>„Vă propun Site Start, 550 €, în 3 tranșe. Păstrăm conținutul bun pe care îl aveți.”</p>
-            ) : sala ? (
-              <p>„Fac o pagină simplă: abonamente, program, poze cu sala, buton de apel și WhatsApp, harta. Pornește de la 260 €.”</p>
-            ) : (
-              <p>„Fac o pagină simplă: ce faceți, poze, prețuri orientative, buton de apel și WhatsApp, harta. Pornește de la 260 €.”</p>
-            )}
-            {oferta && <p className="mt-1.5 text-amber-300">Pentru firma asta: {oferta}.</p>}
-          </div>
-          <div className="bg-slate-800/60 rounded-xl p-3">
-            <p className="text-slate-500 font-semibold uppercase mb-1.5">4. Închidere</p>
-            {sala ? (
-              <>
-                {faraPagina && <p className="text-slate-400 mb-1.5">Doar dacă sunt interesați:</p>}
-                <p>„Sunt din Sibiu. Pot trece pe la sală 10 minute săptămâna viitoare, să vă arăt pe telefon. <b className="text-white">Marți sau joi vă e mai bine?</b>”</p>
-              </>
-            ) : (
-              <>
-                <p>„<b className="text-white">Vă trimit pe WhatsApp două exemple, să vedeți cum arată?</b>”</p>
-                <p className="mt-1.5 text-slate-400">Dacă întreabă cum lucrezi: „Lucrez de la distanță: totul se face pe WhatsApp și la telefon. Pozele le faceți cu telefonul, vă spun eu ce să pozați.”</p>
-              </>
-            )}
-          </div>
           <div className="bg-slate-800/60 rounded-xl p-3 md:col-span-3">
             <p className="text-slate-500 font-semibold uppercase mb-1.5">Obiecții</p>
+            {!sala && <p className="mb-1"><b className="text-white">„Cum lucrați, că nu sunteți de aici?”</b> „Lucrez de la distanță: totul se face pe WhatsApp și la telefon. Pozele le faceți cu telefonul, vă spun eu ce să pozați.”</p>}
             <p><b className="text-white">„E scump.”</b> „Pagina se plătește o singură dată. Se poate și în 2 rate, 130 € + 130 €. Dacă vreți să începem mai mic, profilul de Google e 149 €.”</p>
             <p className="mt-1"><b className="text-white">„Avem Facebook.”</b> „Pe Facebook vă găsesc cei care vă știu deja. Pe Google vă caută cei care încă nu vă știu.”</p>
             <p className="mt-1"><b className="text-white">{sala ? "„Avem destui membri.”" : "„Avem destui clienți.”"}</b> {sala ? "„Foarte bine. Atunci rămâne pentru perioadele mai slabe, vara de exemplu. Vă las numărul?”" : "„Foarte bine. Atunci rămâne pentru când vreți să alegeți voi lucrările. Vă las numărul pe WhatsApp?”"}</p>
@@ -666,42 +614,6 @@ export default function CoadaApelare() {
             </p>
           )}
 
-          {/* NOTA DE PERSONALIZARE — cel mai important element din ecran */}
-          {lead.nota_personalizare ? (
-            <div className="bg-amber-50 border-2 border-amber-300 rounded-2xl p-6 mb-4">
-              <p className="text-xs font-bold text-amber-700 uppercase tracking-widest mb-2">
-                Observația pe care o spui în primele 15 secunde
-              </p>
-              <p className="text-2xl text-slate-900 leading-snug font-medium">
-                {lead.nota_personalizare}
-              </p>
-            </div>
-          ) : (
-            <div className="bg-red-50 border-2 border-red-200 rounded-2xl p-5 mb-4 flex items-start gap-3">
-              <AlertTriangle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
-              <div>
-                <p className="font-bold text-red-800">Fără notă de personalizare.</p>
-                <p className="text-sm text-red-700 mt-0.5">
-                  Apelul ăsta va suna a telemarketing. Deschide fișa, fă scanul de 90 de secunde, scrie o propoziție — sau sari peste.
-                </p>
-                <Link href={`/leads/${lead.id}`} target="_blank" className="inline-flex items-center gap-1 text-sm font-semibold text-red-800 underline mt-2">
-                  Deschide fișa <ExternalLink className="w-3 h-3" />
-                </Link>
-              </div>
-            </div>
-          )}
-
-          {/* Semnalele bifate */}
-          {bifate.length > 0 && (
-            <div className="flex flex-wrap gap-1.5 mb-4">
-              {bifate.map((s) => (
-                <span key={s.cheie} className="text-xs font-semibold px-2.5 py-1 rounded-lg bg-white border border-slate-200 text-slate-700">
-                  {s.chip} <span className="text-slate-400">+{s.puncte}</span>
-                </span>
-              ))}
-            </div>
-          )}
-
           {/* Telefon */}
           <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm mb-4">
             <div className="flex items-center gap-3 flex-wrap">
@@ -736,6 +648,58 @@ export default function CoadaApelare() {
             </div>
             {ghid && <p className="text-xs text-slate-500 mt-3 pt-3 border-t border-slate-100">{ghid}</p>}
           </div>
+
+          {/* SCRIPTUL / NOTA DE PERSONALIZARE — cel mai important element din ecran */}
+          {lead.nota_personalizare && atingere === 1 ? (
+            <div className="bg-amber-50 border-2 border-amber-300 rounded-2xl p-6 mb-4">
+              <p className="text-xs font-bold text-amber-700 uppercase tracking-widest mb-2">
+                Scriptul de citit
+              </p>
+              <p className="text-xl text-slate-900 leading-relaxed font-medium">
+                {scriptApel(lead).map((bucata, i, toate) => (
+                  <span key={i}>
+                    {bucata}
+                    {i < toate.length - 1 && (
+                      <span className="text-sm font-semibold italic text-amber-700"> (pauză, îl lași să răspundă) </span>
+                    )}
+                  </span>
+                ))}
+              </p>
+            </div>
+          ) : lead.nota_personalizare ? (
+            <div className="bg-amber-50 border-2 border-amber-300 rounded-2xl p-6 mb-4">
+              <p className="text-xs font-bold text-amber-700 uppercase tracking-widest mb-2">
+                Ce ai observat la primul apel
+              </p>
+              <p className="text-2xl text-slate-900 leading-snug font-medium">
+                {lead.nota_personalizare}
+              </p>
+            </div>
+          ) : (
+            <div className="bg-red-50 border-2 border-red-200 rounded-2xl p-5 mb-4 flex items-start gap-3">
+              <AlertTriangle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
+              <div>
+                <p className="font-bold text-red-800">Fără notă de personalizare.</p>
+                <p className="text-sm text-red-700 mt-0.5">
+                  Apelul ăsta va suna a telemarketing. Deschide fișa, fă scanul de 90 de secunde, scrie o propoziție — sau sari peste.
+                </p>
+                <Link href={`/leads/${lead.id}`} target="_blank" className="inline-flex items-center gap-1 text-sm font-semibold text-red-800 underline mt-2">
+                  Deschide fișa <ExternalLink className="w-3 h-3" />
+                </Link>
+              </div>
+            </div>
+          )}
+
+          {/* Semnalele bifate */}
+          {bifate.length > 0 && (
+            <div className="flex flex-wrap gap-1.5 mb-4">
+              {bifate.map((s) => (
+                <span key={s.cheie} className="text-xs font-semibold px-2.5 py-1 rounded-lg bg-white border border-slate-200 text-slate-700">
+                  {s.chip} <span className="text-slate-400">+{s.puncte}</span>
+                </span>
+              ))}
+            </div>
+          )}
 
           {/* Context */}
           <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm mb-4 grid grid-cols-2 gap-x-6 gap-y-2 text-sm">
